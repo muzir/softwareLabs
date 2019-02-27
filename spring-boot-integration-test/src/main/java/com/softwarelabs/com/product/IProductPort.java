@@ -3,26 +3,28 @@ package com.softwarelabs.com.product;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.websocket.server.PathParam;
 
 public interface IProductPort {
 
-  @RequestMapping(
+  @PostMapping(
       value = "/v1/product",
-      method = RequestMethod.POST,
       produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
   @ResponseBody
-  ProductResponse createProduct(@RequestBody ProductRequest request);
+  ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
 
-  @RequestMapping(
-      value = "/v1/product",
-      method = RequestMethod.GET,
+  @GetMapping(
+      value = "/v1/product/{productId}",
       produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
   @ResponseBody
-  ProductResponse getProductById(@RequestBody ProductRequest request);
+  ProductResponse getProductById(@PathParam("productId") Long productId);
 
   @Data
   @Accessors(chain = true)
@@ -41,7 +43,7 @@ public interface IProductPort {
   @Data
   @Accessors(chain = true)
   class ProductRequest {
-    private Long id;
-    private String name;
+    @NotNull private Long id;
+    @NotNull private String name;
   }
 }

@@ -33,9 +33,9 @@ public class ProductController implements IProductPort {
   }
 
   @Override
-  public ProductResponse getProductById(ProductRequest request) {
-    log.info(request.getId().toString());
-    Product product = productService.getProduct(request.getId());
+  public ProductResponse getProductById(Long productId) {
+    log.info(productId.toString());
+    Product product = productService.getProduct(productId);
     ProductDto productDto = productMapper.mapToProductDto(product);
     ProductResponse response = new ProductResponse();
     response.setProduct(productDto);

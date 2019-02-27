@@ -20,23 +20,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductController.class)
-public class WebMockTest {
+public class ProductControllerWebMvcTest {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper mapper;
 
-  @MockBean private ProductService service;
+  @MockBean private ProductService productService;
   @MockBean private ProductMapper productMapper;
 
   @Test
-  public void greetingShouldReturnMessageFromService() throws Exception {
-    // given
+  public void returnHttpStatusCode200_ifProductIsValid() throws Exception {
     IProductPort.ProductRequest productRequest =
         new IProductPort.ProductRequest().setId(1L).setName("Product-1");
     String json = mapper.writeValueAsString(productRequest);
-    // when
-    when(service.createProduct(any(), any())).thenReturn(new Product());
-    // then
+
+    when(productService.createProduct(any(), any())).thenReturn(new Product());
+
     this.mockMvc
         .perform(
             post("/v1/product")
