@@ -5,8 +5,10 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="spring-boot_main" target="1.8" />
-      <module name="spring-boot_test" target="1.8" />
+      <module name="softwareLabs_main" target="1.8" />
+      <module name="softwareLabs_test" target="1.8" />
+      <module name="spring-boot-integration-test_main" target="1.8" />
+      <module name="spring-boot-integration-test_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
