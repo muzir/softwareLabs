@@ -101,3 +101,12 @@ fabric.properties
 hs_err_pid*
 
 
+.gradle/
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/google-java-format.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/modules/
+.idea/softwareLabs.iml
+.idea/vcs.xml

@@ -102,3 +102,14 @@ hs_err_pid*
 
 out
 
+.gradle/
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/google-java-format.xml
+.idea/misc.xml
+.idea/spring-boot-integration-test.iml
+.idea/vcs.xml
+build/reports/
+build/test-results/
+build/tmp/
+gradle/wrapper/gradle-wrapper.properties
