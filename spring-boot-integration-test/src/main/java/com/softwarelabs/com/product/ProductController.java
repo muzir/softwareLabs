@@ -5,14 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 @Controller
 @Slf4j
-public class ProductController implements IProductPort {
+public class ProductController implements com.softwarelabs.com.product.IProductPort {
 
   private final ProductService productService;
   private final ProductMapper productMapper;
 
-  public ProductController(ProductService productService, ProductMapper productMapper) {
+  public ProductController(com.softwarelabs.com.product.ProductService productService, com.softwarelabs.com.product.ProductMapper productMapper) {
     this.productService = productService;
     this.productMapper = productMapper;
   }
@@ -23,12 +24,12 @@ public class ProductController implements IProductPort {
   }
 
   @Override
-  public ProductResponse createProduct(ProductRequest request) {
+  public IProductPort.ProductResponse createProduct(ProductRequest request) {
     Product product = productService.createProduct(request.getName(), request.getId());
     ProductDto productDto = productMapper.mapToProductDto(product);
     ProductResponse response = new ProductResponse();
     response.setProduct(productDto);
-    response.setResult(new Result().setMessage("Success").setSuccess(true));
+    response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
     return response;
   }
 
@@ -37,9 +38,9 @@ public class ProductController implements IProductPort {
     log.info(productId.toString());
     Product product = productService.getProduct(productId);
     ProductDto productDto = productMapper.mapToProductDto(product);
-    ProductResponse response = new ProductResponse();
+    IProductPort.ProductResponse response = new ProductResponse();
     response.setProduct(productDto);
-    response.setResult(new Result().setMessage("Success").setSuccess(true));
+    response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
     return response;
   }
 }

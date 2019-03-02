@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 public class ProductMapperImpl implements ProductMapper {
   @Override
   public ProductDto mapToProductDto(Product product) {
-    ProductDto productDto = new ProductDto();
-    productDto.setName(product.getName());
+    ProductDto productDto = new ProductDto(product.getName());
     return productDto;
   }
 }

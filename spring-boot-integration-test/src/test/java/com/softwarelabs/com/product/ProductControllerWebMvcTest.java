@@ -22,28 +22,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductController.class)
 public class ProductControllerWebMvcTest {
 
-  @Autowired private MockMvc mockMvc;
-  @Autowired private ObjectMapper mapper;
+	private static final Long productId = 1L;
+	private static final String productName = "Product-1";
+	@Autowired private MockMvc mockMvc;
+	@Autowired private ObjectMapper objectMapper;
+	@MockBean private ProductService productService;
+	@MockBean private ProductMapper productMapper;
 
-  @MockBean private ProductService productService;
-  @MockBean private ProductMapper productMapper;
+	@Test
+	public void returnHttpStatusCode200_ifProductIsValid() throws Exception {
+		IProductPort.ProductRequest productRequest =
+				new IProductPort.ProductRequest().setId(productId).setName(productName);
+		String json = objectMapper.writeValueAsString(productRequest);
 
-  @Test
-  public void returnHttpStatusCode200_ifProductIsValid() throws Exception {
-    IProductPort.ProductRequest productRequest =
-        new IProductPort.ProductRequest().setId(1L).setName("Product-1");
-    String json = mapper.writeValueAsString(productRequest);
+		Product product = new Product(productId, productName);
+		ProductDto productDto = new ProductDto(productName);
 
-    when(productService.createProduct(any(), any())).thenReturn(new Product());
+		when(productService.createProduct(any(), any())).thenReturn(product);
+		when(productMapper.mapToProductDto(product)).thenReturn(productDto);
 
-    this.mockMvc
-        .perform(
-            post("/v1/product")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-                .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(content().string(containsString("Success")));
-  }
+		this.mockMvc
+				.perform(
+						post("/v1/product")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(json)
+								.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(content().string(containsString("Success")))
+				.andExpect(content().string(containsString(productId.toString())))
+				.andExpect(content().string(containsString(productName)));
+	}
 }

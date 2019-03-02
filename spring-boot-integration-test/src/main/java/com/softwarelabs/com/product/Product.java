@@ -1,9 +1,10 @@
 package com.softwarelabs.com.product;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class Product {
-  private Long id;
-  private String name;
+	private Long id;
+	private String name;
 }
