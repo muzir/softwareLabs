@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 public class AppTest {
 
-  @Autowired private ProductController productController;
+	@Autowired private ProductController productController;
 
-  @Test
-  public void contextLoads() {
-    assertNotNull(productController);
-  }
+	@Test
+	public void contextLoads() {
+		assertNotNull(productController);
+	}
 }

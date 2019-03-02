@@ -13,13 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HttpRequestTest {
-  @LocalServerPort private int port;
+	@LocalServerPort private int port;
 
-  @Autowired private TestRestTemplate restTemplate;
+	@Autowired private TestRestTemplate restTemplate;
 
-  @Test
-  public void greetingShouldReturnDefaultMessage() {
-    assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/", String.class))
-        .contains("Hello World");
-  }
+	@Test
+	public void greetingShouldReturnDefaultMessage() {
+		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/", String.class))
+				.contains("Hello World");
+	}
 }

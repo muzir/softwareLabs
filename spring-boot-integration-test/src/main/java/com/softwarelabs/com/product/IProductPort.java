@@ -14,36 +14,33 @@ import javax.websocket.server.PathParam;
 
 public interface IProductPort {
 
-  @PostMapping(
-      value = "/v1/product",
-      produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-  @ResponseBody
-  ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
+	@PostMapping(
+			value = "/v1/product",
+			produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@ResponseBody
+	ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
 
-  @GetMapping(
-      value = "/v1/product/{productId}",
-      produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-  @ResponseBody
-  ProductResponse getProductById(@PathParam("productId") Long productId);
+	@GetMapping(
+			value = "/v1/product/{productId}",
+			produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@ResponseBody
+	ProductResponse getProductById(@PathParam("productId") Long productId);
 
-  @Data
-  @Accessors(chain = true)
-  class ProductResponse {
-    ProductDto product;
-    Result result;
-  }
+	@Data
+	@Accessors(chain = true) class ProductResponse {
+		ProductDto product;
+		Result result;
+	}
 
-  @Data
-  @Accessors(chain = true)
-  class Result {
-    private boolean success;
-    private String message;
-  }
+	@Data
+	@Accessors(chain = true) class Result {
+		private boolean success;
+		private String message;
+	}
 
-  @Data
-  @Accessors(chain = true)
-  class ProductRequest {
-    @NotNull private Long id;
-    @NotNull private String name;
-  }
+	@Data
+	@Accessors(chain = true) class ProductRequest {
+		@NotNull private Long id;
+		@NotNull private String name;
+	}
 }

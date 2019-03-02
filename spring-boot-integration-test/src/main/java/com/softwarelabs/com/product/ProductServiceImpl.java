@@ -7,19 +7,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-  private final ProductDao productDao;
+	private final ProductDao productDao;
 
-  public ProductServiceImpl(ProductDao productDao) {
-    this.productDao = productDao;
-  }
+	public ProductServiceImpl(ProductDao productDao) {
+		this.productDao = productDao;
+	}
 
-  @Override
-  public Product getProduct(Long productId) {
-    return productDao.getProducts(productId);
-  }
+	@Override
+	public Product getProduct(Long productId) {
+		return productDao.getProducts(productId);
+	}
 
-  @Override
-  public Product createProduct(String name, Long id) {
-    return productDao.createProduct(name, id);
-  }
+	@Override
+	public Product createProduct(String name, Long id) {
+		return productDao.createProduct(name, id);
+	}
 }

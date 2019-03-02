@@ -18,17 +18,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 public class WebLayerTest {
 
-  @Autowired private MockMvc mockMvc;
+	@Autowired private MockMvc mockMvc;
 
-  @MockBean private ProductService service;
-  @MockBean private ProductMapper productMapper;
+	@MockBean private ProductService service;
+	@MockBean private ProductMapper productMapper;
 
-  @Test
-  public void shouldReturnDefaultMessage() throws Exception {
-    this.mockMvc
-        .perform(get("/"))
-        .andDo(print())
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(content().string(containsString("Hello World")));
-  }
+	@Test
+	public void shouldReturnDefaultMessage() throws Exception {
+		this.mockMvc
+				.perform(get("/"))
+				.andDo(print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(content().string(containsString("Hello World")));
+	}
 }

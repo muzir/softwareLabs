@@ -1,6 +1,7 @@
 package com.softwarelabs.com.product;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
