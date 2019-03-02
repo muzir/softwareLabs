@@ -3,10 +3,7 @@ package com.softwarelabs.com.product;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,7 +21,7 @@ public interface IProductPort {
 			value = "/v1/product/{productId}",
 			produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@ResponseBody
-	ProductResponse getProductById(@PathParam("productId") Long productId);
+	ProductResponse getProductById(@PathVariable("productId") Long productId);
 
 	@Data
 	@Accessors(chain = true) class ProductResponse {

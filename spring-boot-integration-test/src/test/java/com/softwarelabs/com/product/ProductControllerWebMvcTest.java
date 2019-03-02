@@ -67,7 +67,7 @@ public class ProductControllerWebMvcTest {
 
 		this.mockMvc
 				.perform(
-						get("/v1/product" + productId)
+						get("/v1/product/" + productId)
 								.contentType(MediaType.APPLICATION_JSON)
 								.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
