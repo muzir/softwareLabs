@@ -3,7 +3,7 @@
  */
 package com.softwarelabs;
 
-import com.softwarelabs.com.product.ProductController;
+import com.softwarelabs.product.ProductController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

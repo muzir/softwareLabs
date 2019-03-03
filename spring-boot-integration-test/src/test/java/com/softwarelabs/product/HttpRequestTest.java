@@ -1,4 +1,4 @@
-package com.softwarelabs.com.product;
+package com.softwarelabs.product;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

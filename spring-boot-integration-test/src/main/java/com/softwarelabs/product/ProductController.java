@@ -1,4 +1,4 @@
-package com.softwarelabs.com.product;
+package com.softwarelabs.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Slf4j
-public class ProductController implements com.softwarelabs.com.product.IProductPort {
+public class ProductController implements IProductPort {
 
 	private final ProductService productService;
 	private final ProductMapper productMapper;
 
-	public ProductController(com.softwarelabs.com.product.ProductService productService, com.softwarelabs.com.product.ProductMapper productMapper) {
+	public ProductController(ProductService productService, ProductMapper productMapper) {
 		this.productService = productService;
 		this.productMapper = productMapper;
 	}

@@ -1,10 +1,11 @@
-package com.softwarelabs.com.product;
+package com.softwarelabs.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ProductDto {
+public class Product {
+	private Long id;
 	private String name;
 }

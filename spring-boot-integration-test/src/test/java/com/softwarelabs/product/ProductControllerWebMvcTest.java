@@ -1,4 +1,4 @@
-package com.softwarelabs.com.product;
+package com.softwarelabs.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

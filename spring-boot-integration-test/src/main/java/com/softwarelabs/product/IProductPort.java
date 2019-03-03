@@ -1,4 +1,4 @@
-package com.softwarelabs.com.product;
+package com.softwarelabs.product;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.websocket.server.PathParam;
 
 public interface IProductPort {
 

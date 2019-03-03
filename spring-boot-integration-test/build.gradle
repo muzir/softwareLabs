@@ -32,7 +32,6 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile('org.apache.commons:commons-lang3:3.8.1')
     compileOnly('org.projectlombok:lombok')
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
