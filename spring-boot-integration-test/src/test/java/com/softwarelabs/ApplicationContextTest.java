@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AppTest {
+public class ApplicationContextTest {
 
 	@Autowired private ProductController productController;
 

@@ -13,13 +13,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HttpRequestTest {
+	private static final Long productId = 1L;
 	@LocalServerPort private int port;
 
 	@Autowired private TestRestTemplate restTemplate;
 
 	@Test
-	public void greetingShouldReturnDefaultMessage() {
-		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/", String.class))
-				.contains("Hello World");
+	public void returnProductWithHttpStatusCode200_ifProductIsExist() {
+		String productName = "Product-" + productId;
+		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/v1/product/" + productId, String.class))
+				.contains(productId.toString())
+				.contains(productName);
 	}
 }
