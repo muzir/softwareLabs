@@ -2,8 +2,6 @@ package com.softwarelabs.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Slf4j
@@ -15,11 +13,6 @@ public class ProductController implements IProductPort {
 	public ProductController(ProductService productService, ProductMapper productMapper) {
 		this.productService = productService;
 		this.productMapper = productMapper;
-	}
-
-	@RequestMapping("/")
-	public @ResponseBody String greeting() {
-		return "Hello World";
 	}
 
 	@Override
