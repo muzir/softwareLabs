@@ -1,4 +1,4 @@
-package product;
+package com.softwarelabs.product;
 
 public interface Product {
 	Long getId();

@@ -1,4 +1,4 @@
-package product;
+package com.softwarelabs.product;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,13 +11,13 @@ import javax.validation.constraints.NotNull;
 public interface IProductPort {
 
 	@PostMapping(
-			value = "/v1/product",
+			value = "/v1/com.softwarelabs.product",
 			produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@ResponseBody
 	ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
 
 	@GetMapping(
-			value = "/v1/product/{productId}",
+			value = "/v1/com.softwarelabs.product/{productId}",
 			produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@ResponseBody
 	ProductResponse getProductById(@PathVariable("productId") Long productId);

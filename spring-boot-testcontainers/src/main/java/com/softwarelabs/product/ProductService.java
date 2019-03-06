@@ -1,6 +1,4 @@
-package product;
-
-import java.util.Optional;
+package com.softwarelabs.product;
 
 public interface ProductService {
 

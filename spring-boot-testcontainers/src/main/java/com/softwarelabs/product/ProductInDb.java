@@ -1,4 +1,4 @@
-package product;
+package com.softwarelabs.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
