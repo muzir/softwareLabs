@@ -13,4 +13,6 @@ services:
     links:
       - postgres
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
+    tty: true
