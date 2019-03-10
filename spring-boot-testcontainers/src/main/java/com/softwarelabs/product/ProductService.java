@@ -2,7 +2,7 @@ package com.softwarelabs.product;
 
 public interface ProductService {
 
-	Product getProduct(Long productId);
+	Product getProduct(String productName);
 
-	Product createProduct(String name, Long id);
+	Product createProduct(String name);
 }
