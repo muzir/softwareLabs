@@ -1,21 +1,23 @@
 package com.softwarelabs.product;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-@Controller
 @Slf4j
+@Controller
 public class ProductController implements IProductPort {
 
 	private final ProductService productService;
 
+	@Autowired
 	public ProductController(ProductService productService) {
 		this.productService = productService;
 	}
 
 	@Override
 	public ProductResponse createProduct(ProductRequest request) {
-		Product product = productService.createProduct(request.getName(), request.getId());
+		Product product = productService.createProduct(request.getName());
 		ProductResponse response = new ProductResponse();
 		response.setProduct(product);
 		response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
@@ -23,9 +25,8 @@ public class ProductController implements IProductPort {
 	}
 
 	@Override
-	public ProductResponse getProductById(Long productId) {
-		log.info(productId.toString());
-		Product product = productService.getProduct(productId);
+	public ProductResponse getProductByName(String productName) {
+		Product product = productService.getProduct(productName);
 		IProductPort.ProductResponse response = new ProductResponse();
 		response.setProduct(product);
 		response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
