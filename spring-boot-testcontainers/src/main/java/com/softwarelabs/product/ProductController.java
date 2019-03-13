@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 
 @Slf4j
 @Controller
-public class ProductController implements IProductPort {
+public class ProductController implements ProductPort {
 
 	private final ProductService productService;
 
@@ -20,16 +20,16 @@ public class ProductController implements IProductPort {
 		Product product = productService.createProduct(request.getName());
 		ProductResponse response = new ProductResponse();
 		response.setProduct(product);
-		response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
+		response.setResult(new ProductPort.Result().setMessage("Success").setSuccess(true));
 		return response;
 	}
 
 	@Override
 	public ProductResponse getProductByName(String productName) {
 		Product product = productService.getProduct(productName);
-		IProductPort.ProductResponse response = new ProductResponse();
+		ProductPort.ProductResponse response = new ProductResponse();
 		response.setProduct(product);
-		response.setResult(new IProductPort.Result().setMessage("Success").setSuccess(true));
+		response.setResult(new ProductPort.Result().setMessage("Success").setSuccess(true));
 		return response;
 	}
 }

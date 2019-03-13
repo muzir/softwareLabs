@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ProductDao extends JpaRepository<ProductInDb, Long> {
-	Optional<ProductInDb> findByName(String productName);
+public interface ProductRepository extends JpaRepository<PersistableProduct, Long> {
+	Optional<PersistableProduct> findByName(String productName);
 }
