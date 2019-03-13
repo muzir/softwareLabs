@@ -17,7 +17,7 @@ public class CrudProductService implements ProductService {
 
 	@Override
 	public Product getProduct(String productName) {
-		PersistableProduct persistableProduct = productRepository.findByName(productName).orElseThrow(
+		Product persistableProduct = productRepository.findByName(productName).orElseThrow(
 				() -> new RuntimeException(
 						"Product is not found by productName:" + productName
 				)
@@ -26,7 +26,7 @@ public class CrudProductService implements ProductService {
 	}
 
 	@Override
-	public PersistableProduct createProduct(String name) {
+	public Product createProduct(String name) {
 		PersistableProduct product = new PersistableProduct(name);
 		return productRepository.save(product);
 	}
