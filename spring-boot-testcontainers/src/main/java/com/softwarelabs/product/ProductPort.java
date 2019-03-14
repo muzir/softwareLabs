@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public interface IProductPort {
+public interface ProductPort {
 
 	@PostMapping(
 			value = "/v1/product",
