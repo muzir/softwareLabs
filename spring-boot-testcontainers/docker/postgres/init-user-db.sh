@@ -3,7 +3,7 @@ set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$POSTGRES_DB" <<-EOSQL
     GRANT ALL PRIVILEGES ON DATABASE store TO dbuser;
-    create table if not exists product_in_db
+    create table if not exists product
     (
       id  bigint not null constraint product_pkey primary key,
       name  varchar(255) UNIQUE

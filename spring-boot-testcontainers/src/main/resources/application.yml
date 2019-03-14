@@ -16,6 +16,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.lob.non_contextual_creation: true
 
+---
 
 spring.profiles: dev
 
@@ -24,3 +25,8 @@ ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
 ENV_DATASOURCE_SERVICE_USERNAME: dbuser
 ENV_DATASOURCE_SERVICE_PASSWORD: password
 ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+
+---
+
+spring.profiles: integration

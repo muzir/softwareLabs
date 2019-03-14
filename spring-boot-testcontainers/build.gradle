@@ -34,10 +34,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.1')
-
+    
     implementation("org.projectlombok:lombok:1.16.16")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation 'org.testcontainers:postgresql:1.10.6'
 }
 
 task wrapper(type: Wrapper) {
