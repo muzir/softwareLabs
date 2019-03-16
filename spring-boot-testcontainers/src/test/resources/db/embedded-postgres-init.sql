@@ -1,12 +1,16 @@
-
 CREATE USER dbuser WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE store TO dbuser;
 
+
+CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
+
+-- Set permission to database user for sequences.
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO dbuser;
+
+-- Set permission to database user for schema.
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
   GRANT USAGE, SELECT ON SEQUENCES TO dbuser;
 
-CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
+
 
 create table if not exists product
 (
@@ -14,5 +18,5 @@ create table if not exists product
   name  varchar(255) UNIQUE
 );
 
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dbuser
+-- Set permission to database user for tables.
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dbuser;
