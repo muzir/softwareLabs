@@ -30,3 +30,4 @@ ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
 ---
 
 spring.profiles: integration
+
