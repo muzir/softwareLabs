@@ -4,25 +4,29 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
 public class IntegrationTestConfiguration {
 
 	private static final String DB_NAME = "store";
 	private static final String USERNAME = "dbuser";
 	private static final String PASSWORD = "password";
+	private static final String PORT = "5432";
+	private static final String INIT_SCRIPT_PATH="db/embedded-postgres-init.sql";
+
+
 
 	@Bean(initMethod = "start")
 	JdbcDatabaseContainer databaseContainer() {
 		return new PostgreSQLContainer()
-				.withInitScript("db/embedded-postgres-init.sql")
-				.withDatabaseName("store");
+				.withInitScript(INIT_SCRIPT_PATH)
+				.withUsername(USERNAME)
+				.withPassword(PASSWORD)
+				.withDatabaseName(DB_NAME);
 	}
 
 	@Bean
@@ -31,13 +35,13 @@ public class IntegrationTestConfiguration {
 
 		System.out.println("Connecting to test container " + container.getUsername() + ":" + container.getPassword() + "@" + container.getJdbcUrl());
 
-		int mappedPort = container.getMappedPort(5432);
+		int mappedPort = container.getMappedPort(Integer.parseInt(PORT));
 		String mappedHost = container.getContainerIpAddress();
 
 		final DataSource dataSource = DataSourceBuilder.create()
-				.url("jdbc:postgresql://" + mappedHost + ":" + mappedPort + "/" + DB_NAME)
-				.username(USERNAME)
-				.password(PASSWORD)
+				.url("jdbc:postgresql://" + mappedHost + ":" + mappedPort + "/" + container.getDatabaseName())
+				.username(container.getUsername())
+				.password(container.getPassword())
 				.driverClassName(container.getDriverClassName())
 				.build();
 
