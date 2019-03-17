@@ -41,4 +41,6 @@ jobs:
       # run tests!
       - run: gradle test
 
-      - run: ./subModulesTest.sh
+      - run:
+          name: Run sub modules tests
+          command: ./subModulesTest.sh
