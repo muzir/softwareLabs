@@ -45,8 +45,5 @@ jobs:
           name: Run sub modules tests
           command: ./subModulesTest.sh
 
-      - store_artifacts:
-          path: target/surefire-reports
-          destination: tr1
       - store_test_results:
-          path: target/surefire-reports
+          path: spring-boot-testcontainers/build/reports/tests/test/index.html
