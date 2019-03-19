@@ -18,10 +18,10 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 	@Test
 	public void returnProductName_ifProductSavedBefore() {
 		String productName = "product001";
-		PersistableProduct p = new PersistableProduct(productName);
-		productRepository.save(p);
-		Optional<Product> product = productRepository.findByName(productName);
-		Assert.assertTrue(product.isPresent());
-		Assert.assertEquals(productName, product.get().name());
+		PersistableProduct product = new PersistableProduct(productName);
+		productRepository.save(product);
+		Optional<Product> actualProduct = productRepository.findByName(productName);
+		Assert.assertTrue(actualProduct.isPresent());
+		Assert.assertEquals(productName, actualProduct.get().name());
 	}
 }
