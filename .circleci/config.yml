@@ -15,9 +15,7 @@ jobs:
             find . -type f -name '*.sh' | wc -l
             find . -type f -name '*.sh' | xargs shellcheck --external-sources
   build-test:
-    docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+    machine: true
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
