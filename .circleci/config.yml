@@ -4,10 +4,18 @@
 #
 version: 2
 jobs:
-  build:
+  shellcheck:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: koalaman/shellcheck-alpine:stable
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources
+  build-test:
+    machine: true
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -45,7 +53,7 @@ jobs:
           name: Run sub modules tests
 
           command: |
-            set -e
+            set -oe pipefail
             ./subModulesTest.sh
 
       - run:
@@ -58,3 +66,12 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - shellcheck
+      - build-test:
+          requires:
+            - shellcheck
