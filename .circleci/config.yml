@@ -4,6 +4,16 @@
 #
 version: 2
 jobs:
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine:stable
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources
   build:
     docker:
       # specify the version you desire here
@@ -45,7 +55,7 @@ jobs:
           name: Run sub modules tests
 
           command: |
-            set -e
+            set -oe pipefail
             ./subModulesTest.sh
 
       - run:
@@ -58,3 +68,15 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - shellcheck
+      - build:
+          requires:
+            - shellcheck
+          filters:
+            branches:
+              only: master
