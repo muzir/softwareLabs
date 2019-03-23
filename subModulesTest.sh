@@ -1,7 +1,7 @@
 #!/bin/bash
-cd spring-boot-integration-test
+cd spring-boot-integration-test || exit
 ./gradlew test
-cd ..
-cd spring-boot-testcontainers
+cd .. || exit
+cd spring-boot-containers || exit
 ./gradlew test
 echo "Tests are finished"
