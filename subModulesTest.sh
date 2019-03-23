@@ -4,4 +4,3 @@ cd spring-boot-integration-test || exit
 cd .. || exit
 cd spring-boot-containers || exit
 ./gradlew test
-echo "Tests are finished"
