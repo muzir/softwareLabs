@@ -14,7 +14,7 @@ jobs:
           command: |
             find . -type f -name '*.sh' | wc -l
             find . -type f -name '*.sh' | xargs shellcheck --external-sources
-  build:
+  build-test:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -74,7 +74,7 @@ workflows:
   workflow:
     jobs:
       - shellcheck
-      - build:
+      - build-test:
           requires:
             - shellcheck
           filters:
