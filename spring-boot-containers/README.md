@@ -1,6 +1,6 @@
 =========
 
-## Spring Boot Testcontainers
+## Spring Boot Containers
 
 
 ### Relevant Blogposts: 
