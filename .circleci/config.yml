@@ -77,6 +77,3 @@ workflows:
       - build-test:
           requires:
             - shellcheck
-          filters:
-            branches:
-              only: master
