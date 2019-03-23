@@ -103,6 +103,7 @@ hs_err_pid*
 build
 
 .gradle/
+.idea
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/google-java-format.xml
