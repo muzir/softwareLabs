@@ -45,7 +45,7 @@ public class ProductControllerWebMvcTest {
 
 		this.mockMvc
 				.perform(
-						post("/v1/product")
+						post("/v1/pro")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(json)
 								.accept(MediaType.APPLICATION_JSON))
