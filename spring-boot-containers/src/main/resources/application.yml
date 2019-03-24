@@ -4,7 +4,7 @@ server.port: 12345
 
 spring:
   application:
-    name: spring-boot-testcontainers
+    name: spring-boot-containers
   datasource:
     driver-class-name: ${ENV_DRIVER_CLASS_NAME}
     url: ${ENV_DATASOURCE_URL}
