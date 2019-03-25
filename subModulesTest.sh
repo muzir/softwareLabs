@@ -4,5 +4,6 @@ cd spring-boot-integration-test || exit
 cd .. || exit
 cd spring-boot-containers || exit
 ./gradlew test
+cd .. || exit
 cd spring-boot-kafka || exit
 ./gradlew test
