@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  postgres:
+    build: postgres
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: store
+    ports:
+    - 5432:5432
+  spring-boot-kafka:
+    build: ../
+    ports:
+      - "12345:12345"
+    links:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_HEAP_SIZE_MB: 1024
