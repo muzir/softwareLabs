@@ -16,6 +16,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.lob.non_contextual_creation: true
 
+kafka:
+  bootstrap:
+    servers: ${ENV_KAFKA_BOOTSTRAP_SERVERS}
+
 ---
 
 spring.profiles: dev
@@ -25,6 +29,8 @@ ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
 ENV_DATASOURCE_SERVICE_USERNAME: dbuser
 ENV_DATASOURCE_SERVICE_PASSWORD: password
 ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
+ENV_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+ENV_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
 
 
 ---
