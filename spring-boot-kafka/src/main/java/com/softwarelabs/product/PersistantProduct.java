@@ -11,13 +11,13 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "product")
-public class PersistableProduct extends AbstractPersistable<Long> implements Product {
+public class PersistantProduct extends AbstractPersistable<Long> implements Product {
 	private String name;
 
-	public PersistableProduct() {
+	public PersistantProduct() {
 	}
 
-	public PersistableProduct(String name) {
+	public PersistantProduct(String name) {
 		this.name = name;
 	}
 
