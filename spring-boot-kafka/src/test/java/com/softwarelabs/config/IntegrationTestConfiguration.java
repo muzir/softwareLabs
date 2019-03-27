@@ -16,9 +16,7 @@ public class IntegrationTestConfiguration {
 	private static final String USERNAME = "dbuser";
 	private static final String PASSWORD = "password";
 	private static final String PORT = "5432";
-	private static final String INIT_SCRIPT_PATH="db/embedded-postgres-init.sql";
-
-
+	private static final String INIT_SCRIPT_PATH = "db/embedded-postgres-init.sql";
 
 	@Bean(initMethod = "start")
 	JdbcDatabaseContainer databaseContainer() {
@@ -47,4 +45,9 @@ public class IntegrationTestConfiguration {
 
 		return dataSource;
 	}
+
+	/*@Bean
+	KafkaContainer kafka() {
+		return new KafkaContainer();
+	}*/
 }

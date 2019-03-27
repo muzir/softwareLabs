@@ -16,10 +16,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.lob.non_contextual_creation: true
 
-kafka:
-  bootstrap:
-    servers: ${ENV_KAFKA_BOOTSTRAP_SERVERS}
-
 ---
 
 spring.profiles: dev

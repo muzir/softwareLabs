@@ -41,6 +41,7 @@ dependencies {
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation 'org.testcontainers:postgresql:1.10.6'
+    testCompile "org.testcontainers:kafka:1.11.1"
 }
 
 task wrapper(type: Wrapper) {
