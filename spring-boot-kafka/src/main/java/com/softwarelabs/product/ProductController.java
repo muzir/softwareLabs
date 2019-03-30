@@ -17,19 +17,16 @@ public class ProductController implements ProductPort {
 
 	@Override
 	public ProductResponse createProduct(ProductRequest request) {
-		Product product = productService.createProduct(request.getName());
-		ProductResponse response = new ProductResponse();
-		response.setProduct(product);
-		response.setResult(new ProductPort.Result().setMessage("Success").setSuccess(true));
+		Product product = productService.createProduct(request);
+		ProductResponse response = new ProductResponse(product, new ProductPort.Result(true, "Success"));
 		return response;
 	}
 
 	@Override
 	public ProductResponse getProductByName(String productName) {
-		Product product = productService.getProduct(productName);
-		ProductPort.ProductResponse response = new ProductResponse();
-		response.setProduct(product);
-		response.setResult(new ProductPort.Result().setMessage("Success").setSuccess(true));
+		ProductRequest productRequest = new ProductRequest(productName);
+		Product product = productService.getProduct(productRequest);
+		ProductPort.ProductResponse response = new ProductResponse(product, new ProductPort.Result(true, "Success"));
 		return response;
 	}
 }

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 
 @RunWith(SpringRunner.class)
 public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
@@ -15,13 +15,27 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 	@Autowired
 	private ProductRepository productRepository;
 
+	@Autowired
+	private CrudProductService crudProductService;
+
 	@Test
 	public void returnProductName_ifProductSavedBefore() {
 		String productName = "product001";
-		PersistantProduct product = new PersistantProduct(productName);
-		productRepository.save(product);
-		Optional<Product> actualProduct = productRepository.findByName(productName);
-		Assert.assertTrue(actualProduct.isPresent());
-		Assert.assertEquals(productName, actualProduct.get().name());
+		BigDecimal price = BigDecimal.TEN;
+		Product product = new ProductPort.ProductRequest(productName, price);
+
+		crudProductService.createProduct(product);
+		Product actualProduct = crudProductService.getProduct(product);
+		Assert.assertNotNull(actualProduct);
+		Assert.assertEquals(productName, actualProduct.name());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void throwRunTimeException_ifProductNotExist() {
+		String productName = "product002";
+		BigDecimal price = BigDecimal.TEN;
+		Product product = new ProductPort.ProductRequest(productName, price);
+
+		crudProductService.getProduct(product);
 	}
 }

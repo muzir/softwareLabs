@@ -1,12 +1,12 @@
 package com.softwarelabs.product;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.Getter;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public interface ProductPort {
 
@@ -22,20 +22,50 @@ public interface ProductPort {
 	@ResponseBody
 	ProductResponse getProductByName(@PathVariable("productName") String productName);
 
-	@Data
-	@Accessors(chain = true) class ProductResponse {
-		Product product;
-		Result result;
+	@Getter
+	class ProductResponse {
+		private Product product;
+		private Result result;
+
+		public ProductResponse(Product product, Result result) {
+			this.product = product;
+			this.result = result;
+		}
+
 	}
 
-	@Data
-	@Accessors(chain = true) class Result {
+	@Getter
+	class Result {
 		private boolean success;
 		private String message;
+
+		public Result(boolean success, String message) {
+			this.success = success;
+			this.message = message;
+		}
+
 	}
 
-	@Data
-	@Accessors(chain = true) class ProductRequest {
+	class ProductRequest implements Product {
 		@NotNull private String name;
+		@NotNull private BigDecimal price;
+
+		public ProductRequest(String name) {
+			this.name = name;
+			this.price = BigDecimal.ZERO;
+		}
+
+		public ProductRequest(@NotNull String name, @NotNull BigDecimal price) {
+			this.name = name;
+			this.price = price;
+		}
+
+		@Override public String name() {
+			return name;
+		}
+
+		@Override public BigDecimal price() {
+			return price;
+		}
 	}
 }
