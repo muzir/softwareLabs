@@ -46,6 +46,7 @@ public class KafkaConfiguration {
 		props.put("acks", "all");
 		props.put("linger.ms", 1);
 		props.put("buffer.memory", 33554432);
+		props.put("clientId","productProducer");
 		return new KafkaProducer<>(props);
 	}
 
