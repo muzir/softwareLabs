@@ -1,6 +1,7 @@
 package com.softwarelabs.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.consumer.OffsetCommitCallback;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -27,11 +28,13 @@ public class KafkaConfiguration {
 			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
 
 		final Map props = new HashMap();
-		props.put("bootstrap.servers", bootstrapServers);
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("enable.auto.commit", "false");
 		props.put("auto.offset.reset", "earliest");
+		//FixMe what is this groupId, how to set it properly
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
 		props.put("max.poll.records", 50);
 		return new DefaultKafkaConsumerFactory<>(props);
 	}
@@ -46,7 +49,7 @@ public class KafkaConfiguration {
 		props.put("acks", "all");
 		props.put("linger.ms", 1);
 		props.put("buffer.memory", 33554432);
-		props.put("clientId","productProducer");
+		props.put("clientId", "productProducer");
 		return new KafkaProducer<>(props);
 	}
 
