@@ -29,13 +29,12 @@ public class KafkaConfiguration {
 
 		final Map props = new HashMap();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put("enable.auto.commit", "false");
-		props.put("auto.offset.reset", "earliest");
-		//FixMe what is this groupId, how to set it properly
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
-		props.put("max.poll.records", 50);
+		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
 		return new DefaultKafkaConsumerFactory<>(props);
 	}
 

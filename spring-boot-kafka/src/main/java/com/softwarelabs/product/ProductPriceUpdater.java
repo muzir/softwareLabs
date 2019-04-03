@@ -47,18 +47,20 @@ public class ProductPriceUpdater {
 			// 1000 is the time in milliseconds consumer will wait if no record is found at broker.
 			if (consumerRecords.count() == 0) {
 				noMessageFound++;
-				if (noMessageFound > 100)
+				if (noMessageFound > 100) {
+					log.info("Break");
 					// If no message found count is reached to threshold exit loop.
 					break;
-				else
+				} else {
 					continue;
+				}
 			}
 			//print each record.
 			consumerRecords.forEach(record -> {
-				System.out.println("Record Key " + record.key());
-				System.out.println("Record value " + record.value());
-				System.out.println("Record partition " + record.partition());
-				System.out.println("Record offset " + record.offset());
+				log.info("Record Key " + record.key());
+				log.info("Record value " + record.value());
+				log.info("Record partition " + record.partition());
+				log.info("Record offset " + record.offset());
 			});
 			// commits the offset of record to broker.
 			consumer.commitAsync();
