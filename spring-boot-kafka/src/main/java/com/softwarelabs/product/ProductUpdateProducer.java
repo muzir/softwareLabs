@@ -20,10 +20,11 @@ public class ProductUpdateProducer {
 
 	@Autowired
 	private Producer<String, String> kafkaProducer;
+
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Scheduled(fixedRate = 1000)
+	@Scheduled(fixedRate = 10000)
 	public void updateProductPrice() throws JsonProcessingException {
 		BigDecimal latestProductPrice = getLatestProductPrice();
 		ProductPriceChange productPriceChange = new ProductPriceChange("product1", latestProductPrice);
