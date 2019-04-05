@@ -24,4 +24,5 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		Assert.assertTrue(actualProduct.isPresent());
 		Assert.assertEquals(productName, actualProduct.get().name());
 	}
+
 }
