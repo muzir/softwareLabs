@@ -3,6 +3,7 @@
  */
 package com.softwarelabs;
 
+import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.product.ProductController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationContextTest {
+public class ApplicationContextTest extends BaseIntegrationTest {
 
 	@Autowired private ProductController productController;
 
