@@ -2,11 +2,10 @@ package com.softwarelabs.product;
 
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
-public class ProductChange implements Product, Serializable {
+public class ProductChange implements Product {
 
 	private final String name;
 	private final BigDecimal price;
@@ -16,6 +15,10 @@ public class ProductChange implements Product, Serializable {
 		this.price = price;
 	}
 
+	@Override public Long id() {
+		return null;
+	}
+
 	@Override public String name() {
 		return name;
 	}
@@ -23,6 +26,5 @@ public class ProductChange implements Product, Serializable {
 	@Override public BigDecimal price() {
 		return price;
 	}
-
 
 }

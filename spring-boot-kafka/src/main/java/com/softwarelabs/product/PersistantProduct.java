@@ -25,14 +25,20 @@ public class PersistantProduct extends AbstractPersistable<Long> implements Prod
 		this.price = BigDecimal.ZERO;
 	}
 
-	public PersistantProduct(String name, BigDecimal price) {
+	public PersistantProduct(Long id, String name, BigDecimal price) {
+		this.setId(id);
 		this.name = name;
 		this.price = price;
 	}
 
 	public PersistantProduct(Product product) {
+		this.setId(product.id());
 		this.name = product.name();
 		this.price = product.price();
+	}
+
+	@Override public Long id() {
+		return getId();
 	}
 
 	@Override public String name() {

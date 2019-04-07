@@ -60,6 +60,10 @@ public interface ProductPort {
 			this.price = price;
 		}
 
+		@Override public Long id() {
+			return null;
+		}
+
 		@Override public String name() {
 			return name;
 		}

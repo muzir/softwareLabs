@@ -24,10 +24,10 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
 	@Test
 	public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException {
-		//Save the product which price will be change
+		/**Check src->test->resources->db->embedded-postgres-init.sql
+		 insert one product to product table which name is product1
+		 **/
 		String productName = "product1";
-		Product newProduct = new PersistantProduct(productName);
-		productService.saveProduct(newProduct);
 
 		//Sent price change event
 		productProducer.updateProductPrice();
@@ -44,5 +44,4 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		Assert.assertNotNull(updatedProduct.price());
 		Assert.assertNotEquals(updatedProduct.price(), BigDecimal.ZERO);
 	}
-
 }

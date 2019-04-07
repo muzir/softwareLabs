@@ -8,3 +8,5 @@ create table if not exists product
   price NUMERIC (5, 2),
   name  varchar(255) UNIQUE
 );
+
+INSERT INTO product (id, price, name) values (1, 0, 'product1');

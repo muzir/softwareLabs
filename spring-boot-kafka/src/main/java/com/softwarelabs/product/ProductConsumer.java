@@ -52,7 +52,7 @@ public class ProductConsumer {
 			try {
 				Product productChange = objectMapper.readValue(record.value(), ProductChange.class);
 				Product existingProduct = productService.getProduct(productChange);
-				Product newProduct = new PersistantProduct(existingProduct.name(), productChange.price());
+				Product newProduct = new PersistantProduct(existingProduct.id(), existingProduct.name(), productChange.price());
 				productService.saveProduct(newProduct);
 			} catch (IOException e) {
 				e.printStackTrace();
