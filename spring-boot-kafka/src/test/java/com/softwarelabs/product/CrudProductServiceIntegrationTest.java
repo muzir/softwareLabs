@@ -13,9 +13,6 @@ import java.math.BigDecimal;
 public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
 	@Autowired
-	private ProductRepository productRepository;
-
-	@Autowired
 	private CrudProductService crudProductService;
 
 	@Test
@@ -24,7 +21,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 
-		crudProductService.createProduct(product);
+		crudProductService.saveProduct(product);
 		Product actualProduct = crudProductService.getProduct(product);
 		Assert.assertNotNull(actualProduct);
 		Assert.assertEquals(productName, actualProduct.name());

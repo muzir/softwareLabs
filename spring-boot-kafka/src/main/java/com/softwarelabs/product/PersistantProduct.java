@@ -20,6 +20,11 @@ public class PersistantProduct extends AbstractPersistable<Long> implements Prod
 	public PersistantProduct() {
 	}
 
+	public PersistantProduct(String name) {
+		this.name = name;
+		this.price = BigDecimal.ZERO;
+	}
+
 	public PersistantProduct(String name, BigDecimal price) {
 		this.name = name;
 		this.price = price;

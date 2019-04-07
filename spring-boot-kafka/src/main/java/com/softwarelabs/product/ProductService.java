@@ -4,5 +4,5 @@ public interface ProductService {
 
 	Product getProduct(Product product);
 
-	Product createProduct(Product product);
+	Product saveProduct(Product product);
 }

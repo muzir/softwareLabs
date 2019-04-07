@@ -6,12 +6,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
-public class ProductPriceChange implements Product, Serializable {
+public class ProductChange implements Product, Serializable {
 
 	private final String name;
 	private final BigDecimal price;
 
-	public ProductPriceChange(String name, BigDecimal price) {
+	public ProductChange(String name, BigDecimal price) {
 		this.name = name;
 		this.price = price;
 	}

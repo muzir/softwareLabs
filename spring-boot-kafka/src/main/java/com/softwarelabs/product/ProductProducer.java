@@ -2,6 +2,7 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softwarelabs.config.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
@@ -16,7 +17,7 @@ import java.security.SecureRandom;
 
 @Service
 @Slf4j
-public class ProductUpdateProducer {
+public class ProductProducer {
 
 	@Autowired
 	private Producer<String, String> kafkaProducer;
@@ -27,9 +28,9 @@ public class ProductUpdateProducer {
 	@Scheduled(fixedRate = 10000)
 	public void updateProductPrice() throws JsonProcessingException {
 		BigDecimal latestProductPrice = getLatestProductPrice();
-		ProductPriceChange productPriceChange = new ProductPriceChange("product1", latestProductPrice);
+		ProductChange productChange = new ProductChange("product1", latestProductPrice);
 		log.info("Product1 price change to {}", latestProductPrice.toString());
-		String productPriceChangeMessage = mapper.writeValueAsString(productPriceChange);
+		String productPriceChangeMessage = mapper.writeValueAsString(productChange);
 		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productPriceChangeMessage);
 		kafkaProducer.send(record, new ProduceCallback());
 	}

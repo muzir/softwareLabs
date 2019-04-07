@@ -17,7 +17,7 @@ public class ProductController implements ProductPort {
 
 	@Override
 	public ProductResponse createProduct(ProductRequest request) {
-		Product product = productService.createProduct(request);
+		Product product = productService.saveProduct(request);
 		ProductResponse response = new ProductResponse(product, new ProductPort.Result(true, "Success"));
 		return response;
 	}
