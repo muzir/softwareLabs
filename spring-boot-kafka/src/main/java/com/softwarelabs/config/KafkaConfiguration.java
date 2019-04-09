@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +22,10 @@ import java.util.Properties;
 public class KafkaConfiguration {
 
 	@Bean
-	public ConsumerFactory<?, ?> kafkaConsumerFactory(
+	public Map<String, Object> consumerProps(
 			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
 
-		final Map props = new HashMap();
+		final Map<String, Object> props = new HashMap();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
@@ -35,7 +33,7 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
-		return new DefaultKafkaConsumerFactory<>(props);
+		return props;
 	}
 
 	@Bean

@@ -1,9 +1,14 @@
 package com.softwarelabs.product;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.config.BaseIntegrationTest;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.math.BigDecimal;
 
 @RunWith(SpringRunner.class)
 public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
@@ -17,11 +22,11 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 	@Autowired
 	ProductService productService;
 
-	/*@Test
+	@Test
 	public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException {
-		*//**Check src->test->resources->db->embedded-postgres-init.sql
+		/*Check src->test->resources->db->embedded-postgres-init.sql
 		 insert one product to product table which name is product1
-		 **//*
+		 */
 		String productName = "product1";
 
 		//Sent price change event
@@ -29,7 +34,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		Thread.sleep(1000);
 
 		//Product should be updated with new price
-		productConsumer.runConsumer();
+		productConsumer.init();
 		Thread.sleep(1000);
 
 		//Check product is updated
@@ -38,5 +43,5 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		Assert.assertEquals(productName, updatedProduct.name());
 		Assert.assertNotNull(updatedProduct.price());
 		Assert.assertNotEquals(updatedProduct.price(), BigDecimal.ZERO);
-	}*/
+	}
 }

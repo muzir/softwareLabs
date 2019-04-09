@@ -2,11 +2,13 @@ package com.softwarelabs.product;
 
 import com.softwarelabs.config.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -15,14 +17,15 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 	@Autowired
 	private ProductService productService;
 
-	@Autowired
-	private ConsumerFactory consumerFactory;
+	@Resource(name = "consumerProps")
+	private Map<String, Object> consumerProps;
 
-	@PostConstruct
+	@PostConstruct()
 	public void init() {
 		Thread kafkaConsumerThread = new Thread(() -> {
+			KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
 			SimpleKafkaConsumer<ProductChange> simpleKafkaConsumer = new SimpleKafkaConsumer<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC,
-					consumerFactory.createConsumer(),
+					consumer,
 					this);
 			simpleKafkaConsumer.readValue();
 		});
