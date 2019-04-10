@@ -10,25 +10,24 @@ import java.time.Duration;
 import java.util.Collections;
 
 @Slf4j
-public class SimpleKafkaConsumer<T> {
+public class KafkaConsumerThread<T, K, V> {
 
-	private Consumer<String, String> consumer;
+	private Consumer<K, V> consumer;
 	private ObjectMapper mapper;
 	private EventConsumer<T> eventConsumer;
 
-	public SimpleKafkaConsumer(String topicName, Consumer consumer, EventConsumer<T> eventConsumer) {
+	public KafkaConsumerThread(EventConsumer<T> eventConsumer, Consumer<K, V> consumer, ObjectMapper mapper) {
 		log.info("Starting Kafka consumer");
 		this.consumer = consumer;
-		this.consumer.subscribe(Collections.singletonList(topicName));
 		this.eventConsumer = eventConsumer;
-		mapper = new ObjectMapper();
-
+		this.consumer.subscribe(Collections.singletonList(eventConsumer.topicName()));
+		this.mapper = mapper;
 	}
 
-	public void readValue() {
+	public void run() {
 		log.info("Polling from broker");
 		while (true) {
-			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
+			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(1000));
 			//print each record.
 			consumerRecords.forEach(record -> {
 				log.info("Record Key " + record.key());
@@ -38,7 +37,7 @@ public class SimpleKafkaConsumer<T> {
 				// commits the offset of record to broker.
 				T value = null;
 				try {
-					value = (T) mapper.readValue(record.value(), eventConsumer.eventType());
+					value = (T) mapper.readValue((String) record.value(), eventConsumer.eventType());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

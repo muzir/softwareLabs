@@ -9,11 +9,9 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 
 @Service
 @Slf4j
@@ -25,19 +23,12 @@ public class ProductProducer {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Scheduled(fixedRate = 10000)
-	public void updateProductPrice() throws JsonProcessingException {
-		BigDecimal latestProductPrice = getLatestProductPrice();
-		ProductChange productChange = new ProductChange("product1", latestProductPrice);
-		log.info("Product1 price change to {}", latestProductPrice.toString());
+	public void updateProductPrice(BigDecimal newPrice) throws JsonProcessingException {
+		ProductChange productChange = new ProductChange("product1", newPrice);
+		log.info("Product1 price change to {}", newPrice.toString());
 		String productPriceChangeMessage = mapper.writeValueAsString(productChange);
 		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productPriceChangeMessage);
 		kafkaProducer.send(record, new ProduceCallback());
-	}
-
-	private BigDecimal getLatestProductPrice() {
-		SecureRandom sr = new SecureRandom();
-		return new BigDecimal(sr.nextInt(100));
 	}
 
 	private class ProduceCallback implements Callback {

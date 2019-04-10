@@ -28,20 +28,18 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		 insert one product to product table which name is product1
 		 */
 		String productName = "product1";
-
+		BigDecimal newPrice = new BigDecimal("22.25");
 		//Sent price change event
-		productProducer.updateProductPrice();
+		productProducer.updateProductPrice(newPrice);
 		Thread.sleep(1000);
 
 		//Product should be updated with new price
-		productConsumer.init();
 		Thread.sleep(1000);
 
 		//Check product is updated
 		Product updatedProductParam = new PersistantProduct(productName);
 		Product updatedProduct = productService.getProduct(updatedProductParam);
 		Assert.assertEquals(productName, updatedProduct.name());
-		Assert.assertNotNull(updatedProduct.price());
-		Assert.assertNotEquals(updatedProduct.price(), BigDecimal.ZERO);
+		Assert.assertEquals(newPrice, updatedProduct.price());
 	}
 }
