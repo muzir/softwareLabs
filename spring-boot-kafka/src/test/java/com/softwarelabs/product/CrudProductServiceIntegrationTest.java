@@ -22,7 +22,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		Product product = new ProductPort.ProductRequest(productName, price);
 
 		crudProductService.saveProduct(product);
-		Product actualProduct = crudProductService.getProduct(product);
+		Product actualProduct = crudProductService.getProduct(product).get();
 		Assert.assertNotNull(actualProduct);
 		Assert.assertEquals(productName, actualProduct.name());
 	}

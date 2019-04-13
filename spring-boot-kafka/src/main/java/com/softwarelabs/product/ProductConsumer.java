@@ -14,11 +14,11 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	@Override
 	public void consume(ProductChange productChange) {
-		log.info("Consume productChange {} {}", productChange.getName(),productChange.getPrice());
-		Product existingProduct = productService.getProduct(productChange);
-		Product newProduct = new PersistantProduct(existingProduct.id(), existingProduct.name(), productChange.price());
-		productService.saveProduct(newProduct);
-
+		log.info("Consume productChange {} {}", productChange.name(), productChange.price());
+		Product product = new PersistantProduct(productChange);
+		productService.getProduct(product)
+				.map(p -> productService.saveProduct(new PersistantProduct(p.id(), productChange.name(), productChange.price())))
+				.orElse(productService.saveProduct(productChange));
 	}
 
 	@Override public Class eventType() {

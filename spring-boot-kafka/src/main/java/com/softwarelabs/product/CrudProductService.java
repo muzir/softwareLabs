@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class CrudProductService implements ProductService {
@@ -16,13 +18,13 @@ public class CrudProductService implements ProductService {
 	}
 
 	@Override
-	public Product getProduct(Product product) {
+	public Optional<Product> getProduct(Product product) {
 		Product persistableProduct = productRepository.findByName(product.name()).orElseThrow(
 				() -> new RuntimeException(
 						"Product is not found by productName:" + product.name()
 				)
 		);
-		return persistableProduct;
+		return Optional.of(persistableProduct);
 	}
 
 	@Override

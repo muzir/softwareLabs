@@ -1,8 +1,10 @@
 package com.softwarelabs.product;
 
+import java.util.Optional;
+
 public interface ProductService {
 
-	Product getProduct(Product product);
+	Optional<Product> getProduct(Product product);
 
 	Product saveProduct(Product product);
 }

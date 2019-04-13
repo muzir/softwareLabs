@@ -1,13 +1,13 @@
 package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 
 @Service
 @Profile("!integration")
@@ -19,13 +19,15 @@ public class ProductProducerSchedular {
 		this.productProducer = productProducer;
 	}
 
-	@Scheduled(fixedRate = 3000)
+	@Scheduled(fixedRate = 100)
 	public void run() throws JsonProcessingException {
-		productProducer.updateProductPrice(getLatestProductPrice());
+		Faker faker = new Faker();
+		Product productChange = new ProductChange(faker.commerce().productName(), new BigDecimal(faker.commerce().price(0, 100)));
+		productProducer.publishProductChange(productChange);
 	}
 
-	private BigDecimal getLatestProductPrice() {
+	/*private BigDecimal getLatestProductPrice() {
 		SecureRandom sr = new SecureRandom();
 		return new BigDecimal(sr.nextInt(100));
-	}
+	}*/
 }

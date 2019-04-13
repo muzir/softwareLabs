@@ -11,8 +11,6 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 @Slf4j
 public class ProductProducer {
@@ -23,11 +21,11 @@ public class ProductProducer {
 	@Autowired
 	private ObjectMapper mapper;
 
-	public void updateProductPrice(BigDecimal newPrice) throws JsonProcessingException {
-		ProductChange productChange = new ProductChange("product1", newPrice);
-		log.info("Product1 price change to {}", newPrice.toString());
-		String productPriceChangeMessage = mapper.writeValueAsString(productChange);
-		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productPriceChangeMessage);
+	public void publishProductChange(Product product) throws JsonProcessingException {
+		ProductChange productChange = new ProductChange(product.name(), product.price());
+		log.info("ProductChange {}", productChange.toString());
+		String productChangeMessage = mapper.writeValueAsString(productChange);
+		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productChangeMessage);
 		kafkaProducer.send(record, new ProduceCallback());
 	}
 

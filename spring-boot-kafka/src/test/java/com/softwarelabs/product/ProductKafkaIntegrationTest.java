@@ -30,7 +30,8 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		String productName = "product1";
 		BigDecimal newPrice = new BigDecimal("22.25");
 		//Sent price change event
-		productProducer.updateProductPrice(newPrice);
+		Product productChange = new ProductChange(productName,newPrice);
+		productProducer.publishProductChange(productChange);
 		Thread.sleep(1000);
 
 		//Product should be updated with new price
@@ -38,7 +39,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
 		//Check product is updated
 		Product updatedProductParam = new PersistantProduct(productName);
-		Product updatedProduct = productService.getProduct(updatedProductParam);
+		Product updatedProduct = productService.getProduct(updatedProductParam).get();
 		Assert.assertEquals(productName, updatedProduct.name());
 		Assert.assertEquals(newPrice, updatedProduct.price());
 	}
