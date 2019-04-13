@@ -19,12 +19,7 @@ public class CrudProductService implements ProductService {
 
 	@Override
 	public Optional<Product> getProduct(Product product) {
-		Product persistableProduct = productRepository.findByName(product.name()).orElseThrow(
-				() -> new RuntimeException(
-						"Product is not found by productName:" + product.name()
-				)
-		);
-		return Optional.of(persistableProduct);
+		return productRepository.findByName(product.name());
 	}
 
 	@Override

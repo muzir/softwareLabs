@@ -2,6 +2,7 @@
 
 CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
 
+DROP TABLE IF EXISTS product;
 create table if not exists product
 (
   id    bigint not null
@@ -9,6 +10,3 @@ create table if not exists product
   price NUMERIC(5, 2),
   name  varchar(255) UNIQUE
 );
-
-INSERT INTO product (id, price, name)
-values (0, 0, 'product1');

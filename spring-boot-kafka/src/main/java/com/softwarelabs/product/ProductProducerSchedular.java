@@ -25,9 +25,4 @@ public class ProductProducerSchedular {
 		Product productChange = new ProductChange(faker.commerce().productName(), new BigDecimal(faker.commerce().price(0, 100)));
 		productProducer.publishProductChange(productChange);
 	}
-
-	/*private BigDecimal getLatestProductPrice() {
-		SecureRandom sr = new SecureRandom();
-		return new BigDecimal(sr.nextInt(100));
-	}*/
 }

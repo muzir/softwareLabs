@@ -23,9 +23,8 @@ public class ProductProducer {
 
 	public void publishProductChange(Product product) throws JsonProcessingException {
 		ProductChange productChange = new ProductChange(product.name(), product.price());
-		log.info("ProductChange {}", productChange.toString());
 		String productChangeMessage = mapper.writeValueAsString(productChange);
-		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productChangeMessage);
+		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
 		kafkaProducer.send(record, new ProduceCallback());
 	}
 

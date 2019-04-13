@@ -27,12 +27,12 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		Assert.assertEquals(productName, actualProduct.name());
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void throwRunTimeException_ifProductNotExist() {
-		String productName = "product002";
+	@Test
+	public void returnEmptyProduct_ifProductNotExist() {
+		String productName = "product001";
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 
-		crudProductService.getProduct(product);
+		Assert.assertFalse(crudProductService.getProduct(product).isPresent());
 	}
 }

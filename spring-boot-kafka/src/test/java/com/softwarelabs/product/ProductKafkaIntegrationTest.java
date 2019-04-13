@@ -17,30 +17,48 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 	ProductProducer productProducer;
 
 	@Autowired
-	ProductConsumer productConsumer;
-
-	@Autowired
 	ProductService productService;
 
 	@Test
 	public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException {
-		/*Check src->test->resources->db->embedded-postgres-init.sql
-		 insert one product to product table which name is product1
+		/*
+		 save new product to product table which name is product1
 		 */
 		String productName = "product1";
-		BigDecimal newPrice = new BigDecimal("22.25");
+		BigDecimal price = new BigDecimal("22.25");
+		Product product = new PersistantProduct(null, productName, price);
+		productService.saveProduct(product);
+
 		//Sent price change event
-		Product productChange = new ProductChange(productName,newPrice);
+		BigDecimal newPrice = new BigDecimal("20.00");
+		Product productChange = new ProductChange(productName, newPrice);
 		productProducer.publishProductChange(productChange);
-		Thread.sleep(1000);
+
+
+		Thread.sleep(2000);
 
 		//Product should be updated with new price
-		Thread.sleep(1000);
-
-		//Check product is updated
 		Product updatedProductParam = new PersistantProduct(productName);
 		Product updatedProduct = productService.getProduct(updatedProductParam).get();
 		Assert.assertEquals(productName, updatedProduct.name());
 		Assert.assertEquals(newPrice, updatedProduct.price());
+	}
+
+	@Test
+	public void saveProduct_ifProductChangeEventSent_andProductNotExist() throws JsonProcessingException, InterruptedException {
+		String productName = "product2";
+		BigDecimal price = new BigDecimal("20.00");
+		//Sent price change event
+		Product productChange = new ProductChange(productName, price);
+		productProducer.publishProductChange(productChange);
+
+		//Product should be saved
+		Thread.sleep(2000);
+
+		//Check product is saved
+		Product paramSavedProduct = new PersistantProduct(productName);
+		Product savedProduct = productService.getProduct(paramSavedProduct).get();
+		Assert.assertEquals(productName, savedProduct.name());
+		Assert.assertEquals(price, savedProduct.price());
 	}
 }
