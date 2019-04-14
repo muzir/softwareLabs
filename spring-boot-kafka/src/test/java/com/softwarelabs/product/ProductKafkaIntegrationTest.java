@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Slf4j
 public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
-	public static final long WAITING_TIME = 500l;
+	public static final long WAITING_TIME = 1000l;
 	@Autowired
 	ProductProducer productProducer;
 	@Autowired
