@@ -27,7 +27,6 @@ public class KafkaConsumerThread<T, K, V> {
 	}
 
 	public void run() {
-		log.info("Polling from broker");
 		while (true) {
 			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(POLLING_TIME));
 			//print each record.

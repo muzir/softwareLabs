@@ -35,8 +35,11 @@ public class ProductProducer {
 				log.error("Message can't be sent", exception);
 				return;
 			}
-			log.info("Message sent");
-			log.info(metadata.toString());
+			log.info("Producer topic {}, partition {}, offset {}, messageArrivedTime",
+					metadata.topic(),
+					metadata.partition(),
+					metadata.offset(),
+					metadata.timestamp());
 		}
 	}
 }

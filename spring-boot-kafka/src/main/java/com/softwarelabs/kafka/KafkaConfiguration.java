@@ -60,7 +60,7 @@ public class KafkaConfiguration {
 		@Override
 		public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
 			if (exception != null) {
-				log.warn("Exception while commiting offsets to Kafka", exception);
+				log.error("Exception while commiting offsets to Kafka", exception);
 			}
 		}
 	}

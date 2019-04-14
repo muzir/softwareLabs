@@ -15,7 +15,7 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	@Override
 	public void consume(ProductChange productChange) {
-		log.info("Consume productChange {} {}", productChange.name(), productChange.price());
+		log.info("Consume productChange name: {}  price: {}", productChange.name(), productChange.price());
 		Product product = new PersistantProduct(productChange);
 		productService.getProduct(product)
 				.map(p -> {
