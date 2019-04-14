@@ -1,4 +1,4 @@
-package com.softwarelabs.config;
+package com.softwarelabs.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -10,8 +10,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -75,7 +73,7 @@ public class IntegrationTestConfiguration {
 	}
 
 	@Bean
-	public ConsumerFactory consumerFactory(KafkaContainer kafkaContainer) {
+	public Map<String, Object> consumerProps(KafkaContainer kafkaContainer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
@@ -83,6 +81,6 @@ public class IntegrationTestConfiguration {
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-		return new DefaultKafkaConsumerFactory<>(props);
+		return props;
 	}
 }

@@ -1,6 +1,6 @@
 package com.softwarelabs.product;
 
-import com.softwarelabs.config.BaseIntegrationTest;
+import com.softwarelabs.kafka.BaseIntegrationTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,17 +22,17 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		Product product = new ProductPort.ProductRequest(productName, price);
 
 		crudProductService.saveProduct(product);
-		Product actualProduct = crudProductService.getProduct(product);
+		Product actualProduct = crudProductService.getProduct(product).get();
 		Assert.assertNotNull(actualProduct);
 		Assert.assertEquals(productName, actualProduct.name());
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void throwRunTimeException_ifProductNotExist() {
+	@Test
+	public void returnEmptyProduct_ifProductNotExist() {
 		String productName = "product002";
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 
-		crudProductService.getProduct(product);
+		Assert.assertFalse(crudProductService.getProduct(product).isPresent());
 	}
 }

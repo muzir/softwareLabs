@@ -10,5 +10,4 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$POSTGRES_DB" <<-EOSQL
       name  varchar(255) UNIQUE
     );
     CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
-    INSERT INTO product (id, price, name) values (1, 0, 'product1');
 EOSQL

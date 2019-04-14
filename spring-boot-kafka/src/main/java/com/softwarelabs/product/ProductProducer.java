@@ -2,18 +2,14 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softwarelabs.config.KafkaTopicNames;
+import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.security.SecureRandom;
 
 @Service
 @Slf4j
@@ -25,19 +21,11 @@ public class ProductProducer {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Scheduled(fixedRate = 10000)
-	public void updateProductPrice() throws JsonProcessingException {
-		BigDecimal latestProductPrice = getLatestProductPrice();
-		ProductChange productChange = new ProductChange("product1", latestProductPrice);
-		log.info("Product1 price change to {}", latestProductPrice.toString());
-		String productPriceChangeMessage = mapper.writeValueAsString(productChange);
-		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_UPDATE_TOPIC, "1", productPriceChangeMessage);
+	public void publishProductChange(Product product) throws JsonProcessingException {
+		ProductChange productChange = new ProductChange(product.name(), product.price());
+		String productChangeMessage = mapper.writeValueAsString(productChange);
+		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
 		kafkaProducer.send(record, new ProduceCallback());
-	}
-
-	private BigDecimal getLatestProductPrice() {
-		SecureRandom sr = new SecureRandom();
-		return new BigDecimal(sr.nextInt(100));
 	}
 
 	private class ProduceCallback implements Callback {
@@ -47,8 +35,11 @@ public class ProductProducer {
 				log.error("Message can't be sent", exception);
 				return;
 			}
-			log.info("Message sent");
-			log.info(metadata.toString());
+			log.info("Producer topic {}, partition {}, offset {}, messageArrivedTime",
+					metadata.topic(),
+					metadata.partition(),
+					metadata.offset(),
+					metadata.timestamp());
 		}
 	}
 }

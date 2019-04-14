@@ -10,6 +10,11 @@ public class ProductChange implements Product {
 	private final String name;
 	private final BigDecimal price;
 
+	public ProductChange() {
+		this.name="";
+		this.price=BigDecimal.ZERO;
+	}
+
 	public ProductChange(String name, BigDecimal price) {
 		this.name = name;
 		this.price = price;

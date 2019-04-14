@@ -3,7 +3,7 @@
  */
 package com.softwarelabs;
 
-import com.softwarelabs.config.BaseIntegrationTest;
+import com.softwarelabs.kafka.BaseIntegrationTest;
 import com.softwarelabs.product.ProductController;
 import org.junit.Test;
 import org.junit.runner.RunWith;

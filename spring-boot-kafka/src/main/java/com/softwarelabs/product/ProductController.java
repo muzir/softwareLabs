@@ -25,7 +25,8 @@ public class ProductController implements ProductPort {
 	@Override
 	public ProductResponse getProductByName(String productName) {
 		ProductRequest productRequest = new ProductRequest(productName);
-		Product product = productService.getProduct(productRequest);
+		Product product = productService.getProduct(productRequest)
+				.orElse(new PersistantProduct());
 		ProductPort.ProductResponse response = new ProductResponse(product, new ProductPort.Result(true, "Success"));
 		return response;
 	}
