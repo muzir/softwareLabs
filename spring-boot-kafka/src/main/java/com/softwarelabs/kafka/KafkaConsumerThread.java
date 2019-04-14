@@ -1,4 +1,4 @@
-package com.softwarelabs.product;
+package com.softwarelabs.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class KafkaConsumerThread<T, K, V> {
 	public void run() {
 		log.info("Polling from broker");
 		while (true) {
-			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(100));
+			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(1000));
 			//print each record.
 			consumerRecords.forEach(record -> {
 				log.info("Record Key " + record.key());

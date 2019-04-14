@@ -2,7 +2,7 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softwarelabs.config.KafkaTopicNames;
+import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;

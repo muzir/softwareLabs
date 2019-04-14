@@ -1,4 +1,4 @@
-package com.softwarelabs.product;
+package com.softwarelabs.kafka;
 
 public interface EventConsumer<T> {
 

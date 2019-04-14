@@ -1,6 +1,6 @@
 package com.softwarelabs.product;
 
-import com.softwarelabs.config.BaseIntegrationTest;
+import com.softwarelabs.kafka.BaseIntegrationTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
 	@Test
 	public void returnEmptyProduct_ifProductNotExist() {
-		String productName = "product001";
+		String productName = "product002";
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 

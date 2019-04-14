@@ -1,4 +1,4 @@
-package com.softwarelabs.config;
+package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

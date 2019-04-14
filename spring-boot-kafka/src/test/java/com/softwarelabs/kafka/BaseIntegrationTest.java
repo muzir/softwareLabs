@@ -1,4 +1,4 @@
-package com.softwarelabs.config;
+package com.softwarelabs.kafka;
 
 import com.softwarelabs.App;
 import org.springframework.boot.test.context.SpringBootTest;
