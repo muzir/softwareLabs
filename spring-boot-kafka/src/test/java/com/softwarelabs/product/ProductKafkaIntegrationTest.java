@@ -2,6 +2,7 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.kafka.BaseIntegrationTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +12,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 
 @RunWith(SpringRunner.class)
+@Slf4j
 public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
+	public static final long WAITING_TIME = 500l;
 	@Autowired
 	ProductProducer productProducer;
-
 	@Autowired
 	ProductService productService;
 
@@ -34,8 +36,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		Product productChange = new ProductChange(productName, newPrice);
 		productProducer.publishProductChange(productChange);
 
-
-		Thread.sleep(2000);
+		Thread.sleep(WAITING_TIME);
 
 		//Product should be updated with new price
 		Product updatedProductParam = new PersistantProduct(productName);
@@ -52,8 +53,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 		Product productChange = new ProductChange(productName, price);
 		productProducer.publishProductChange(productChange);
 
-		//Product should be saved
-		Thread.sleep(2000);
+		Thread.sleep(WAITING_TIME);
 
 		//Check product is saved
 		Product paramSavedProduct = new PersistantProduct(productName);

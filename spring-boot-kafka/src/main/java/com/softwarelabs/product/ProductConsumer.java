@@ -18,8 +18,18 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 		log.info("Consume productChange {} {}", productChange.name(), productChange.price());
 		Product product = new PersistantProduct(productChange);
 		productService.getProduct(product)
-				.map(p -> productService.saveProduct(new PersistantProduct(p.id(), productChange.name(), productChange.price())))
-				.orElse(productService.saveProduct(productChange));
+				.map(p -> {
+							log.info("Product {} is exist", product.name());
+							return productService.saveProduct(new PersistantProduct(p.id(), productChange.name(), productChange.price()));
+
+						}
+				)
+				.orElseGet(() -> {
+							log.info("Product {} is not exist", product.name());
+							return productService.saveProduct(productChange);
+						}
+
+				);
 	}
 
 	@Override public Class eventType() {

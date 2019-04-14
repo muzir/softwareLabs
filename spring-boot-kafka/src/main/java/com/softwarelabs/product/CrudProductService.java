@@ -25,6 +25,7 @@ public class CrudProductService implements ProductService {
 	@Override
 	public Product saveProduct(Product product) {
 		PersistantProduct persistantProduct = new PersistantProduct(product);
+		log.info("Product {} is saving", product.name());
 		return productRepository.save(persistantProduct);
 	}
 }

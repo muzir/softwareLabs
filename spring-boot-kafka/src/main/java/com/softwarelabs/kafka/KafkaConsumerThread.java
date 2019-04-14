@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 
+import static com.softwarelabs.kafka.KafkaConfigurationConstant.POLLING_TIME;
+
 @Slf4j
 public class KafkaConsumerThread<T, K, V> {
 
@@ -27,7 +29,7 @@ public class KafkaConsumerThread<T, K, V> {
 	public void run() {
 		log.info("Polling from broker");
 		while (true) {
-			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(1000));
+			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(POLLING_TIME));
 			//print each record.
 			consumerRecords.forEach(record -> {
 				log.info("Record Key " + record.key());
