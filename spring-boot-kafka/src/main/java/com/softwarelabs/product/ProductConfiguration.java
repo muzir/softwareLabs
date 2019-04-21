@@ -1,6 +1,7 @@
 package com.softwarelabs.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softwarelabs.kafka.EventConsumer;
 import com.softwarelabs.kafka.KafkaConsumerFactory;
 import com.softwarelabs.kafka.KafkaConsumerThread;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -14,13 +15,13 @@ import java.util.Map;
 @Configuration
 public class ProductConfiguration {
 
-	private final ProductConsumer productConsumer;
+	private final EventConsumer productConsumer;
 
 	@Resource(name = "consumerProps")
 	private Map<String, Object> consumerProps;
 
 	@Autowired
-	public ProductConfiguration(ProductConsumer productConsumer) {
+	public ProductConfiguration(EventConsumer productConsumer) {
 		this.productConsumer = productConsumer;
 	}
 
@@ -31,20 +32,20 @@ public class ProductConfiguration {
 
 	@Bean
 	public Consumer<String, String> kafkaConsumer() {
-		return kafkaConsumerFactory().createConsumer();
+		return kafkaConsumerFactory().createConsumer(productConsumer.consumerGroupId());
 	}
 
 	@Bean
-	public KafkaConsumerThread kafkaConsumerThread() {
-		KafkaConsumerThread<ProductChange, String, String> kafkaConsumerThread =
+	public KafkaConsumerThread productConsumerThread() {
+		KafkaConsumerThread<ProductChange, String, String> productConsumerThread =
 				new KafkaConsumerThread(productConsumer, kafkaConsumer(), new ObjectMapper());
 		Thread consumer = new Thread(() -> {
-			kafkaConsumerThread.run();
+			productConsumerThread.run();
 		});
 		/*
 		 * Starting the thread.
 		 */
 		consumer.start();
-		return kafkaConsumerThread;
+		return productConsumerThread;
 	}
 }

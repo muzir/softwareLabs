@@ -76,7 +76,6 @@ public class IntegrationTestConfiguration {
 	public Map<String, Object> consumerProps(KafkaContainer kafkaContainer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");

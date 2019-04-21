@@ -2,6 +2,7 @@ package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Map;
@@ -15,8 +16,9 @@ public class KafkaConsumerFactory<K, V> {
 		this.consumerProps = consumerProps;
 	}
 
-	public Consumer<K, V> createConsumer() {
+	public Consumer<K, V> createConsumer(String consumerGroupId) {
 		log.info("Create new KafkaConsumer");
+		consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
 		return new KafkaConsumer<K, V>(consumerProps);
 	}
 }

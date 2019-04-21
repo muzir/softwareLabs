@@ -7,4 +7,6 @@ public interface EventConsumer<T> {
 	Class eventType();
 
 	String topicName();
+
+	String consumerGroupId();
 }

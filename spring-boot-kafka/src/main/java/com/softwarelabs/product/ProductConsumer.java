@@ -43,4 +43,8 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 	@Override public String topicName() {
 		return KafkaTopicNames.PRODUCT_CHANGE_TOPIC;
 	}
+
+	@Override public String consumerGroupId() {
+		return "consumerGroup1";
+	}
 }

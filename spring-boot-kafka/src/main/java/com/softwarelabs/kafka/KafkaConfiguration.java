@@ -32,7 +32,6 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
 		return props;
 	}
