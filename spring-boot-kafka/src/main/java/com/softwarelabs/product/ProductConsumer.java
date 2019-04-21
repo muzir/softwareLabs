@@ -10,8 +10,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProductConsumer implements EventConsumer<ProductChange> {
 
+	private final ProductService productService;
+
 	@Autowired
-	private ProductService productService;
+	public ProductConsumer(ProductService productService) {
+		this.productService = productService;
+	}
 
 	@Override
 	public void consume(ProductChange productChange) {

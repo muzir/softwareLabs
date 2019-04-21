@@ -14,12 +14,12 @@ import java.util.Map;
 @Configuration
 public class ProductConfiguration {
 
-	@Autowired
 	private final ProductConsumer productConsumer;
 
 	@Resource(name = "consumerProps")
 	private Map<String, Object> consumerProps;
 
+	@Autowired
 	public ProductConfiguration(ProductConsumer productConsumer) {
 		this.productConsumer = productConsumer;
 	}

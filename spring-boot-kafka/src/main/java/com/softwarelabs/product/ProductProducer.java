@@ -11,15 +11,19 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
+@Service
 public class ProductProducer {
 
-	@Autowired
-	private Producer<String, String> kafkaProducer;
+	private final Producer<String, String> kafkaProducer;
+
+	private final ObjectMapper mapper;
 
 	@Autowired
-	private ObjectMapper mapper;
+	public ProductProducer(Producer<String, String> kafkaProducer, ObjectMapper mapper) {
+		this.kafkaProducer = kafkaProducer;
+		this.mapper = mapper;
+	}
 
 	public void publishProductChange(Product product) throws JsonProcessingException {
 		ProductChange productChange = new ProductChange(product.name(), product.price());

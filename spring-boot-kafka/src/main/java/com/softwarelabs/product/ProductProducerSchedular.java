@@ -12,9 +12,10 @@ import java.math.BigDecimal;
 @Service
 @Profile("!integration")
 public class ProductProducerSchedular {
-	@Autowired
+
 	private final ProductProducer productProducer;
 
+	@Autowired
 	public ProductProducerSchedular(ProductProducer productProducer) {
 		this.productProducer = productProducer;
 	}
