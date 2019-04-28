@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,12 +20,10 @@ public class ProductConfiguration {
 
 	private final EventConsumer productConsumer;
 
-	@Resource
-	@Qualifier("producerProps")
+	@Resource(name = "producerProps")
 	private Map<String, Object> producerProps;
 
-	@Resource
-	@Qualifier("consumerProps")
+	@Resource(name="consumerProps")
 	private Map<String, Object> consumerProps;
 
 	@Autowired
