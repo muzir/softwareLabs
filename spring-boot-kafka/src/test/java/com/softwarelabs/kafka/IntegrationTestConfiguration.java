@@ -1,8 +1,6 @@
 package com.softwarelabs.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -60,8 +58,8 @@ public class IntegrationTestConfiguration {
 		return new KafkaContainer();
 	}
 
-	@Bean
-	public Producer<String, String> producer(KafkaContainer kafkaContainer) {
+	@Bean(value = "producerProps")
+	public Map<String, Object> producerProps(KafkaContainer kafkaContainer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -69,10 +67,10 @@ public class IntegrationTestConfiguration {
 		props.put(ProducerConfig.ACKS_CONFIG, "all");
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-		return new KafkaProducer<>(props);
+		return props;
 	}
 
-	@Bean
+	@Bean(name = "consumerProps")
 	public Map<String, Object> consumerProps(KafkaContainer kafkaContainer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());

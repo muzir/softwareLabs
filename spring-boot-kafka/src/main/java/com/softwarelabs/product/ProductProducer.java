@@ -8,18 +8,16 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
 public class ProductProducer {
 
 	private final Producer<String, String> kafkaProducer;
 
 	private final ObjectMapper mapper;
 
-	@Autowired
+	private final Callback produceCallback = new ProduceCallback();
+
 	public ProductProducer(Producer<String, String> kafkaProducer, ObjectMapper mapper) {
 		this.kafkaProducer = kafkaProducer;
 		this.mapper = mapper;
@@ -29,7 +27,8 @@ public class ProductProducer {
 		ProductChange productChange = new ProductChange(product.name(), product.price());
 		String productChangeMessage = mapper.writeValueAsString(productChange);
 		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
-		kafkaProducer.send(record, new ProduceCallback());
+		log.info("Publish product change event : {}", record.value());
+		kafkaProducer.send(record, produceCallback);
 	}
 
 	private class ProduceCallback implements Callback {
