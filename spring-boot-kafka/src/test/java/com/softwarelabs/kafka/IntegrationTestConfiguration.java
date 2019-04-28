@@ -58,7 +58,7 @@ public class IntegrationTestConfiguration {
 		return new KafkaContainer();
 	}
 
-	@Bean(value = "producerProps")
+	@Bean(name = "producerProps")
 	public Map<String, Object> producerProps(KafkaContainer kafkaContainer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
