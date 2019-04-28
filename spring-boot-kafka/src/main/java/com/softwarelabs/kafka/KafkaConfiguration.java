@@ -2,31 +2,38 @@ package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.clients.consumer.OffsetCommitCallback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 @Profile("!integration")
 @Slf4j
 public class KafkaConfiguration {
 
-	@Bean
+	@Bean(value = "producerProps")
+	public Map<String, Object> producerProps(
+			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
+		final Map<String, Object> props = new ConcurrentHashMap<>();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.ACKS_CONFIG, "all");
+		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
+		return props;
+	}
+
+	@Bean(name = "consumerProps")
 	public Map<String, Object> consumerProps(
 			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
 
-		final Map<String, Object> props = new HashMap();
+		final Map<String, Object> props = new ConcurrentHashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
@@ -35,34 +42,4 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
 		return props;
 	}
-
-	@Bean
-	public Producer<String, String> kafkaProducer(
-			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
-		final Properties props = new Properties();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.ACKS_CONFIG, "all");
-		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-		props.put(ProducerConfig.CLIENT_ID_CONFIG, "productProducer");
-		return new KafkaProducer<>(props);
-	}
-
-	@Bean
-	public OffsetCommitCallback errorLoggingCommitCallback() {
-		return new ErrorLoggingCommitCallback();
-	}
-
-	public class ErrorLoggingCommitCallback implements OffsetCommitCallback {
-
-		@Override
-		public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
-			if (exception != null) {
-				log.error("Exception while commiting offsets to Kafka", exception);
-			}
-		}
-	}
-
 }

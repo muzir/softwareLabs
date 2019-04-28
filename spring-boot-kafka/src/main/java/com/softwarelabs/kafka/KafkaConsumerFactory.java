@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class KafkaConsumerFactory<K, V> {
@@ -13,7 +14,7 @@ public class KafkaConsumerFactory<K, V> {
 	private final Map<String, Object> consumerProps;
 
 	public KafkaConsumerFactory(Map<String, Object> consumerProps) {
-		this.consumerProps = consumerProps;
+		this.consumerProps = new ConcurrentHashMap<>(consumerProps);
 	}
 
 	public Consumer<K, V> createConsumer(String consumerGroupId) {
