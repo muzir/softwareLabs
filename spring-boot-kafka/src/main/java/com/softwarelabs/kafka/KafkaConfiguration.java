@@ -2,12 +2,9 @@ package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.clients.consumer.OffsetCommitCallback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,20 +46,4 @@ public class KafkaConfiguration {
 		props.put(ProducerConfig.CLIENT_ID_CONFIG, "productProducer");
 		return new KafkaProducer<>(props);
 	}
-
-	@Bean
-	public OffsetCommitCallback errorLoggingCommitCallback() {
-		return new ErrorLoggingCommitCallback();
-	}
-
-	public class ErrorLoggingCommitCallback implements OffsetCommitCallback {
-
-		@Override
-		public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
-			if (exception != null) {
-				log.error("Exception while commiting offsets to Kafka", exception);
-			}
-		}
-	}
-
 }

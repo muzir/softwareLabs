@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.consumer.OffsetCommitCallback;
+import org.apache.kafka.common.TopicPartition;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
 
 import static com.softwarelabs.kafka.KafkaConfigurationConstant.POLLING_TIME;
 
@@ -17,6 +21,9 @@ public class KafkaConsumerThread<T, K, V> {
 	private Consumer<K, V> consumer;
 	private ObjectMapper mapper;
 	private EventConsumer<T> eventConsumer;
+	private OffsetCommitCallback errorLoggingCommitCallback() {
+		return new ErrorLoggingCommitCallback();
+	}
 
 	public KafkaConsumerThread(EventConsumer<T> eventConsumer, Consumer<K, V> consumer, ObjectMapper mapper) {
 		log.info("Starting Kafka consumer");
@@ -44,7 +51,17 @@ public class KafkaConsumerThread<T, K, V> {
 				}
 				eventConsumer.consume(value);
 			});
-			consumer.commitAsync();
+			consumer.commitAsync(errorLoggingCommitCallback());
+		}
+	}
+
+	private class ErrorLoggingCommitCallback implements OffsetCommitCallback {
+
+		@Override
+		public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+			if (exception != null) {
+				log.error("Exception while commiting offsets to Kafka", exception);
+			}
 		}
 	}
 }
