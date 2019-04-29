@@ -3,6 +3,7 @@ package com.softwarelabs.kafka;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +17,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class KafkaConfiguration {
 
-	@Bean(value = "producerProps")
-	public Map<String, Object> producerProps(
-			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
+	private final Map<String, Object> producerProps;
+	private final Map<String, Object> consumerProps;
+
+	@Autowired
+	public KafkaConfiguration(@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
+		this.producerProps = producerProps(bootstrapServers);
+		this.consumerProps = consumerProps(bootstrapServers);
+	}
+
+	private Map<String, Object> producerProps(String bootstrapServers
+	) {
 		final Map<String, Object> props = new ConcurrentHashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
@@ -29,9 +38,8 @@ public class KafkaConfiguration {
 		return props;
 	}
 
-	@Bean(name = "consumerProps")
-	public Map<String, Object> consumerProps(
-			@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
+	private Map<String, Object> consumerProps(
+			String bootstrapServers) {
 
 		final Map<String, Object> props = new ConcurrentHashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -41,5 +49,15 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
 		return props;
+	}
+
+	@Bean
+	public KafkaConsumerFactory<String, String> kafkaConsumerFactory() {
+		return new KafkaConsumerFactory<>(consumerProps);
+	}
+
+	@Bean
+	public KafkaProducerFactory<String, String> kafkaProducerFactory() {
+		return new KafkaProducerFactory<>(producerProps);
 	}
 }

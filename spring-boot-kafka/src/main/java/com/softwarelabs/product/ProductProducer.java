@@ -2,15 +2,20 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softwarelabs.kafka.EventProducer;
+import com.softwarelabs.kafka.KafkaProducerFactory;
 import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-public class ProductProducer {
+@Service
+public class ProductProducer implements EventProducer<String> {
 
 	private final Producer<String, String> kafkaProducer;
 
@@ -18,17 +23,33 @@ public class ProductProducer {
 
 	private final Callback produceCallback = new ProduceCallback();
 
-	public ProductProducer(Producer<String, String> kafkaProducer, ObjectMapper mapper) {
-		this.kafkaProducer = kafkaProducer;
+	@Autowired
+	public ProductProducer(KafkaProducerFactory<String, String> kafkaProducerFactory, ObjectMapper mapper) {
+		this.kafkaProducer = kafkaProducerFactory.createProducer(this.producerClientId());
 		this.mapper = mapper;
 	}
 
 	public void publishProductChange(Product product) throws JsonProcessingException {
 		ProductChange productChange = new ProductChange(product.name(), product.price());
 		String productChangeMessage = mapper.writeValueAsString(productChange);
-		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
-		log.info("Publish product change event : {}", record.value());
+		publish(productChangeMessage);
+	}
+
+	@Override
+	public void publish(String message) {
+		ProducerRecord<String, String> record = new ProducerRecord<>(topicName(), "1", message);
+		log.info("Publish topic : {} message : {}", topicName(), message);
 		kafkaProducer.send(record, produceCallback);
+	}
+
+	@Override
+	public String topicName() {
+		return KafkaTopicNames.PRODUCT_CHANGE_TOPIC;
+	}
+
+	@Override
+	public String producerClientId() {
+		return "productClientId";
 	}
 
 	private class ProduceCallback implements Callback {

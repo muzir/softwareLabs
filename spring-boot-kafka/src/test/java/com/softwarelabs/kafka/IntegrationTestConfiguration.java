@@ -1,5 +1,6 @@
 package com.softwarelabs.kafka;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -13,10 +14,11 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
+@Slf4j
 public class IntegrationTestConfiguration {
 
 	private static final String DB_NAME = "store";
@@ -58,9 +60,10 @@ public class IntegrationTestConfiguration {
 		return new KafkaContainer();
 	}
 
-	@Bean(name = "producerProps")
+	@Bean
 	public Map<String, Object> producerProps(KafkaContainer kafkaContainer) {
-		Map<String, Object> props = new HashMap<>();
+		Map<String, Object> props = new ConcurrentHashMap<>();
+		log.info("Kafka hashCode {}", kafkaContainer.hashCode());
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -70,14 +73,25 @@ public class IntegrationTestConfiguration {
 		return props;
 	}
 
-	@Bean(name = "consumerProps")
+	@Bean
 	public Map<String, Object> consumerProps(KafkaContainer kafkaContainer) {
-		Map<String, Object> props = new HashMap<>();
+		Map<String, Object> props = new ConcurrentHashMap<>();
+		log.info("Kafka hashCode {}", kafkaContainer.hashCode());
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 		return props;
+	}
+
+	@Bean
+	public KafkaConsumerFactory<String, String> kafkaConsumerFactory() {
+		return new KafkaConsumerFactory<>(consumerProps(kafka()));
+	}
+
+	@Bean
+	public KafkaProducerFactory<String, String> kafkaProducerFactory() {
+		return new KafkaProducerFactory<>(producerProps(kafka()));
 	}
 }
