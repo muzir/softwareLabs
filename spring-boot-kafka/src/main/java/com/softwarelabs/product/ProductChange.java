@@ -11,8 +11,8 @@ public class ProductChange implements Product {
 	private final BigDecimal price;
 
 	public ProductChange() {
-		this.name="";
-		this.price=BigDecimal.ZERO;
+		this.name = "";
+		this.price = BigDecimal.ZERO;
 	}
 
 	public ProductChange(String name, BigDecimal price) {
@@ -20,15 +20,18 @@ public class ProductChange implements Product {
 		this.price = price;
 	}
 
-	@Override public Long id() {
+	@Override
+	public Long id() {
 		return null;
 	}
 
-	@Override public String name() {
+	@Override
+	public String name() {
 		return name;
 	}
 
-	@Override public BigDecimal price() {
+	@Override
+	public BigDecimal price() {
 		return price;
 	}
 

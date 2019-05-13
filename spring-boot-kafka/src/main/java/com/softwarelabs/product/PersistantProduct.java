@@ -1,7 +1,6 @@
 package com.softwarelabs.product;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
@@ -9,7 +8,6 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "product")
 public class PersistantProduct extends AbstractPersistable<Long> implements Product {

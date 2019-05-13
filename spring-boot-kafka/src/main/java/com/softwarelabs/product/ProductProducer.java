@@ -54,7 +54,8 @@ public class ProductProducer implements EventProducer<String> {
 
 	private class ProduceCallback implements Callback {
 
-		@Override public void onCompletion(RecordMetadata metadata, Exception exception) {
+		@Override
+		public void onCompletion(RecordMetadata metadata, Exception exception) {
 			if (exception != null) {
 				log.error("Message can't be sent", exception);
 				return;

@@ -47,8 +47,10 @@ public interface ProductPort {
 	}
 
 	class ProductRequest implements Product {
-		@NotNull private String name;
-		@NotNull private BigDecimal price;
+		@NotNull
+		private String name;
+		@NotNull
+		private BigDecimal price;
 
 		public ProductRequest(String name) {
 			this.name = name;
@@ -60,15 +62,18 @@ public interface ProductPort {
 			this.price = price;
 		}
 
-		@Override public Long id() {
+		@Override
+		public Long id() {
 			return null;
 		}
 
-		@Override public String name() {
+		@Override
+		public String name() {
 			return name;
 		}
 
-		@Override public BigDecimal price() {
+		@Override
+		public BigDecimal price() {
 			return price;
 		}
 	}
