@@ -1,6 +1,9 @@
 package com.softwarelabs.product;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softwarelabs.kafka.EventConsumer;
+import com.softwarelabs.kafka.KafkaConsumerFactory;
+import com.softwarelabs.kafka.KafkaConsumerThread;
 import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +15,24 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	private final ProductService productService;
 
+	private KafkaConsumerThread<ProductChange, String, String> productConsumerThread;
+
 	@Autowired
 	public ProductConsumer(ProductService productService) {
 		this.productService = productService;
+
+	}
+
+	@Override
+	public void start(KafkaConsumerFactory kafkaConsumerFactory) {
+		productConsumerThread =
+				new KafkaConsumerThread(this, kafkaConsumerFactory.createConsumer(consumerGroupId()), new ObjectMapper());
+		productConsumerThread.start();
+	}
+
+	@Override
+	public void stop() {
+		productConsumerThread.stop();
 	}
 
 	@Override
