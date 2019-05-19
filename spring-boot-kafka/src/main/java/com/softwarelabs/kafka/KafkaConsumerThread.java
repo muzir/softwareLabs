@@ -33,7 +33,21 @@ public class KafkaConsumerThread<T, K, V> {
 		this.mapper = mapper;
 	}
 
-	public void run() {
+	public void start(){
+		Thread consumer = new Thread(() -> {
+			run();
+		});
+		/*
+		 * Starting the thread.
+		 */
+		consumer.start();
+	}
+
+	public void stop(){
+		consumer.wakeup();
+	}
+
+	private void run() {
 		while (true) {
 			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(POLLING_TIME));
 			//print each record.
