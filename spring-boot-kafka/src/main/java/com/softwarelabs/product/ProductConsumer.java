@@ -32,7 +32,10 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	@Override
 	public void stop() {
-		productConsumerThread.stop();
+		if (productConsumerThread != null) {
+			log.info("Product consumer is stopping");
+			productConsumerThread.stop();
+		}
 	}
 
 	@Override
