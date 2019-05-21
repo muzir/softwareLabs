@@ -1,7 +1,5 @@
-package com.softwarelabs.product;
+package com.softwarelabs.kafka;
 
-import com.softwarelabs.kafka.EventConsumer;
-import com.softwarelabs.kafka.KafkaConsumerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
