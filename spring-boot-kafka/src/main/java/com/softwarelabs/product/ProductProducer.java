@@ -13,6 +13,8 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
+
 @Slf4j
 @Service
 public class ProductProducer implements EventProducer<String> {
@@ -50,6 +52,13 @@ public class ProductProducer implements EventProducer<String> {
 	@Override
 	public String producerClientId() {
 		return "productClientId";
+	}
+
+	@PreDestroy
+	@Override
+	public void close() {
+		kafkaProducer.flush();
+		kafkaProducer.close();
 	}
 
 	private class ProduceCallback implements Callback {

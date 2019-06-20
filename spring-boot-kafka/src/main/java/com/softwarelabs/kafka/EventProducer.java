@@ -6,4 +6,6 @@ public interface EventProducer<T> {
 	String topicName();
 
 	String producerClientId();
+
+	void close();
 }
