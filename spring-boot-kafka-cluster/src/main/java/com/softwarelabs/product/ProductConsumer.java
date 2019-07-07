@@ -69,6 +69,6 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	@Override
 	public String consumerGroupId() {
-		return "consumerGroup1";
+		return "productConsumerGroup";
 	}
 }

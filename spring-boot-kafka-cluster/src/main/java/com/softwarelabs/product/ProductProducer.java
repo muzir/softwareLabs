@@ -51,7 +51,7 @@ public class ProductProducer implements EventProducer<String> {
 
 	@Override
 	public String producerClientId() {
-		return "productClientId";
+		return "productProducerId";
 	}
 
 	@PreDestroy
