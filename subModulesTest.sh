@@ -7,3 +7,5 @@ cd spring-boot-containers || exit
 cd .. || exit
 cd spring-boot-kafka || exit
 ./gradlew test
+cd spring-boot-kafka-cluster || exit
+./gradlew test
