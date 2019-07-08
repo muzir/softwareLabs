@@ -1,21 +1,75 @@
 version: "3.7"
 services:
-  zookeeper:
+  zookeeper1:
     image: "zookeeper:3.4.13"
-    hostname: zookeeper
+    hostname: zookeeper1
     ports:
       - "2181:2181"
-  kafka:
+  zookeeper2:
+    image: "zookeeper:3.4.13"
+    hostname: zookeeper2
+    ports:
+      - "2184:2184"
+  zookeeper3:
+    image: "zookeeper:3.4.13"
+    hostname: zookeeper3
+    ports:
+      - "2186:2186"
+  zookeeper4:
+    image: "zookeeper:3.4.13"
+    hostname: zookeeper4
+    ports:
+      - "2188:2188"
+  zookeeper5:
+    image: "zookeeper:3.4.13"
+    hostname: zookeeper5
+    ports:
+      - "2190:2190"
+  kafka1:
     image: "confluent/kafka:latest"
     ports:
       - "9092:9092"
-    hostname: kafka
+    hostname: kafka1
     links:
-      - zookeeper
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+      - zookeeper4
+      - zookeeper5
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_HOST_NAME: kafka1
       KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+  kafka2:
+    image: "confluent/kafka:latest"
+    ports:
+      - "9094:9094"
+    hostname: kafka2
+    links:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+      - zookeeper4
+      - zookeeper5
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka2
+      KAFKA_ADVERTISED_PORT: 9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+  kafka3:
+    image: "confluent/kafka:latest"
+    ports:
+      - "9096:9096"
+    hostname: kafka3
+    links:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+      - zookeeper4
+      - zookeeper5
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka3
+      KAFKA_ADVERTISED_PORT: 9096
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
   postgres:
     build: postgres
     environment:
@@ -30,8 +84,10 @@ services:
       - "12346:12346"
     links:
       - postgres
-      - kafka
+      - kafka1
+      - kafka2
+      - kafka3
     environment:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
-      kafka.bootstrap.servers: kafka:9092
+      kafka.bootstrap.servers: kafka1:9092,kafka2:9094,kafka3:9096
