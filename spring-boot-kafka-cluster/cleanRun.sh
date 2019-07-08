@@ -1,5 +1,5 @@
 #!/bin/bash
-gradle clean build -x test
+./gradlew clean build -x test
 cd docker || exit
 docker-compose down -v
 docker-compose up --build
