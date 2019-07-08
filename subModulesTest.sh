@@ -1,11 +1,16 @@
 #!/bin/bash
 cd spring-boot-integration-test || exit
-./gradlew test
+echo "Run tests in spring-boot-integration-test"
+gradle test
 cd .. || exit
 cd spring-boot-containers || exit
-./gradlew test
+echo "Run tests in spring-boot-containers"
+gradle test
 cd .. || exit
 cd spring-boot-kafka || exit
-./gradlew test
+echo "Run tests in spring-boot-kafka"
+gradle test
+cd .. || exit
 cd spring-boot-kafka-cluster || exit
-./gradlew test
+echo "Run tests in spring-boot-kafka-cluster"
+gradle test
