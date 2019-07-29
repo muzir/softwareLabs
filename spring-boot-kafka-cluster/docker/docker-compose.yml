@@ -40,6 +40,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka1
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+      KAFKA_BROKER_ID: 1
   kafka2:
     image: "confluent/kafka:latest"
     ports:
@@ -55,6 +56,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka2
       KAFKA_ADVERTISED_PORT: 9094
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+      KAFKA_BROKER_ID: 2
   kafka3:
     image: "confluent/kafka:latest"
     ports:
@@ -70,6 +72,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka3
       KAFKA_ADVERTISED_PORT: 9096
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+      KAFKA_BROKER_ID: 3
   postgres:
     build: postgres
     environment:
