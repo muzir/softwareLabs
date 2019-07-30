@@ -1,78 +1,86 @@
-version: "3.7"
+version: '3.7'
 services:
-  zookeeper1:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper1
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper-1
     ports:
-      - "2181:2181"
-  zookeeper2:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper2
-    ports:
-      - "2184:2184"
-  zookeeper3:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper3
-    ports:
-      - "2186:2186"
-  zookeeper4:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper4
-    ports:
-      - "2188:2188"
-  zookeeper5:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper5
-    ports:
-      - "2190:2190"
-  kafka1:
-    image: "confluent/kafka:latest"
-    ports:
-      - "9092:9092"
-    hostname: kafka1
-    links:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
-      - zookeeper4
-      - zookeeper5
+      - "12181:12181"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka1
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper-2
+    ports:
+      - "22181:22181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper-3
+    ports:
+      - "32181:32181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-1
+    ports:
+      - "19092:19092"
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    environment:
       KAFKA_BROKER_ID: 1
-  kafka2:
-    image: "confluent/kafka:latest"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:12181,zookeeper-2:12181,zookeeper-3:12181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092
+
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-2
     ports:
-      - "9094:9094"
-    hostname: kafka2
-    links:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
-      - zookeeper4
-      - zookeeper5
+      - "29092:29092"
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka2
-      KAFKA_ADVERTISED_PORT: 9094
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
       KAFKA_BROKER_ID: 2
-  kafka3:
-    image: "confluent/kafka:latest"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:12181,zookeeper-2:12181,zookeeper-3:12181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:29092
+
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-3
     ports:
-      - "9096:9096"
-    hostname: kafka3
-    links:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
-      - zookeeper4
-      - zookeeper5
+      - "39092:39092"
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka3
-      KAFKA_ADVERTISED_PORT: 9096
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2184,zookeeper3:2186,zookeeper4:2188,zookeeper5:2190
       KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:12181,zookeeper-2:12181,zookeeper-3:12181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:39092
+
   postgres:
     build: postgres
     environment:
@@ -80,17 +88,18 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: store
     ports:
-    - 5432:5432
+      - 5432:5432
+
   spring-boot-kafka-cluster:
     build: ../
     ports:
       - "12346:12346"
     links:
       - postgres
-      - kafka1
-      - kafka2
-      - kafka3
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
-      kafka.bootstrap.servers: kafka1:9092,kafka2:9094,kafka3:9096
+      kafka.bootstrap.servers: kafka-1:19092,kafka-2:29092,kafka-3:39092
