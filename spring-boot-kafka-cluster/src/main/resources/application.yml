@@ -25,10 +25,10 @@ ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
 ENV_DATASOURCE_SERVICE_USERNAME: dbuser
 ENV_DATASOURCE_SERVICE_PASSWORD: password
 ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
-ENV_KAFKA_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:29092,kafka-3:39092
-ENV_ZOOKEEPER_CONNECT_STRING: zookeeper-1:12181,zookeeper-2:12181,zookeeper-3:12181
 
-
+kafka:
+  bootstrap:
+    servers: ${ENV_KAFKA_BOOTSTRAP_SERVERS}
 ---
 
 spring.profiles: integration

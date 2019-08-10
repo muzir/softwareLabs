@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  postgres:
+    build: ../postgres
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: store
+    ports:
+      - 5432:5432
+
+  spring-boot-kafka-cluster:
+    build: ../..
+    ports:
+      - "12346:12346"
+    links:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_HEAP_SIZE_MB: 1024
+      ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
+networks:
+  default:
+    external:
+      name: kafka_default
