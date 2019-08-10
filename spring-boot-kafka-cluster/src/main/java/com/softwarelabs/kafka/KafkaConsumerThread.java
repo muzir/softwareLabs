@@ -21,9 +21,6 @@ public class KafkaConsumerThread<T, K, V> {
 	private Consumer<K, V> consumer;
 	private ObjectMapper mapper;
 	private EventConsumer<T> eventConsumer;
-	private OffsetCommitCallback errorLoggingCommitCallback() {
-		return new ErrorLoggingCommitCallback();
-	}
 
 	public KafkaConsumerThread(EventConsumer<T> eventConsumer, Consumer<K, V> consumer, ObjectMapper mapper) {
 		log.info("Starting Kafka consumer");
@@ -33,7 +30,11 @@ public class KafkaConsumerThread<T, K, V> {
 		this.mapper = mapper;
 	}
 
-	public void start(){
+	private OffsetCommitCallback errorLoggingCommitCallback() {
+		return new ErrorLoggingCommitCallback();
+	}
+
+	public void start() {
 		Thread consumer = new Thread(() -> {
 			run();
 		});
@@ -43,7 +44,7 @@ public class KafkaConsumerThread<T, K, V> {
 		consumer.start();
 	}
 
-	public void stop(){
+	public void stop() {
 		consumer.wakeup();
 	}
 
@@ -56,6 +57,8 @@ public class KafkaConsumerThread<T, K, V> {
 				log.info("Record value " + record.value());
 				log.info("Record partition " + record.partition());
 				log.info("Record offset " + record.offset());
+				log.info("Leader Epoch " + record.leaderEpoch().map(le -> le.intValue()).orElse(null));
+				log.info("Record offset " + record.toString());
 				// commits the offset of record to broker.
 				T value = null;
 				try {
