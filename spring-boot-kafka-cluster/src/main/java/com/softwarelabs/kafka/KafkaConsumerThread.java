@@ -53,12 +53,7 @@ public class KafkaConsumerThread<T, K, V> {
 			ConsumerRecords<K, V> consumerRecords = consumer.poll(Duration.ofMillis(POLLING_TIME));
 			//print each record.
 			consumerRecords.forEach(record -> {
-				log.info("Record Key " + record.key());
-				log.info("Record value " + record.value());
-				log.info("Record partition " + record.partition());
-				log.info("Record offset " + record.offset());
-				log.info("Leader Epoch " + record.leaderEpoch().map(le -> le.intValue()).orElse(null));
-				log.info("Record offset " + record.toString());
+				log.info(record.toString());
 				// commits the offset of record to broker.
 				T value = null;
 				try {
