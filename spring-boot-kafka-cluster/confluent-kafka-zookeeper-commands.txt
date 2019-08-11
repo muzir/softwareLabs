@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 -- Kafka Commands
 
 kafka-topics --list --zookeeper zookeeper-1:12181
