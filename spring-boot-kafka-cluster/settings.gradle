@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'spring-boot-kafka-cluster'
+include 'producer'
+

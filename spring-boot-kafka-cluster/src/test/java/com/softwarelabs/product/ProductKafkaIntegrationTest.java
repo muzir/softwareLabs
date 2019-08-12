@@ -2,12 +2,16 @@ package com.softwarelabs.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.kafka.BaseIntegrationTest;
+import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
@@ -17,12 +21,14 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
 	public static final long WAITING_TIME = 2000l;
 	@Autowired
-	ProductProducer productProducer;
+	KafkaProducer kafkaProducer;
 	@Autowired
 	ProductService productService;
 
+	private ObjectMapper objectMapper = new ObjectMapper();
+
 	@Test
-	public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException {
+	public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException, org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException {
 		/*
 		 save new product to product table which name is product1
 		 */
@@ -33,8 +39,10 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
 		//Sent price change event
 		BigDecimal newPrice = new BigDecimal("20.00");
-		Product productChange = new ProductChange(productName, newPrice);
-		productProducer.publishProductChange(productChange);
+		ProductChange productChange = new ProductChange(productName, newPrice);
+		String productChangeMessage = objectMapper.writeValueAsString(productChange);
+		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
+		kafkaProducer.send(record);
 
 		Thread.sleep(WAITING_TIME);
 
@@ -46,12 +54,14 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	public void saveProduct_ifProductChangeEventSent_andProductNotExist() throws JsonProcessingException, InterruptedException {
+	public void saveProduct_ifProductChangeEventSent_andProductNotExist() throws JsonProcessingException, InterruptedException, org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException {
 		String productName = "product2";
 		BigDecimal price = new BigDecimal("20.00");
 		//Sent price change event
 		Product productChange = new ProductChange(productName, price);
-		productProducer.publishProductChange(productChange);
+		String productChangeMessage = objectMapper.writeValueAsString(productChange);
+		ProducerRecord<String, String> record = new ProducerRecord<>(KafkaTopicNames.PRODUCT_CHANGE_TOPIC, "1", productChangeMessage);
+		kafkaProducer.send(record);
 
 		Thread.sleep(WAITING_TIME);
 

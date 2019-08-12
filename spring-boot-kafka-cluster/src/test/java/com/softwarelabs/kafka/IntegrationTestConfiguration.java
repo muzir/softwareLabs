@@ -2,6 +2,7 @@ package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -91,7 +92,7 @@ public class IntegrationTestConfiguration {
 	}
 
 	@Bean
-	public KafkaProducerFactory<String, String> kafkaProducerFactory() {
-		return new KafkaProducerFactory<>(producerProps(kafka()));
+	public KafkaProducer<String, String> kafkaProducer() {
+		return new KafkaProducer<String, String>(producerProps(kafka()));
 	}
 }

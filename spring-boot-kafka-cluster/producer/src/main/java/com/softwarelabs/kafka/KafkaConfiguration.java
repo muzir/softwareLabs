@@ -55,4 +55,9 @@ public class KafkaConfiguration {
 	public KafkaConsumerFactory<String, String> kafkaConsumerFactory() {
 		return new KafkaConsumerFactory<>(consumerProps);
 	}
+
+	@Bean
+	public KafkaProducerFactory<String, String> kafkaProducerFactory() {
+		return new KafkaProducerFactory<>(producerProps);
+	}
 }
