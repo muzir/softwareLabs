@@ -11,6 +11,6 @@ cd spring-boot-kafka || exit
 echo "Run tests in spring-boot-kafka"
 ./gradlew test
 cd .. || exit
-cd spring-boot-kafka-cluster || exit
+cd spring-boot-kafka-cluster/consumer || exit
 echo "Run tests in spring-boot-kafka-cluster"
 ./gradlew test
