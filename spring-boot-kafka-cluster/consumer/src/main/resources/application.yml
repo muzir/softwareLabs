@@ -4,7 +4,7 @@ server.port: 12346
 
 spring:
   application:
-    name: spring-boot-kafka-cluster
+    name: spring-boot-kafka-cluster-consumer
   datasource:
     driver-class-name: ${ENV_DRIVER_CLASS_NAME}
     url: ${ENV_DATASOURCE_URL}
@@ -32,4 +32,3 @@ kafka:
 ---
 
 spring.profiles: integration
-

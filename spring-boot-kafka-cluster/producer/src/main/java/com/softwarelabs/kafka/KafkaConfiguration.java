@@ -1,7 +1,6 @@
 package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KafkaConfiguration {
 
 	private final Map<String, Object> producerProps;
-	private final Map<String, Object> consumerProps;
 
 	@Autowired
 	public KafkaConfiguration(@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
 		this.producerProps = producerProps(bootstrapServers);
-		this.consumerProps = consumerProps(bootstrapServers);
 	}
 
 	private Map<String, Object> producerProps(String bootstrapServers
@@ -38,26 +35,8 @@ public class KafkaConfiguration {
 		return props;
 	}
 
-	private Map<String, Object> consumerProps(
-			String bootstrapServers) {
-
-		final Map<String, Object> props = new ConcurrentHashMap<>();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
-		return props;
-	}
-
-	@Bean
-	public KafkaConsumerFactory<String, String> kafkaConsumerFactory() {
-		return new KafkaConsumerFactory<>(consumerProps);
-	}
-
 	@Bean
 	public KafkaProducerFactory<String, String> kafkaProducerFactory() {
-		return new KafkaProducerFactory<>(producerProps);
+		return new KafkaProducerFactory(producerProps);
 	}
 }
