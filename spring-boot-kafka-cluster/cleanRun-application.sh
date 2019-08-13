@@ -1,8 +1,8 @@
 #!/bin/bash
-cd consumer
+cd consumer || exit
 ./gradlew clean build -x test
 cd .. || exit
-cd producer
+cd producer || exit
 ./gradlew clean build -x test
 cd .. || exit
 cd docker/application || exit
