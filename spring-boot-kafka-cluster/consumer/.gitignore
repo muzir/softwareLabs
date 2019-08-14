@@ -101,15 +101,15 @@ fabric.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-build
+out
 
 .gradle/
-.idea
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/google-java-format.xml
 .idea/misc.xml
-.idea/modules.xml
-.idea/modules/
-.idea/softwareLabs.iml
+.idea/spring-boot-integration-test.iml
 .idea/vcs.xml
+build/reports/
+build/test-results/
+build/tmp/
