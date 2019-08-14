@@ -47,3 +47,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql:1.10.6'
     testCompile "org.testcontainers:kafka:1.11.1"
 }
+
+wrapper{
+    gradleVersion = '5.4'
+}
