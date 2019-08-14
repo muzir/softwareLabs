@@ -20,7 +20,7 @@ public class ProductProducerSchedular {
 		this.productProducer = productProducer;
 	}
 
-	@Scheduled(fixedRate = 100)
+	@Scheduled(fixedRate = 3000)
 	public void run() throws JsonProcessingException {
 		Faker faker = new Faker();
 		Product productChange = new ProductChange(faker.commerce().productName(), new BigDecimal(faker.commerce().price(0, 100)));
