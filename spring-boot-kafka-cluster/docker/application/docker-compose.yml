@@ -24,8 +24,6 @@ services:
     build: ../../producer
     ports:
       - "12347:12347"
-    links:
-      - postgres
     environment:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
