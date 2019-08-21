@@ -4,5 +4,5 @@
 
 
 ### Relevant Blogposts: 
-- [Spring Boot Kafka Cluster](https://muzir.github.io/spring/docker/docker-compose/kafka/2019/08/19/Spring-Boot-Kafka-Cluster.html)
+- [Kafka Cluster with Docker Compose](https://muzir.github.io/docker/docker-compose/kafka/2019/08/19/Docker-Compose-Kafka-Cluster.html)
 
