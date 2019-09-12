@@ -9,7 +9,7 @@ services:
     ports:
       - 5432:5432
 
-  spring-boot-kafka-cluster-consumer:
+  spring-boot-kafka-cluster-consumer-1:
     build: ../../consumer
     ports:
       - "12346:12346"
@@ -19,11 +19,24 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
       ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
+      ENV_APLLICATION_PORT: 12346
+
+  spring-boot-kafka-cluster-consumer-2:
+    build: ../../consumer
+    ports:
+      - "12347:12347"
+    links:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_HEAP_SIZE_MB: 1024
+      ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
+      PORT: 12347
 
   spring-boot-kafka-cluster-producer:
     build: ../../producer
     ports:
-      - "12347:12347"
+      - "12348:12348"
     environment:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 1024
