@@ -32,6 +32,8 @@ public class KafkaConfiguration {
 		props.put(ProducerConfig.ACKS_CONFIG, "all");
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
+		//TODO Define as environment variable at docker compose file
+		props.put(ProducerConfig.CLIENT_ID_CONFIG, "producer-1");
 		return props;
 	}
 

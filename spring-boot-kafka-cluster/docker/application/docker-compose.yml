@@ -20,6 +20,7 @@ services:
       JAVA_HEAP_SIZE_MB: 1024
       ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
       ENV_APLLICATION_PORT: 12346
+      ENV_APPLICATION_CLIENTID: consumer-1
 
   spring-boot-kafka-cluster-consumer-2:
     build: ../../consumer
@@ -32,6 +33,7 @@ services:
       JAVA_HEAP_SIZE_MB: 1024
       ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
       ENV_APLLICATION_PORT: 12347
+      ENV_APPLICATION_CLIENTID: consumer-2
 
   spring-boot-kafka-cluster-producer:
     build: ../../producer
