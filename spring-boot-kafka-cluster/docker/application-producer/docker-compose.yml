@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  spring-boot-kafka-cluster-producer:
+    build: ../../producer
+    ports:
+      - "12348:12348"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_HEAP_SIZE_MB: 2048
+      ENV_KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:19092,PLAINTEXT://kafka-2:29092,PLAINTEXT://kafka-3:39092
+
+networks:
+  default:
+    external:
+      name: kafka_default

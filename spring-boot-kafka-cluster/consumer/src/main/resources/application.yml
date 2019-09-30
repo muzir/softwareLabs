@@ -1,6 +1,6 @@
 spring.profiles.active: dev
 
-server.port: ${ENV_APLLICATION_PORT}
+server.port: ${ENV_APPLICATION_PORT}
 
 spring:
   application:
