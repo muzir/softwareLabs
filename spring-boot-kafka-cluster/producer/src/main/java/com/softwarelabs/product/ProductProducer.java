@@ -11,6 +11,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
@@ -23,10 +24,13 @@ public class ProductProducer implements EventProducer<String> {
 
 	private final ObjectMapper mapper;
 
+	private final String producerClientId;
+
 	private final Callback produceCallback = new ProduceCallback();
 
 	@Autowired
-	public ProductProducer(KafkaProducerFactory<String, String> kafkaProducerFactory, ObjectMapper mapper) {
+	public ProductProducer(KafkaProducerFactory<String, String> kafkaProducerFactory, ObjectMapper mapper, @Value("${spring.kafka.clientId}") String clientId) {
+		this.producerClientId = clientId;
 		this.kafkaProducer = kafkaProducerFactory.createProducer(this.producerClientId());
 		this.mapper = mapper;
 	}
@@ -51,7 +55,7 @@ public class ProductProducer implements EventProducer<String> {
 
 	@Override
 	public String producerClientId() {
-		return "productProducerId";
+		return producerClientId;
 	}
 
 	@PreDestroy

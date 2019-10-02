@@ -5,6 +5,8 @@ server.port: 12347
 spring:
   application:
     name: spring-boot-kafka-cluster-producer
+  kafka:
+    clientId: ${ENV_APPLICATION_CLIENTID}
 
 ---
 
