@@ -2,7 +2,6 @@ package com.softwarelabs.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,26 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Profile("!integration")
 @Slf4j
 public class KafkaConfiguration {
-
-	private final Map<String, Object> producerProps;
 	private final Map<String, Object> consumerProps;
 
-	@Autowired
-	public KafkaConfiguration(@Value("${kafka.bootstrap.servers}") String bootstrapServers) {
-		this.producerProps = producerProps(bootstrapServers);
-		this.consumerProps = consumerProps(bootstrapServers);
-	}
+	private final String clientId;
 
-	private Map<String, Object> producerProps(String bootstrapServers
-	) {
-		final Map<String, Object> props = new ConcurrentHashMap<>();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.ACKS_CONFIG, "all");
-		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-		return props;
+	@Autowired
+	public KafkaConfiguration(@Value("${kafka.bootstrap.servers}") String bootstrapServers, @Value("${spring.kafka.clientId}") String clientId) {
+		this.clientId = clientId;
+		this.consumerProps = consumerProps(bootstrapServers);
 	}
 
 	private Map<String, Object> consumerProps(
@@ -48,6 +35,7 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
+		props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
 		return props;
 	}
 

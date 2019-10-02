@@ -40,20 +40,15 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 
 	@Override
 	public void consume(ProductChange productChange) {
-		log.info("Consume productChange name: {}  price: {}", productChange.name(), productChange.price());
 		Product product = new PersistantProduct(productChange);
 		productService.getProduct(product)
 				.map(p -> {
-							log.info("Product {} is exist", product.name());
 							return productService.saveProduct(new PersistantProduct(p.id(), productChange.name(), productChange.price()));
-
 						}
 				)
 				.orElseGet(() -> {
-							log.info("Product {} is not exist", product.name());
 							return productService.saveProduct(productChange);
 						}
-
 				);
 	}
 

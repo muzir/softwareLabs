@@ -3,7 +3,7 @@
 kafka-topics --list --zookeeper zookeeper-1:12181
 kafka-topics --describe --topic Product.change --zookeeper zookeeper-1:12181
 kafka-topics --delete --topic Product.change --zookeeper zookeeper-1:12181
-./kafka-topics.sh --create  --zookeeper zookeeper-1:12181 --replication-factor 3 --partitions 3 --topic Product.change
+./kafka-topics.sh --create  --zookeeper zookeeper-1:12181,zookeeper-2:22181,zookeeper-3:32181 --replication-factor 3 --partitions 3 --topic Product.change
 
 -- Zookeeper Commands
 
@@ -25,4 +25,5 @@ kafkacat -C -b kafka-3:39092 -t helloworld_topic
 
 docker pause <container-id/name>
 docker unpause <container-id/name>
+docker start kafka_kafka-3_1
 
