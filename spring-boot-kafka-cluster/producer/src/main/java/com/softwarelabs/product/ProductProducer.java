@@ -39,9 +39,8 @@ public class ProductProducer implements EventProducer<String> {
 
 	@Override
 	public void publish(String message) {
-		//TODO check what's the proper way to send the Key, randomUUID generator?
+		//TODO Currently randomly set the key. Better approach can be round robin with partition count.
 		ProducerRecord<String, String> record = new ProducerRecord<>(topicName(), String.valueOf(message.hashCode()), message);
-		log.info("Publish topic : {} message : {}", topicName(), message);
 		kafkaProducer.send(record, produceCallback);
 	}
 
