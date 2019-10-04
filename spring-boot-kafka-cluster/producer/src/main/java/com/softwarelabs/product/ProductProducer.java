@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
+import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -36,7 +37,7 @@ public class ProductProducer implements EventProducer<String> {
 	}
 
 	public void publishProductChange(Product product) throws JsonProcessingException {
-		ProductChange productChange = new ProductChange(product.name(), product.price());
+		ProductChange productChange = new ProductChange(product.name(), product.price(), BigDecimal.ZERO);
 		String productChangeMessage = mapper.writeValueAsString(productChange);
 		publish(productChangeMessage);
 	}

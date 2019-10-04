@@ -6,4 +6,5 @@ public interface Product {
 	Long id();
 	String name();
 	BigDecimal price();
+	BigDecimal stockPrice();
 }

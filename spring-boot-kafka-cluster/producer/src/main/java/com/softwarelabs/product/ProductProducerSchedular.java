@@ -23,7 +23,7 @@ public class ProductProducerSchedular {
 	@Scheduled(fixedRate = 3000)
 	public void run() throws JsonProcessingException {
 		Faker faker = new Faker();
-		Product productChange = new ProductChange(faker.commerce().productName(), new BigDecimal(faker.commerce().price(0, 100)));
+		Product productChange = new ProductChange(faker.commerce().productName(), new BigDecimal(faker.commerce().price(0, 100)), BigDecimal.ZERO);
 		productProducer.publishProductChange(productChange);
 	}
 }
