@@ -30,7 +30,9 @@ public class ProductProducer implements EventProducer<String> {
 	private final Callback produceCallback = new ProduceCallback();
 
 	@Autowired
-	public ProductProducer(KafkaProducerFactory<String, String> kafkaProducerFactory, ObjectMapper mapper, @Value("${spring.kafka.clientId}") String clientId) {
+	public ProductProducer(KafkaProducerFactory<String, String> kafkaProducerFactory,
+						   ObjectMapper mapper,
+						   @Value("${spring.kafka.clientId}") String clientId) {
 		this.producerClientId = clientId;
 		this.kafkaProducer = kafkaProducerFactory.createProducer(this.producerClientId());
 		this.mapper = mapper;
