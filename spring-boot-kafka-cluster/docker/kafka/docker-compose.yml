@@ -113,3 +113,8 @@ services:
       ZK_HOSTS: "zookeeper-1:12181,zookeeper-2:22181,zookeeper-3:32181"
       APPLICATION_SECRET: "random-secret"
     command: -Dpidfile.path=/dev/null
+
+networks:
+  default:
+    external:
+      name: kafka_default

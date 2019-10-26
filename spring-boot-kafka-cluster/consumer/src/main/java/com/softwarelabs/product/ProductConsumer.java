@@ -1,6 +1,9 @@
 package com.softwarelabs.product;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.softwarelabs.kafka.EventConsumer;
 import com.softwarelabs.kafka.KafkaConsumerFactory;
 import com.softwarelabs.kafka.KafkaConsumerThread;
@@ -26,7 +29,7 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 	@Override
 	public void start(KafkaConsumerFactory kafkaConsumerFactory) {
 		productConsumerThread =
-				new KafkaConsumerThread(this, kafkaConsumerFactory.createConsumer(consumerGroupId()), new ObjectMapper());
+				new KafkaConsumerThread(this, kafkaConsumerFactory.createConsumer(consumerGroupId()), newMapper());
 		productConsumerThread.start();
 	}
 
@@ -65,5 +68,13 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
 	@Override
 	public String consumerGroupId() {
 		return "productConsumerGroup";
+	}
+
+	private ObjectMapper newMapper() {
+		final ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.registerModule(new JavaTimeModule());
+		mapper.registerModule(new Jdk8Module());
+		return mapper;
 	}
 }

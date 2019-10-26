@@ -9,15 +9,18 @@ public class ProductChange implements Product {
 
 	private final String name;
 	private final BigDecimal price;
+	private final BigDecimal stockPrice;
 
 	public ProductChange() {
 		this.name = "";
 		this.price = BigDecimal.ZERO;
+		this.stockPrice = BigDecimal.ZERO;
 	}
 
-	public ProductChange(String name, BigDecimal price) {
+	public ProductChange(String name, BigDecimal price, BigDecimal stockPrice) {
 		this.name = name;
 		this.price = price;
+		this.stockPrice = stockPrice;
 	}
 
 	@Override
@@ -33,6 +36,11 @@ public class ProductChange implements Product {
 	@Override
 	public BigDecimal price() {
 		return price;
+	}
+
+	@Override
+	public BigDecimal stockPrice() {
+		return stockPrice;
 	}
 
 }
