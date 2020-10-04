@@ -8,4 +8,3 @@
  */
 
 rootProject.name = 'spring-boot-containers'
-enableFeaturePreview('IMPROVED_POM_SUPPORT')
