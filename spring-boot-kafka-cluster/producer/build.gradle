@@ -34,7 +34,7 @@ targetCompatibility = 1.8
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation ('org.apache.kafka:kafka-clients:2.2.0')
+    implementation('org.apache.kafka:kafka-clients:2.2.0')
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
@@ -45,4 +45,8 @@ dependencies {
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testCompile "org.testcontainers:kafka:1.11.1"
+}
+
+wrapper {
+    gradleVersion = '6.6'
 }
