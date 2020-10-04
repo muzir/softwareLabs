@@ -15,6 +15,7 @@ cd .. || exit
 cd spring-boot-kafka-cluster/consumer || exit
 echo "Run tests in spring-boot-kafka-cluster"
 ./gradlew test
+cd .. || exit
 cd streams-api-examples || exit
 echo "Run tests in streams-api-examples"
 ./gradlew test
