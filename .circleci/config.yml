@@ -53,7 +53,6 @@ jobs:
           name: Run sub modules tests
 
           command: |
-            set -eo pipefail
             ./subModulesTest.sh
 
       - run:
