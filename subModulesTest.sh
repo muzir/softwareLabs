@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 cd spring-boot-integration-test || exit
 echo "Run tests in spring-boot-integration-test"
 ./gradlew test
