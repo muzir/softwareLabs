@@ -16,7 +16,8 @@ public class App {
 	}
 
 	public Map<String, BigDecimal> sumOfTheOrdersByCustomer() {
-		Map<String, BigDecimal> sumMap = orders.collect(Collectors.groupingBy(Order::getEmail, Collectors.summingInt(Order::getAmount)));
+		Map<String, BigDecimal> sumMap = orders
+				.collect(Collectors.groupingBy(Order::getEmail, Collectors.reducing(BigDecimal.ZERO, Order::getAmount, BigDecimal::add)));
 		return sumMap;
 	}
 }

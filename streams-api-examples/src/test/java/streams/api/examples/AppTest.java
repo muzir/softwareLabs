@@ -3,6 +3,7 @@
  */
 package streams.api.examples;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,9 +20,12 @@ class AppTest {
 				new Order("jack@ted.com", 2L, BigDecimal.valueOf(100)),
 				new Order("jeyn@ted.com", 3L, BigDecimal.valueOf(200)),
 				new Order("jeyn@ted.com", 4L, BigDecimal.valueOf(600)),
-				new Order("jack@ted.com", 5L, BigDecimal.valueOf(100.25)));
+				new Order("jack@ted.com", 5L, BigDecimal.valueOf(150)));
 		classUnderTest = new App(orders);
 
 		Map<String, BigDecimal> customerOrderSumMap = classUnderTest.sumOfTheOrdersByCustomer();
+		Assertions.assertEquals(customerOrderSumMap.get("jack@ted.com"), BigDecimal.valueOf(250));
+		Assertions.assertEquals(customerOrderSumMap.get("jeyn@ted.com"), BigDecimal.valueOf(800));
+		Assertions.assertEquals(customerOrderSumMap.get("john@ted.com"), BigDecimal.valueOf(10));
 	}
 }
