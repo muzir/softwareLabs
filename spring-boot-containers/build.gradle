@@ -16,7 +16,7 @@ apply plugin: 'project-report'
 
 ext {
     springBootVersion = '2.1.7.RELEASE'
-    lombokVersion = '1.18.8'
+    lombokVersion = '1.18.12'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -35,7 +35,7 @@ targetCompatibility = 1.8
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.1')
+    implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.16')
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
@@ -43,7 +43,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'org.testcontainers:postgresql:1.10.6'
+    testImplementation 'org.testcontainers:postgresql:1.14.3'
 }
 
 wrapper{
