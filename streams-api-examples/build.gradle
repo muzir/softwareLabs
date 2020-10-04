@@ -40,3 +40,7 @@ test {
     // Use junit platform for unit tests
     useJUnitPlatform()
 }
+
+wrapper{
+    gradleVersion = '6.6'
+}
