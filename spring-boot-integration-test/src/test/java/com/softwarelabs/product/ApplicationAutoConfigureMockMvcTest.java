@@ -45,7 +45,7 @@ public class ApplicationAutoConfigureMockMvcTest {
 	public void createProductReturnHttpStatusCode200_ifProductIsValid() throws Exception {
 		String productName = "Product-1";
 		IProductPort.ProductRequest productRequest =
-				new IProductPort.ProductRequest().setId(productId).setName(productName);
+				new IProductPort.ProductRequest().setId(productId).setName("P");
 		String json = objectMapper.writeValueAsString(productRequest);
 
 		this.mockMvc
