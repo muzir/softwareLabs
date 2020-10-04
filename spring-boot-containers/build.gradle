@@ -16,7 +16,7 @@ apply plugin: 'project-report'
 
 ext {
     springBootVersion = '2.1.7.RELEASE'
-    lombokVersion = '1.18.8'
+    lombokVersion = '1.18.12'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
