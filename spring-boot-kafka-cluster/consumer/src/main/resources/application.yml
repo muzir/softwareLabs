@@ -34,3 +34,4 @@ kafka:
 ---
 
 spring.profiles: integration
+ENV_APPLICATION_PORT: 12345
