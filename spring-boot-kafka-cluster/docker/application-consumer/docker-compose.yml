@@ -38,4 +38,4 @@ services:
 networks:
   default:
     external:
-      name: kafka_default
+      name: docker_default
