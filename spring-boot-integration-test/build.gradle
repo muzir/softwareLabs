@@ -6,7 +6,7 @@
  * user guide available at https://docs.gradle.org/4.6/userguide/tutorial_java_projects.html
  */
 plugins {
-    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'org.springframework.boot' version '2.4.3'
 }
 
 apply plugin: 'idea'
@@ -14,7 +14,6 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
 ext {
-    springBootVersion = '2.1.7.RELEASE'
     lombokVersion = '1.18.8'
 }
 // In this section you declare where to find the dependencies of your project
@@ -33,6 +32,7 @@ targetCompatibility = 1.8
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")

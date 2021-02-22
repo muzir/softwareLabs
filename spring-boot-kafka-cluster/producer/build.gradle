@@ -15,7 +15,6 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
-    springBootVersion = '2.4.3'
     lombokVersion = '1.18.8'
 }
 // In this section you declare where to find the dependencies of your project
@@ -44,7 +43,6 @@ dependencies {
     implementation 'com.github.javafaker:javafaker:0.17.2'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testCompile "org.testcontainers:kafka:1.15.2"
 }
 
 wrapper {

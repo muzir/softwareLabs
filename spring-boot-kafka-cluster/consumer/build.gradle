@@ -16,6 +16,7 @@ apply plugin: 'project-report'
 
 ext {
     lombokVersion = '1.18.8'
+    testContainerVersion = '1.15.2'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -44,8 +45,8 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'org.testcontainers:postgresql:1.15.2'
-    testCompile "org.testcontainers:kafka:1.15.2"
+    testImplementation ("org.testcontainers:postgresql:${testContainerVersion}")
+    testCompile ("org.testcontainers:kafka:${testContainerVersion}")
 }
 
 wrapper{
