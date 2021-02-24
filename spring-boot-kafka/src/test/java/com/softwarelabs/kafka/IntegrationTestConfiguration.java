@@ -9,9 +9,8 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.*;
+import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -27,18 +26,32 @@ public class IntegrationTestConfiguration {
 	private static final String PORT = "5432";
 	private static final String INIT_SCRIPT_PATH = "db/embedded-postgres-init.sql";
 
+	// An alias that can be used to resolve the Toxiproxy container by name in the network it is connected to.
+	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
+	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
+	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
+	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("shopify/toxiproxy:2.1.0");
+	// Create a common docker network so that containers can communicate
+	private Network network = Network.newNetwork();
+
+	// Toxiproxy container, which will be used as a TCP proxy
+	@Bean
+	public ToxiproxyContainer toxiproxy() {
+		return new ToxiproxyContainer(TOXIPROXY_IMAGE)
+				.withNetwork(network)
+				.withNetworkAliases(TOXIPROXY_NETWORK_ALIAS);
+	}
+
 	@Bean(initMethod = "start")
-	JdbcDatabaseContainer databaseContainer() {
-		return new PostgreSQLContainer()
-				.withInitScript(INIT_SCRIPT_PATH)
-				.withUsername(USERNAME)
-				.withPassword(PASSWORD)
-				.withDatabaseName(DB_NAME);
+	PostgreSQLContainer<?> databaseContainer() {
+		return new PostgreSQLContainer<>(POSTGRES_IMAGE)
+				.withNetwork(network)
+				.withNetworkAliases("postgres");
 	}
 
 	@Bean
 	@Primary
-	DataSource dataSource(JdbcDatabaseContainer container) {
+	DataSource dataSource(GenericContainer container) {
 
 		System.out.println("Connecting to test container " + container.getUsername() + ":" + container.getPassword() + "@" + container.getJdbcUrl());
 
@@ -46,7 +59,7 @@ public class IntegrationTestConfiguration {
 		String mappedHost = container.getContainerIpAddress();
 
 		final DataSource dataSource = DataSourceBuilder.create()
-				.url("jdbc:postgresql://" + mappedHost + ":" + mappedPort + "/" + container.getDatabaseName())
+				.url("jdbc:postgresql://" + mappedHost + ":" + mappedPort + "/" + container.get())
 				.username(container.getUsername())
 				.password(container.getPassword())
 				.driverClassName(container.getDriverClassName())
