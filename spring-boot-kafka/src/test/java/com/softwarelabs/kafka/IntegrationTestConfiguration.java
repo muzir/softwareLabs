@@ -20,46 +20,53 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class IntegrationTestConfiguration {
 
+
+	// An alias that can be used to resolve the Toxiproxy container by name in the network it is connected to.
+	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
+	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
+	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("shopify/toxiproxy:2.1.0");
+	// Create a common docker network so that containers can communicate
+	private Network network = Network.newNetwork();
+
+	private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka");
+	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
 	private static final String DB_NAME = "store";
 	private static final String USERNAME = "dbuser";
 	private static final String PASSWORD = "password";
 	private static final String PORT = "5432";
 	private static final String INIT_SCRIPT_PATH = "db/embedded-postgres-init.sql";
 
-	// An alias that can be used to resolve the Toxiproxy container by name in the network it is connected to.
-	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
-	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
-	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
-	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("shopify/toxiproxy:2.1.0");
-	// Create a common docker network so that containers can communicate
-	private Network network = Network.newNetwork();
-
-	// Toxiproxy container, which will be used as a TCP proxy
-	@Bean
-	public ToxiproxyContainer toxiproxy() {
-		return new ToxiproxyContainer(TOXIPROXY_IMAGE)
-				.withNetwork(network)
-				.withNetworkAliases(TOXIPROXY_NETWORK_ALIAS);
-	}
-
 	@Bean(initMethod = "start")
 	PostgreSQLContainer<?> databaseContainer() {
 		return new PostgreSQLContainer<>(POSTGRES_IMAGE)
+				.withInitScript(INIT_SCRIPT_PATH)
+				.withUsername(USERNAME)
+				.withPassword(PASSWORD)
+				.withDatabaseName(DB_NAME)
 				.withNetwork(network)
 				.withNetworkAliases("postgres");
 	}
 
 	@Bean
-	@Primary
-	DataSource dataSource(GenericContainer container) {
+	ToxiproxyContainer.ContainerProxy proxy(JdbcDatabaseContainer container) {
+		ToxiproxyContainer toxiproxyContainer = new ToxiproxyContainer(TOXIPROXY_IMAGE)
+				.withNetwork(network)
+				.withNetworkAliases(TOXIPROXY_NETWORK_ALIAS);
+		toxiproxyContainer.start();
+		final ToxiproxyContainer.ContainerProxy proxy = toxiproxyContainer.getProxy(container, Integer.parseInt(PORT));
+		return proxy;
+	}
 
+	@Bean
+	@Primary
+	DataSource dataSource(JdbcDatabaseContainer container, ToxiproxyContainer.ContainerProxy proxy) {
 		System.out.println("Connecting to test container " + container.getUsername() + ":" + container.getPassword() + "@" + container.getJdbcUrl());
 
-		int mappedPort = container.getMappedPort(Integer.parseInt(PORT));
-		String mappedHost = container.getContainerIpAddress();
+		final String ipAddressViaToxiproxy = proxy.getContainerIpAddress();
+		final int portViaToxiproxy = proxy.getProxyPort();
 
 		final DataSource dataSource = DataSourceBuilder.create()
-				.url("jdbc:postgresql://" + mappedHost + ":" + mappedPort + "/" + container.get())
+				.url("jdbc:postgresql://" + ipAddressViaToxiproxy + ":" + portViaToxiproxy + "/" + container.getDatabaseName())
 				.username(container.getUsername())
 				.password(container.getPassword())
 				.driverClassName(container.getDriverClassName())
@@ -70,7 +77,7 @@ public class IntegrationTestConfiguration {
 
 	@Bean(initMethod = "start")
 	public KafkaContainer kafka() {
-		return new KafkaContainer();
+		return new KafkaContainer(KAFKA_IMAGE);
 	}
 
 	@Bean
