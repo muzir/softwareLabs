@@ -1,11 +1,11 @@
 package com.softwarelabs.kafka;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -13,6 +13,7 @@ import org.testcontainers.containers.*;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,9 +26,6 @@ public class IntegrationTestConfiguration {
 	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
 	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
 	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("shopify/toxiproxy:2.1.0");
-	// Create a common docker network so that containers can communicate
-	private Network network = Network.newNetwork();
-
 	private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka");
 	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
 	private static final String DB_NAME = "store";
@@ -35,6 +33,8 @@ public class IntegrationTestConfiguration {
 	private static final String PASSWORD = "password";
 	private static final String PORT = "5432";
 	private static final String INIT_SCRIPT_PATH = "db/embedded-postgres-init.sql";
+	// Create a common docker network so that containers can communicate
+	private Network network = Network.newNetwork();
 
 	@Bean(initMethod = "start")
 	PostgreSQLContainer<?> databaseContainer() {
@@ -59,19 +59,20 @@ public class IntegrationTestConfiguration {
 
 	@Bean
 	@Primary
-	DataSource dataSource(JdbcDatabaseContainer container, ToxiproxyContainer.ContainerProxy proxy) {
+	DataSource dataSource(JdbcDatabaseContainer container, ToxiproxyContainer.ContainerProxy proxy) throws SQLException {
 		System.out.println("Connecting to test container " + container.getUsername() + ":" + container.getPassword() + "@" + container.getJdbcUrl());
 
 		final String ipAddressViaToxiproxy = proxy.getContainerIpAddress();
 		final int portViaToxiproxy = proxy.getProxyPort();
 
-		final DataSource dataSource = DataSourceBuilder.create()
-				.url("jdbc:postgresql://" + ipAddressViaToxiproxy + ":" + portViaToxiproxy + "/" + container.getDatabaseName())
-				.username(container.getUsername())
-				.password(container.getPassword())
-				.driverClassName(container.getDriverClassName())
-				.build();
-
+		HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setJdbcUrl("jdbc:postgresql://" + ipAddressViaToxiproxy + ":" + portViaToxiproxy + "/" + container.getDatabaseName());
+		dataSource.setUsername(container.getUsername());
+		dataSource.setPassword(container.getPassword());
+		dataSource.setDriverClassName(container.getDriverClassName());
+		dataSource.setConnectionTimeout(3000);
+		dataSource.setIdleTimeout(1000);
+		dataSource.setValidationTimeout(1000);
 		return dataSource;
 	}
 
