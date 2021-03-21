@@ -45,14 +45,16 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	public void throwCannotCreateTransactionException_whenProxySetTimeout() throws IOException {
+	public void throwTransactionSystemException_whenProxySetTimeout() throws IOException {
 		proxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 1000);
+		String productName = "product003";
+		BigDecimal price = BigDecimal.TEN;
+		Product product = new ProductPort.ProductRequest(productName, price);
 		Assertions.assertThrows(TransactionSystemException.class, () -> {
-			String productName = "product001";
-			BigDecimal price = BigDecimal.TEN;
-			Product product = new ProductPort.ProductRequest(productName, price);
 			crudProductService.saveProduct(product);
 		});
-		proxy.toxics().getAll().clear();
+		proxy.toxics().get("bla").remove();
+		crudProductService.saveProduct(product);
+		Assert.assertTrue(crudProductService.getProduct(product).isPresent());
 	}
 }
