@@ -21,7 +21,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 	private CrudProductService crudProductService;
 
 	@Autowired
-	private ToxiproxyContainer.ContainerProxy proxy;
+	private ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy;
 
 	@Test
 	public void returnProductName_ifProductSavedBefore() {
@@ -46,14 +46,14 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
 	@Test
 	public void throwTransactionSystemException_whenProxySetTimeout() throws IOException {
-		proxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 1000);
+		jdbcDatabaseContainerProxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 1000);
 		String productName = "product003";
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 		Assertions.assertThrows(TransactionSystemException.class, () -> {
 			crudProductService.saveProduct(product);
 		});
-		proxy.toxics().get("bla").remove();
+		jdbcDatabaseContainerProxy.toxics().get("bla").remove();
 		crudProductService.saveProduct(product);
 		Assert.assertTrue(crudProductService.getProduct(product).isPresent());
 	}

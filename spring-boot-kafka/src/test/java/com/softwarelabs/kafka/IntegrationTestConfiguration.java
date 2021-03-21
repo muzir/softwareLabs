@@ -13,7 +13,6 @@ import org.testcontainers.containers.*;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,22 +47,19 @@ public class IntegrationTestConfiguration {
 	}
 
 	@Bean
-	ToxiproxyContainer.ContainerProxy proxy(JdbcDatabaseContainer container) {
+	ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy(JdbcDatabaseContainer container) {
 		ToxiproxyContainer toxiproxyContainer = new ToxiproxyContainer(TOXIPROXY_IMAGE)
 				.withNetwork(network)
 				.withNetworkAliases(TOXIPROXY_NETWORK_ALIAS);
 		toxiproxyContainer.start();
-		final ToxiproxyContainer.ContainerProxy proxy = toxiproxyContainer.getProxy(container, Integer.parseInt(PORT));
-		return proxy;
+		return toxiproxyContainer.getProxy(container, Integer.parseInt(PORT));
 	}
 
 	@Bean
 	@Primary
-	DataSource dataSource(JdbcDatabaseContainer container, ToxiproxyContainer.ContainerProxy proxy) throws SQLException {
-		System.out.println("Connecting to test container " + container.getUsername() + ":" + container.getPassword() + "@" + container.getJdbcUrl());
-
-		final String ipAddressViaToxiproxy = proxy.getContainerIpAddress();
-		final int portViaToxiproxy = proxy.getProxyPort();
+	DataSource dataSource(JdbcDatabaseContainer container, ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy) {
+		final String ipAddressViaToxiproxy = jdbcDatabaseContainerProxy.getContainerIpAddress();
+		final int portViaToxiproxy = jdbcDatabaseContainerProxy.getProxyPort();
 
 		HikariDataSource dataSource = new HikariDataSource();
 		dataSource.setJdbcUrl("jdbc:postgresql://" + ipAddressViaToxiproxy + ":" + portViaToxiproxy + "/" + container.getDatabaseName());
