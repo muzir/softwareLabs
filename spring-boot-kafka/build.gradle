@@ -48,6 +48,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation ("org.testcontainers:postgresql:${testContainerVersion}")
     testCompile ("org.testcontainers:kafka:${testContainerVersion}")
+    testCompile "org.testcontainers:toxiproxy:${testContainerVersion}"
 }
 
 wrapper{
