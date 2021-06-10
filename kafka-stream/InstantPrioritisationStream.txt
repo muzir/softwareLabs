@@ -1,0 +1,32 @@
+# Start ZooKeeper.  Run this command in its own terminal.
+./bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start Kafka.  Run this command in its own terminal
+./bin/kafka-server-start.sh config/server.properties
+
+# Create input topics
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic streams-instant-input-estimation
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic streams-instant-input-received
+
+# Create output topic
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic streams-prioritisation-output-topic
+
+# Create input keys and values
+echo -e "transfer-1:instant\ntransfer-2:instant\ntransfer-3:notInstant\ntransfer-4:instant" > /tmp/file-input-estimation.txt
+echo -e "transfer-1:received\ntransfer-2:received\ntransfer-3:received" > /tmp/file-input-received.txt
+
+# Run the application
+
+# Produce estimation messages
+cat /tmp/file-input-estimation.txt | ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic streams-instant-input-estimation --property parse.key=true --property key.separator=":"
+
+# Produce received messages; first after 10 seconds later before shows messages and then within 10 seconds and check the results
+cat /tmp/file-input-received.txt | ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic streams-instant-input-received --property parse.key=true --property key.separator=":"
+
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic streams-prioritisation-output-topic --from-beginning --formatter kafka.tools.DefaultMessageFormatter \
+--property print.key=true \
+--property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+--property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+--property key.separator="-"
+
+
