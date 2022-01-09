@@ -15,7 +15,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
-    lombokVersion = '1.18.8'
+    lombokVersion = '1.18.22'
     testContainerVersion = '1.15.2'
 }
 // In this section you declare where to find the dependencies of your project
@@ -28,9 +28,6 @@ bootJar {
     baseName = 'spring-boot-kafka-cluster-consumer'
     version = '0.1.0'
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
@@ -46,9 +43,9 @@ dependencies {
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation ("org.testcontainers:postgresql:${testContainerVersion}")
-    testCompile ("org.testcontainers:kafka:${testContainerVersion}")
+    testImplementation ("org.testcontainers:kafka:${testContainerVersion}")
 }
 
 wrapper{
-    gradleVersion = '6.6'
+    gradleVersion = '7.3.1'
 }
