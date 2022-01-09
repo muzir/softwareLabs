@@ -112,5 +112,4 @@ out
 build/reports/
 build/test-results/
 build/tmp/
-gradle/wrapper/gradle-wrapper.properties
 .idea/modules/
