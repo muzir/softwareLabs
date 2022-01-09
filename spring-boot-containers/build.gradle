@@ -28,9 +28,6 @@ bootJar {
     version = '0.1.0'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -47,5 +44,5 @@ dependencies {
 }
 
 wrapper{
-    gradleVersion = '7.0'
+    gradleVersion = '7.3.1'
 }
