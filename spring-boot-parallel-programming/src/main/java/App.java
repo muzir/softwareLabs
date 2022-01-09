@@ -7,10 +7,11 @@ public class App {
 		new App().calculateSumParallel();
 	}
 
-	public void calculateSumParallel() {
+	public int calculateSumParallel() {
 		int[] input = {1, 2, 3, 4, 5};
 		ArraySum arraySum = new ArraySum(0, 4, input);
 		arraySum.compute();
 		System.out.println("Sum:" + arraySum.sum);
+		return arraySum.sum;
 	}
 }
