@@ -91,7 +91,6 @@ fabric.properties
 
 # Package Files #
 *.jar
-!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
 *.zip
