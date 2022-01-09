@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
 ext {
-    lombokVersion = '1.18.8'
+    lombokVersion = '1.18.22'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -26,9 +26,6 @@ bootJar {
     baseName = 'spring-boot-integration-test'
     version = '0.1.0'
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -46,5 +43,5 @@ dependencies {
 }
 
 wrapper{
-    gradleVersion = '6.6'
+    gradleVersion = '7.3.1'
 }
