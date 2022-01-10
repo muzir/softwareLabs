@@ -1,22 +1,58 @@
 version: 2
 updates:
   - package-ecosystem: gradle
-    directory: "/spring-boot-containers"
-    schedule:
-      interval: daily
-      time: "03:00"
-    open-pull-requests-limit: 10
-  - package-ecosystem: gradle
     directory: "/kafka-stream"
     schedule:
       interval: "daily"
-      time: "22:05"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/spring-boot-containers"
+    schedule:
+      interval: "daily"
+      time: "22:15"
       timezone: "Europe/Tallinn"
     open-pull-requests-limit: 10
   - package-ecosystem: gradle
     directory: "/spring-boot-integration-test"
     schedule:
       interval: "daily"
-      time: "22:05"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/spring-boot-kafka"
+    schedule:
+      interval: "daily"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/spring-boot-kafka-cluster/consumer"
+    schedule:
+      interval: "daily"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/spring-boot-kafka-cluster/producer"
+    schedule:
+      interval: "daily"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/spring-boot-parallel-programming"
+    schedule:
+      interval: "daily"
+      time: "22:15"
+      timezone: "Europe/Tallinn"
+    open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/streams-api-examples"
+    schedule:
+      interval: "daily"
+      time: "22:15"
       timezone: "Europe/Tallinn"
     open-pull-requests-limit: 10
