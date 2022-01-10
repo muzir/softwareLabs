@@ -16,7 +16,7 @@ apply plugin: 'project-report'
 
 ext {
     lombokVersion = '1.18.22'
-    testContainerVersion = '1.15.2'
+    testContainerVersion = '1.16.2'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
