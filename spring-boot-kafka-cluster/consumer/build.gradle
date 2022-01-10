@@ -6,7 +6,7 @@
  * user guide available at https://docs.gradle.org/4.6/userguide/tutorial_java_projects.html
  */
 plugins {
-    id 'org.springframework.boot' version '2.4.3'
+    id 'org.springframework.boot' version '2.6.2'
 }
 
 apply plugin: 'idea'
@@ -23,10 +23,13 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    mainClassName = 'com.softwarelabs.App'
-    baseName = 'spring-boot-kafka-cluster-consumer'
-    version = '0.1.0'
+springBoot {
+    buildInfo {
+        properties {
+            name = 'spring-boot-kafka-cluster-consumer'
+            version = "0.1.0"
+        }
+    }
 }
 
 dependencies {
