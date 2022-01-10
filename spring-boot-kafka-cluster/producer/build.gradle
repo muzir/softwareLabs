@@ -37,7 +37,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
-    implementation 'com.github.javafaker:javafaker:0.17.2'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
