@@ -21,9 +21,13 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    baseName = 'spring-boot-integration-test'
-    version = '0.1.0'
+springBoot {
+    buildInfo {
+        properties {
+            name = 'spring-boot-integration-test'
+            version = "0.1.0"
+        }
+    }
 }
 
 dependencies {
