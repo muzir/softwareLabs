@@ -1,0 +1,22 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/spring-boot-containers"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+- package-ecosystem: gradle
+  directory: "/kafka-stream"
+  schedule:
+    interval: "daily"
+      time: "22:00"
+      timezone: "Europe/Tallinn"
+- package-ecosystem: gradle
+  directory: "/spring-boot-integration-test"
+  schedule:
+    interval: "daily"
+      time: "22:00"
+      timezone: "Europe/Tallinn"
+  open-pull-requests-limit: 10
+
