@@ -15,7 +15,6 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
-    springBootVersion = '2.4.3'
     lombokVersion = '1.18.22'
 }
 // In this section you declare where to find the dependencies of your project
@@ -23,9 +22,13 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    baseName = 'spring-boot-containers'
-    version = '0.1.0'
+springBoot {
+    buildInfo {
+        properties {
+            name = 'spring-boot-containers'
+            version = "0.1.0"
+        }
+    }
 }
 
 dependencies {
