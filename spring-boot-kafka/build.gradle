@@ -23,10 +23,13 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    mainClassName = 'com.softwarelabs.App'
-    baseName = 'spring-boot-kafka'
-    version = '0.1.0'
+springBoot {
+    buildInfo {
+        properties {
+            name = 'spring-boot-kafka'
+            version = "0.1.0"
+        }
+    }
 }
 
 dependencies {
