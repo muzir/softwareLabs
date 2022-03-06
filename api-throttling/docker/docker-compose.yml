@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  zookeeper:
+    image: "zookeeper:3.4.13"
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: "confluent/kafka:latest"
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  api-throttling:
+    build: ../
+    ports:
+      - "12345:12345"
+    links:
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_HEAP_SIZE_MB: 1024
+      ENV_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
