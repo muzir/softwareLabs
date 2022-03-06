@@ -3,16 +3,22 @@ package com.softwarelabs.spring.kafka.apithrottling.product;
 import com.softwarelabs.spring.kafka.apithrottling.kafka.MessageProcessingResult;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductOrderRequestService {
 
+    private final ProductOrderApiClientThrottlingService productOrderApiClientThrottlingService;
+
+    public ProductOrderRequestService(
+            ProductOrderApiClientThrottlingService productOrderApiClientThrottlingService) {
+        this.productOrderApiClientThrottlingService = productOrderApiClientThrottlingService;
+    }
+
     public MessageProcessingResult handleRequest(ProductOrderRequest request) {
         UUID id = request.getId();
         try {
-            //execute api request
+            productOrderApiClientThrottlingService.sendProductOrderRequest(request);
         }
         /*catch (FeignException.TooManyRequests e) {
             return MessageProcessingResult.builder()
@@ -23,8 +29,7 @@ public class ProductOrderRequestService {
                     .exception(e)
                     .build();
 
-        }*/
-        catch (Exception e) {
+        }*/ catch (Exception e) {
             return MessageProcessingResult.builder()
                     .success(false)
                     .message("Failed to submit product order id: %s".formatted(id))
