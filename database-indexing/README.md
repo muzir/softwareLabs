@@ -17,7 +17,7 @@ walk through the example scenarios and best practices solving the challenges on 
 
 ## 3. Which problems list in this project?
  ### 3.1 What is indexing? What is the data structure under the hood?
- ### 3.2 What is concatenated indexing? When should we use it ?
+ ### 3.2 What is concatenated index? When should we use it ?
 ## 4. What is the progress so far?
 ## 5. Which resources do you need in this project?
 The samples are used in the project rely on [imdb](https://datasets.imdbws.com) and [stackexchange](https://archive.org/download/stackexchange) databases. All the samples use [PostgreSQL](https://www.postgresql.org). Databases 
