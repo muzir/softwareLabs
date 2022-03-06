@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+import static com.softwarelabs.spring.kafka.apithrottling.kafka.KafkaTopicNames.PRODUCT_ORDER_REQUEST_TOPIC;
+
 @Slf4j
 @Service
 public class ProductOrderRequestListener {
@@ -24,7 +26,7 @@ public class ProductOrderRequestListener {
         this.productOrderRequestService = productOrderRequestService;
     }
 
-    @KafkaListener(topics = "api-throttling.ProductOrderRequestEvent")
+    @KafkaListener(topics = PRODUCT_ORDER_REQUEST_TOPIC)
     public void consume(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         handleMessage(record, ProductOrderRequest.class, acknowledgment, productOrderRequestService::handleRequest);
     }

@@ -10,7 +10,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProductOrderRequest {
     private final UUID id;
-    private final UUID productId;
     private final String productName;
     private final Instant productOrderCreationTime;
     private final UUID orderId;
