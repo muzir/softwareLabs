@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.softwarelabs.ratelimiter'
+version = '0.1.0'
+sourceCompatibility = '17'
+
+springBoot {
+	buildInfo {
+		properties {
+			name = 'product-order-service'
+			version = "0.1.0"
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation('com.github.vladimir-bukhtoyarov:bucket4j-core:7.2.0')
+	implementation('com.google.guava:guava:31.0.1-jre')
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.22'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
