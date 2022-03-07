@@ -1,12 +1,18 @@
-package com.softwarelabs.spring.kafka.apithrottling.product;
+package com.softwarelabs.springbootresilience4j.payment;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
-@Service
-@Slf4j
-public class ProductOrderApiClient {
-    void send(ProductOrderRequest request) {
-        log.info("ProductOrder processed successfully {}", request.getId());
-    }
+@Headers("Content-Type: application/json")
+public interface PaymentApiClient {
+    @RequestLine("GET /api/transactions/{transactionId}")
+    @RateLimiter(name = "basicExample")
+    Payment getTransaction(@Param("transactionId") String transactionId);
+
+    @RequestLine("POST /api/transaction")
+    Payment createTransaction();
 }
+
+
