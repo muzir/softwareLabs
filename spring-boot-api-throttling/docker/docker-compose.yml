@@ -16,6 +16,13 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  product-order-service:
+    build: ../product-order-service
+    ports:
+      - "12346:12346"
+    environment:
+      ENV_APPLICATION_PORT: 12346
+      JAVA_HEAP_SIZE_MB: 2048
   api-throttling:
     build: ../api-throttling
     ports:
@@ -24,10 +31,7 @@ services:
       - kafka
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      JAVA_HEAP_SIZE_MB: 1024
+      JAVA_HEAP_SIZE_MB: 2048
       ENV_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-  product-order-service:
-    build: ../product-order-service
-    ports:
-      - "8081:8081"
-
+      ENV_APPLICATION_PORT: 12345
+      ENV_PRODUCT_ORDER_SERVICE_URL: http://product-order-service:12346

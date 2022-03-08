@@ -28,8 +28,8 @@ public class ProductOrderController {
 
     @PostMapping
     public ResponseEntity createProductOrder(@RequestBody ProductOrderRequest productOrderRequest) {
-        log.info("Create product order {}", productOrderRequest);
-        if (!rateLimiter.consume(productOrderRequest.toString())) {
+        //log.info("Create product order {}", productOrderRequest);
+        if (!rateLimiter.consume()) {
             throw new TooManyRequestsException("Too many requests");
         }
         return ResponseEntity.ok().build();

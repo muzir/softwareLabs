@@ -31,7 +31,7 @@ public class ProductProducer {
     }
 
     public void publish(String message) {
-        log.info("Publish topic : {} message : {}", topicName(), message);
+        //log.info("Publish topic : {} message : {}", topicName(), message);
         producer.send(topicName(), "1", message);
     }
 
