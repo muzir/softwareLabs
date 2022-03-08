@@ -36,19 +36,19 @@ public class ProductOrderRequestListener {
         final String payload = record.value();
         final String topic = record.topic();
 
-        log.info("Received message: {}", record);
+        //log.info("Received message: {}", record);
         try {
             final T parsedMessage = JsonMapper.DEFAULT.read(payload, clazz);
             final MessageProcessingResult result = handler.apply(parsedMessage);
-
+            log.info("{}", result.getMessage());
             if (result.isSuccess()) {
-                log.info("topic:{} - message processing result: {}", topic, result);
+                //log.info("topic:{} - message processing result: {}", topic, result);
                 acknowledgment.acknowledge();
                 return;
             }
 
             if (result.isShouldRetry()) {
-                log.warn("topic:{} - message processing result, will retry: {}", topic, result);
+                //log.warn("topic:{} - message processing result, will retry: {}", topic, result);
                 acknowledgment.nack(0);
                 return;
             }

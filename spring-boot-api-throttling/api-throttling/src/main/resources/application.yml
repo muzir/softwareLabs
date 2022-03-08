@@ -1,3 +1,5 @@
+server:
+  port: ${ENV_APPLICATION_PORT}
 spring:
   application:
     name: api-throttling
@@ -12,4 +14,4 @@ spring:
       enable-auto-commit: false
       auto-offset-reset: latest
 
-product_order_service_base_url: http://localhost:8081
+product_order_service_base_url: ${ENV_PRODUCT_ORDER_SERVICE_URL}
