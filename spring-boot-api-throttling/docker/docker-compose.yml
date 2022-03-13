@@ -1,12 +1,18 @@
 version: "3.7"
 services:
   zookeeper:
-    image: "zookeeper:3.4.13"
+    image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
     ports:
       - "2181:2181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
   kafka:
-    image: "confluent/kafka:latest"
+    image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092"
     hostname: kafka
@@ -14,8 +20,17 @@ services:
       - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_HOSTNAME: "kafka"
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_OPTS: "-Djava.rmi.server.hostname=kafka
+      -Dcom.sun.management.jmxremote.local.only=false
+      -Dcom.sun.management.jmxremote.rmi.port=9999
+      -Dcom.sun.management.jmxremote.port=9999
+      -Dcom.sun.management.jmxremote.authenticate=false
+      -Dcom.sun.management.jmxremote.ssl=false"
   product-order-service:
     build: ../product-order-service
     ports:
@@ -33,5 +48,16 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       JAVA_HEAP_SIZE_MB: 2048
       ENV_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      ENV_KAFKA_CONSUMER_GROUP_ID: api-throttling
       ENV_APPLICATION_PORT: 12345
       ENV_PRODUCT_ORDER_SERVICE_URL: http://product-order-service:12346
+
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.4.0
+    container_name: kowl
+    environment:
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "8080:8080"
+    links:
+      - kafka

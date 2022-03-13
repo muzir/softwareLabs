@@ -33,7 +33,7 @@ public class RateLimiterConfiguration {
 
     @Bean
     public ProductOrderApiClientThrottlingService guavaThrottlingService(ProductOrderApiClient productOrderApiClient) {
-        RateLimiter rateLimiter = RateLimiter.create(10d);
+        RateLimiter rateLimiter = RateLimiter.create(0.5d);
         return new ProductOrderApiClientThrottlingService(rateLimiter, productOrderApiClient);
     }
 
