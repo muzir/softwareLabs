@@ -40,7 +40,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
-    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

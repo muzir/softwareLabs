@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
     implementation('com.google.guava:guava:31.0.1-jre')
     implementation "io.github.resilience4j:resilience4j-spring-boot2:1.7.0"
     implementation 'io.github.openfeign:feign-core'
