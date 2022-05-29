@@ -19,7 +19,7 @@ cd ../../ || exit
 cd streams-api-examples || exit
 echo "Run tests in streams-api-examples"
 ./gradlew test
-cd ../../ || exit
+cd .. || exit
 cd spring-boot-resilience4j || exit
 echo "Run tests in spring-boot-resilience4j"
 ./gradlew test
