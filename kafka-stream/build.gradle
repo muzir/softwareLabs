@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation ('org.apache.kafka:kafka-clients:3.2.1')
     // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams
-    implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '3.2.1'
+    implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '3.2.3'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
