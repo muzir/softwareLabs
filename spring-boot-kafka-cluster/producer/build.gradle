@@ -33,7 +33,7 @@ springBoot {
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('org.apache.kafka:kafka-clients:3.2.1')
+    implementation('org.apache.kafka:kafka-clients:3.3.0')
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
