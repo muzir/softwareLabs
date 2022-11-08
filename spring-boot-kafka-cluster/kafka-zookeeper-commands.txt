@@ -4,6 +4,7 @@ kafka-topics --list --zookeeper zookeeper-1:12181
 kafka-topics --describe --topic Product.change --zookeeper zookeeper-1:12181
 kafka-topics --delete --topic Product.change --zookeeper zookeeper-1:12181
 ./kafka-topics.sh --create  --zookeeper zookeeper-1:12181,zookeeper-2:22181,zookeeper-3:32181 --replication-factor 3 --partitions 3 --topic Product.change
+/kafka-topics.sh --create --bootstrap-server kafka-1:19092  kafka-2:29092 kafka-3:39092  --replication-factor 3 --partitions 3 --topic Product.change
 
 -- Zookeeper Commands
 
