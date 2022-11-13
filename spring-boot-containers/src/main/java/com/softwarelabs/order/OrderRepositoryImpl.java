@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -24,26 +25,24 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     private static final String CREATE_TIME = "create_time";
     private static final String UPDATE_TIME = "update_time";
 
-    private static final String[] INSERT_COLS = {ID, NAME, CREATE_TIME, UPDATE_TIME};
-
     private final Clock clock;
+    private final TransactionTemplate transactionTemplate;
 
-    public OrderRepositoryImpl(DataSource dataSource, Clock clock) {
+    public OrderRepositoryImpl(DataSource dataSource, Clock clock,
+                               TransactionTemplate transactionTemplate) {
         this.clock = clock;
+        this.transactionTemplate = transactionTemplate;
         setDataSource(dataSource);
     }
 
-    /*private static final String[] UPDATE_COLS = {};*/
-
     @Override
     public Order findById(UUID id) {
-        String selectSql = "SELECT * FROM " + TABLE + " WHERE id=:" + ID;
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, id);
-        getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, OrderRowMapper.class);
-        return null;
+        String selectSql = "SELECT * FROM " + TABLE + " WHERE id = :" + ID;
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, id.toString());
+        return getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new OrderRowMapper());
     }
 
-    public class OrderRowMapper implements RowMapper<Order> {
+    private class OrderRowMapper implements RowMapper<Order> {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
             Order order = new Order();
@@ -57,14 +56,15 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public void save(Order order) {
-        String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :createTime, :updateTime)";
+        String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :create_time, :update_time)";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
-        getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource);
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
     }
 
     private MapSqlParameterSource createSqlParameterSource(Order order) {
         MapSqlParameterSource mapParameterSource = new MapSqlParameterSource();
-        mapParameterSource.addValue(ID, order.getId());
+        mapParameterSource.addValue(ID, order.getId().toString());
         mapParameterSource.addValue(NAME, order.getName());
         mapParameterSource.addValue(CREATE_TIME,
                 new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
@@ -75,5 +75,9 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public void update(Order order) {
+        String updateSql = "UPDATE " + TABLE + " SET " + "name=:name, update_time=:update_time where id=:id";
+        SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
     }
 }
