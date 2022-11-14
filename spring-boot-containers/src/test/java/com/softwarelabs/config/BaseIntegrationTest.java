@@ -1,7 +1,7 @@
 package com.softwarelabs.config;
 
 import com.softwarelabs.App;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,8 +18,8 @@ public class BaseIntegrationTest {
 
     private String[] tablesToCleanUp = {"orders", "product"};
 
-    @AfterEach
-    void tearDown() {
+    @Before
+    public void tearDown() {
         Arrays.stream(tablesToCleanUp).forEach(table -> {
             jdbcTemplate.execute("TRUNCATE TABLE " + table);
         });
