@@ -18,7 +18,16 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @Slf4j
-/*https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.*/
+/*
+*
+- Spring transaction management use-case in card-management.
+- What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
+    - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
+    - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
+    - Spring Doc DEFAULT -> https://docs.spring.io/spring-framework/docs/4.1.5.RELEASE/spring-framework-reference/html/transaction.html#transaction-declarative-attransactional-settings
+- What is the default isolation level of the Postgres database? -> Default isolation level
+    - https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.
+* */
 public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest {
 
     @Autowired
