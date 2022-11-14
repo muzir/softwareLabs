@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @Slf4j
 /*
-https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.
 *
 - Spring transaction management use-case in card-management.
 - What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
