@@ -1,4 +1,4 @@
-package com.softwarelabs.product;
+package com.softwarelabs.order;
 
 import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.order.Order;
