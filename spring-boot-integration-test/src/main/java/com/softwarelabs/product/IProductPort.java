@@ -1,12 +1,12 @@
 package com.softwarelabs.product;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public interface IProductPort {
 
@@ -37,6 +37,7 @@ public interface IProductPort {
 	@Data
 	@Accessors(chain = true) class ProductRequest {
 		@NotNull private Long id;
-		@NotNull private String name;
+		@NotNull
+		private String name;
 	}
 }
