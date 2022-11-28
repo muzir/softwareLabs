@@ -21,6 +21,8 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility = '17'
+
 springBoot {
     buildInfo {
         properties {
