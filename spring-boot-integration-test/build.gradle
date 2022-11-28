@@ -5,15 +5,9 @@
  * For more details take a look at the Java Quickstart chapter in the Gradle
  * user guide available at https://docs.gradle.org/4.6/userguide/tutorial_java_projects.html
  */
-buildscript {
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:3.0.0")
-    }
-}
-
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.0'
+    id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
