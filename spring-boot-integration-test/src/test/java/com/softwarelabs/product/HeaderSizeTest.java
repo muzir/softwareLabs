@@ -41,6 +41,6 @@ public class HeaderSizeTest {
         ResponseEntity<String> responseEntity =
                 restTemplate.exchange("http://localhost:" + port + "/v1/product/" + productId, HttpMethod.GET,
                         httpEntity, String.class);
-        assertTrue(responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
     }
 }
