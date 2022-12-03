@@ -1,0 +1,17 @@
+server:
+  max-http-header-size: 10KB
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+environment: dev
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+environment: test
+server:
+  max-http-header-size: 10KB
