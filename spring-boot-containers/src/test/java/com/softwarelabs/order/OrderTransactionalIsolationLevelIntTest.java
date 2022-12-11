@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 /*
 *
-- Spring transaction management use-case in card-management.
+- Spring transaction management use-case with order domain.
 - What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
     - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
     - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
