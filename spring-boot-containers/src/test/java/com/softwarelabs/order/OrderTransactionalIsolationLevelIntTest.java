@@ -71,6 +71,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         UUID id = UUID.randomUUID();
         Order order = new Order();
         order.setName(orderName);
+        order.setStatus(OrderStatus.NEW);
         order.setId(id);
         orderRepository.save(order);
         return id;

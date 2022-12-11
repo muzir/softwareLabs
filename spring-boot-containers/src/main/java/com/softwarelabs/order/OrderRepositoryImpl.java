@@ -22,6 +22,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     private static final String ID = "id";
     private static final String NAME = "name";
+    private static final String ORDER_STATUS = "order_status";
     private static final String CREATE_TIME = "create_time";
     private static final String UPDATE_TIME = "update_time";
 
@@ -48,6 +49,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
             Order order = new Order();
             order.setId(UUID.fromString(rs.getString(ID)));
             order.setName(rs.getString(NAME));
+            order.setStatus(OrderStatus.valueOf(rs.getString(ORDER_STATUS)));
             order.setCreateTime(rs.getTimestamp(CREATE_TIME).toInstant());
             order.setUpdateTime(rs.getTimestamp(UPDATE_TIME).toInstant());
             return order;
@@ -56,7 +58,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public void save(Order order) {
-        String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :create_time, :update_time)";
+        String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :order_status, :create_time, :update_time)";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
@@ -66,6 +68,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         MapSqlParameterSource mapParameterSource = new MapSqlParameterSource();
         mapParameterSource.addValue(ID, order.getId().toString());
         mapParameterSource.addValue(NAME, order.getName());
+        mapParameterSource.addValue(ORDER_STATUS, order.getStatus().name());
         mapParameterSource.addValue(CREATE_TIME,
                 new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
         mapParameterSource.addValue(UPDATE_TIME,
@@ -75,7 +78,8 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public void update(Order order) {
-        String updateSql = "UPDATE " + TABLE + " SET " + "name=:name, update_time=:update_time where id=:id";
+        String updateSql = "UPDATE " + TABLE + " SET " +
+                "name=:name, order_status=:order_status, update_time=:update_time where id=:id";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
