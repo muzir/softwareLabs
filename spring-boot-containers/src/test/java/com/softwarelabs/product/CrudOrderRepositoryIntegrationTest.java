@@ -3,6 +3,7 @@ package com.softwarelabs.product;
 import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.order.Order;
 import com.softwarelabs.order.OrderRepository;
+import com.softwarelabs.order.OrderStatus;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ public class CrudOrderRepositoryIntegrationTest extends BaseIntegrationTest {
         String orderName = "order001";
         Order order = new Order();
         order.setName(orderName);
+        order.setStatus(OrderStatus.NEW);
         UUID id = UUID.randomUUID();
         order.setId(id);
         orderRepository.save(order);
@@ -35,6 +37,7 @@ public class CrudOrderRepositoryIntegrationTest extends BaseIntegrationTest {
 
         Order order = new Order();
         order.setName(orderName);
+        order.setStatus(OrderStatus.NEW);
         UUID id = UUID.randomUUID();
         order.setId(id);
         orderRepository.save(order);
