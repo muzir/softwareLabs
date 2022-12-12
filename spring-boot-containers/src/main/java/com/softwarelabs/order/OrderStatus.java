@@ -1,5 +1,5 @@
 package com.softwarelabs.order;
 
 public enum OrderStatus {
-    NEW, PROCESSED;
+    NEW, IN_PROGRESS, PROCESSED;
 }
