@@ -1,8 +1,6 @@
 package com.softwarelabs.order;
 
 import com.softwarelabs.config.BaseIntegrationTest;
-import com.softwarelabs.order.Order;
-import com.softwarelabs.order.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -20,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 /*
 *
-- Spring transaction management use-case in card-management.
+- Spring transaction management use-case with order domain.
 - What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
     - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
     - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
@@ -41,7 +39,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     public void testReadCommittedIsolationLevel_withSingleTransaction() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(runnableThread(orderId));
+        executorService.execute(thread1(orderId));
         gracefullyShutdown(executorService);
     }
 
@@ -49,8 +47,8 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     public void testReadCommittedIsolationLevel_withMultipleThreads() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        executorService.execute(delayedRunnableThread(orderId));
-        executorService.execute(runnableThread(orderId));
+        executorService.execute(thread2(orderId));
+        executorService.execute(thread1(orderId));
         gracefullyShutdown(executorService);
     }
 
@@ -71,43 +69,44 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         UUID id = UUID.randomUUID();
         Order order = new Order();
         order.setName(orderName);
+        order.setStatus(OrderStatus.NEW);
         order.setId(id);
         orderRepository.save(order);
         return id;
     }
 
     @NotNull
-    private Runnable runnableThread(UUID orderId) {
+    private Runnable thread1(UUID orderId) {
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
             delay(100l);
-            log.info("Runnable thread is starting");
+            log.info("thread1 is starting");
             var orderAfterInsert = orderRepository.findById(orderId);
-            log.info("Runnable thread - orderAfterInsert orderName= {}", orderAfterInsert.getName());
+            log.info("thread1 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
 
-            orderAfterInsert.setName("order002");
+            orderAfterInsert.setStatus(OrderStatus.IN_PROGRESS);
             orderRepository.update(orderAfterInsert);
-            log.info("Runnable thread is updated");
+            log.info("thread1 is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("Runnable thread - orderAfterUpdate orderName= {}", orderAfterUpdate.getName());
-            log.info("Runnable thread is finished");
+            log.info("thread1 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
+            log.info("thread1 is committing");
         });
     }
 
     @NotNull
-    private Runnable delayedRunnableThread(UUID orderId) {
+    private Runnable thread2(UUID orderId) {
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
-            log.info("Delayed runnable thread is starting");
+            log.info("thread2 is starting");
 
             var orderAfterInsert = orderRepository.findById(orderId);
-            log.info("Delayed runnable thread - orderAfterInsert orderName= {}", orderAfterInsert.getName());
+            log.info("thread2 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
 
-            orderAfterInsert.setName("order003");
+            orderAfterInsert.setStatus(OrderStatus.PROCESSED);
             orderRepository.update(orderAfterInsert);
-            log.info("Delayed runnable thread is updated");
+            log.info("thread2 is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("Delayed runnable thread - orderAfterUpdate orderName= {}", orderAfterUpdate.getName());
+            log.info("thread2 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
             delay(500l);
-            log.info("Delayed runnable thread is finished");
+            log.info("thread2 is committing");
         });
     }
 
