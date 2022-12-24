@@ -1,0 +1,40 @@
+server.port: 12345
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: spring-boot-containers
+  datasource:
+    driver-class-name: ${ENV_DRIVER_CLASS_NAME}
+    url: ${ENV_DATASOURCE_URL}
+    username: ${ENV_DATASOURCE_SERVICE_USERNAME}
+    password: ${ENV_DATASOURCE_SERVICE_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.lob.non_contextual_creation: true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
+ENV_DATASOURCE_SERVICE_USERNAME: dbuser
+ENV_DATASOURCE_SERVICE_PASSWORD: password
+ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: integration
+
