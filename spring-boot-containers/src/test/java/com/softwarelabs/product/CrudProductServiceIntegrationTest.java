@@ -8,20 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
+import java.util.Random;
 
 @RunWith(SpringRunner.class)
 public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
-	@Autowired
-	private ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-	@Test
-	public void returnProductName_ifProductSavedBefore() {
-		String productName = "product001";
-		PersistantProduct product = new PersistantProduct(productName);
-		productRepository.save(product);
-		Optional<Product> actualProduct = productRepository.findByName(productName);
-		Assert.assertTrue(actualProduct.isPresent());
-		Assert.assertEquals(productName, actualProduct.get().name());
-	}
+    @Test
+    public void returnProductName_ifProductSavedBefore() {
+        String productName = "product001";
+        PersistantProduct product = new PersistantProduct();
+        product.setId(new Random().nextLong());
+        product.setName(productName);
+        productRepository.save(product);
+        Optional<Product> actualProduct = productRepository.findByName(productName);
+        Assert.assertTrue(actualProduct.isPresent());
+        Assert.assertEquals(productName, actualProduct.get().name());
+    }
 }
