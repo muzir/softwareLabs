@@ -40,6 +40,12 @@ jobs:
 
       - run: ./gradlew dependencies
 
+      - run:
+          name: Java version
+
+          command: |
+            java --version
+
       - save_cache:
           paths:
             - ~/.gradle
