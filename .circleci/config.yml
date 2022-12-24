@@ -16,7 +16,7 @@ jobs:
             find . -type f -name '*.sh' | xargs shellcheck --external-sources
   build-test:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2204:2022.04.2
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
