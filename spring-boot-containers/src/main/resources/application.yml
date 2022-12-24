@@ -1,8 +1,9 @@
-spring.profiles.active: dev
-
 server.port: 12345
 
 spring:
+  config:
+    activate:
+      on-profile: dev
   application:
     name: spring-boot-containers
   datasource:
@@ -18,7 +19,10 @@ spring:
 
 ---
 
-spring.profiles: dev
+spring:
+  config:
+    activate:
+      on-profile: dev
 
 
 ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
@@ -29,5 +33,8 @@ ENV_DRIVER_CLASS_NAME: org.postgresql.Driver
 
 ---
 
-spring.profiles: integration
+spring:
+  config:
+    activate:
+      on-profile: integration
 
