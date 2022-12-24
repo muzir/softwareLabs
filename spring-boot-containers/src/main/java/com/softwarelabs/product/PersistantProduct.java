@@ -1,28 +1,28 @@
 package com.softwarelabs.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 
 @Getter
 @Setter
-@Entity
-@Table(name = "product")
-public class PersistantProduct extends AbstractPersistable<Long> implements Product {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PersistantProduct implements Product {
     private String name;
 
-    public PersistantProduct() {
-    }
-
-    public PersistantProduct(String name) {
-        this.name = name;
-    }
+    private Long id;
 
     @Override
     public String name() {
         return name;
+    }
+
+    @Override
+    public Long id() {
+        return id;
     }
 }
