@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -60,6 +61,17 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
         return product;
+    }
+
+    @Override
+    public void updateProductPrice(String productName, BigDecimal price) {
+        String updateSql = "UPDATE " + TABLE + " SET " +
+                "price=:price where name=:name";
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue(NAME, productName);
+        sqlParameterSource.addValue(PRICE, price);
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
     }
 
     private MapSqlParameterSource createSqlParameterSource(Product product) {
