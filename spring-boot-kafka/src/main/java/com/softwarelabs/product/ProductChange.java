@@ -1,38 +1,32 @@
 package com.softwarelabs.product;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductChange implements Product {
 
-	private final String name;
-	private final BigDecimal price;
+    private String name;
+    private BigDecimal price;
 
-	public ProductChange() {
-		this.name = "";
-		this.price = BigDecimal.ZERO;
-	}
+    @Override
+    public Long id() {
+        return null;
+    }
 
-	public ProductChange(String name, BigDecimal price) {
-		this.name = name;
-		this.price = price;
-	}
+    @Override
+    public String name() {
+        return name;
+    }
 
-	@Override
-	public Long id() {
-		return null;
-	}
-
-	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
-	public BigDecimal price() {
-		return price;
-	}
+    @Override
+    public BigDecimal price() {
+        return price;
+    }
 
 }

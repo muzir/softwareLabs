@@ -1,8 +1,8 @@
-spring.profiles.active: dev
-
-server.port: 12345
-
 spring:
+  port: 12345
+  config:
+    activate:
+      on-profile: dev
   application:
     name: spring-boot-kafka
   datasource:
@@ -22,7 +22,10 @@ logging:
         hikari: DEBUG
 ---
 
-spring.profiles: dev
+spring:
+  config:
+    activate:
+      on-profile: dev
 
 
 ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
@@ -35,5 +38,8 @@ ENV_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
 
 ---
 
-spring.profiles: integration
+spring:
+  config:
+    activate:
+      on-profile: integration
 
