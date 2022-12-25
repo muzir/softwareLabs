@@ -1,5 +1,7 @@
 package com.softwarelabs.product;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.http.MediaType;
@@ -9,21 +11,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 
 public interface IProductPort {
 
     @PostMapping(
             value = "/v1/product",
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
 
     @GetMapping(
             value = "/v1/product/{productId}",
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     ProductResponse getProductById(@PathVariable("productId") Long productId);
 
