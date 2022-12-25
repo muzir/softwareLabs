@@ -1,5 +1,6 @@
 package com.softwarelabs.product;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -32,8 +33,13 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
     public Optional<Product> findByName(String name) {
         String selectSql = "SELECT * FROM " + TABLE + " WHERE name = :" + NAME;
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(NAME, name);
-        return Optional.ofNullable(
-                getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new ProductRowMapper()));
+        try {
+            return Optional.ofNullable(
+                    getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource,
+                            new ProductRowMapper()));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     private class ProductRowMapper implements RowMapper<Product> {
