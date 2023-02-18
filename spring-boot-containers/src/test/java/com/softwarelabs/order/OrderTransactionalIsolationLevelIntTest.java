@@ -52,6 +52,18 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         gracefullyShutdown(executorService);
     }
 
+    @Test
+    public void testPessimisticLocking_withMultipleThreads() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        // Get order by id and lock the row for update and update the status to IN_PROGRESS
+        // Get order by id and lock the row for update and update the status to PROCESSED
+        executorService.execute(thread3(orderId));
+        executorService.execute(thread4(orderId));
+        // log result
+        gracefullyShutdown(executorService);
+    }
+
     private void gracefullyShutdown(ExecutorService executorService) {
         executorService.shutdown();
         try {
@@ -107,6 +119,44 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
             log.info("thread2 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
             delay(500l);
             log.info("thread2 is committing");
+        });
+    }
+
+    @NotNull
+    private Runnable thread3(UUID orderId) {
+
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+            log.info("thread3 is starting");
+
+            var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
+            delay(150l);
+            log.info("thread3 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
+
+            orderAfterInsert.setStatus(OrderStatus.IN_PROGRESS);
+            orderRepository.update(orderAfterInsert);
+            log.info("thread3 is updated");
+            var orderAfterUpdate = orderRepository.findById(orderId);
+            log.info("thread3 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
+            //delay(500l);
+            log.info("thread3 is committing");
+        });
+    }
+
+    @NotNull
+    private Runnable thread4(UUID orderId) {
+        delay(100l);
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+
+            log.info("thread4 is starting");
+            var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
+            log.info("thread4 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
+
+            orderAfterInsert.setStatus(OrderStatus.PROCESSED);
+            orderRepository.update(orderAfterInsert);
+            log.info("thread4 is updated");
+            var orderAfterUpdate = orderRepository.findById(orderId);
+            log.info("thread4 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
+            log.info("thread4 is committing");
         });
     }
 
