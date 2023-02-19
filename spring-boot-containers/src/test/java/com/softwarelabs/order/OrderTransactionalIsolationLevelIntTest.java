@@ -130,14 +130,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
             delay(150l);
-            log.info("thread3 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
+            log.info("thread3 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
+                    orderAfterInsert.getName());
 
             orderAfterInsert.setStatus(OrderStatus.IN_PROGRESS);
             orderRepository.update(orderAfterInsert);
             log.info("thread3 is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("thread3 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
-            //delay(500l);
+            log.info("thread3 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
+                    orderAfterUpdate.getName());
             log.info("thread3 is committing");
         });
     }
@@ -149,13 +150,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
             log.info("thread4 is starting");
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
-            log.info("thread4 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
+            log.info("thread4 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
+                    orderAfterInsert.getName());
 
-            orderAfterInsert.setStatus(OrderStatus.PROCESSED);
+            orderAfterInsert.setName("New_Order_Name");
             orderRepository.update(orderAfterInsert);
             log.info("thread4 is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("thread4 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
+            log.info("thread4 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
+                    orderAfterUpdate.getName());
             log.info("thread4 is committing");
         });
     }
