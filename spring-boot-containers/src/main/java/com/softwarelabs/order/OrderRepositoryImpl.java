@@ -43,6 +43,13 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         return getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new OrderRowMapper());
     }
 
+    @Override
+    public Order findByIdForUpdate(UUID id) {
+        String selectSql = "SELECT * FROM " + TABLE + " WHERE id = :" + ID + " FOR UPDATE";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, id.toString());
+        return getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new OrderRowMapper());
+    }
+
     private class OrderRowMapper implements RowMapper<Order> {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringRunner.class)
 @Slf4j
 /*
@@ -50,6 +52,27 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         executorService.execute(thread2(orderId));
         executorService.execute(thread1(orderId));
         gracefullyShutdown(executorService);
+    }
+
+    @Test
+    public void testPessimisticLocking_withMultipleThreads() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        // Get order by id and lock the row for update and update the status to IN_PROGRESS
+        var orderStatus = OrderStatus.IN_PROGRESS;
+        executorService.execute(updateStatusRequest(orderId, orderStatus));
+        // Get order by id and lock the row for update and update the name to "New_Order_Name"
+        var newOrderName = "New_Order_Name";
+        executorService.execute(updateNameRequest(orderId, newOrderName));
+        gracefullyShutdown(executorService);
+        // assert result
+        assertOrderStatusAndName(orderId, orderStatus, newOrderName);
+    }
+
+    private void assertOrderStatusAndName(UUID orderId, OrderStatus orderStatus, String newOrderName) {
+        var order = orderRepository.findById(orderId);
+        assertEquals(newOrderName, order.getName());
+        assertEquals(orderStatus, order.getStatus());
     }
 
     private void gracefullyShutdown(ExecutorService executorService) {
@@ -107,6 +130,47 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
             log.info("thread2 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
             delay(500l);
             log.info("thread2 is committing");
+        });
+    }
+
+    @NotNull
+    private Runnable updateStatusRequest(UUID orderId, OrderStatus orderStatus) {
+
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+            log.info("thread3 is starting");
+
+            var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
+            delay(150l);
+            log.info("thread3 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
+                    orderAfterInsert.getName());
+
+            orderAfterInsert.setStatus(orderStatus);
+            orderRepository.update(orderAfterInsert);
+            log.info("thread3 is updated");
+            var orderAfterUpdate = orderRepository.findById(orderId);
+            log.info("thread3 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
+                    orderAfterUpdate.getName());
+            log.info("thread3 is committing");
+        });
+    }
+
+    @NotNull
+    private Runnable updateNameRequest(UUID orderId, String orderName) {
+        delay(100l);
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+
+            log.info("thread4 is starting");
+            var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
+            log.info("thread4 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
+                    orderAfterInsert.getName());
+
+            orderAfterInsert.setName(orderName);
+            orderRepository.update(orderAfterInsert);
+            log.info("thread4 is updated");
+            var orderAfterUpdate = orderRepository.findById(orderId);
+            log.info("thread4 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
+                    orderAfterUpdate.getName());
+            log.info("thread4 is committing");
         });
     }
 
