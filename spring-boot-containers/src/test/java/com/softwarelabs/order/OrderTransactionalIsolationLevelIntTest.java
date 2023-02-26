@@ -90,10 +90,10 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private UUID saveOrder() {
         String orderName = "order001";
         UUID id = UUID.randomUUID();
-        Order order = new Order();
-        order.setName(orderName);
-        order.setStatus(OrderStatus.NEW);
-        order.setId(id);
+        Order order = Order.builder()
+                .name(orderName)
+                .status(OrderStatus.NEW)
+                .id(id).build();
         orderRepository.save(order);
         return id;
     }

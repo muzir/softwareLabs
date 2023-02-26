@@ -21,11 +21,11 @@ public class CrudOrderRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     public void returnOrderName_ifOrderSavedBefore() {
         String orderName = "order001";
-        Order order = new Order();
-        order.setName(orderName);
-        order.setStatus(OrderStatus.NEW);
         UUID id = UUID.randomUUID();
-        order.setId(id);
+        Order order = Order.builder()
+                .name(orderName)
+                .status(OrderStatus.NEW)
+                .id(id).build();
         orderRepository.save(order);
         Order actualOrder = orderRepository.findById(id);
         Assert.assertEquals(orderName, actualOrder.getName());
@@ -34,12 +34,12 @@ public class CrudOrderRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     public void returnUpdatedOrderName_ifOrderUpdateWorks() {
         String orderName = "order001";
-
-        Order order = new Order();
-        order.setName(orderName);
-        order.setStatus(OrderStatus.NEW);
         UUID id = UUID.randomUUID();
-        order.setId(id);
+
+        var order = Order.builder()
+                .name(orderName)
+                .status(OrderStatus.NEW)
+                .id(id).build();
         orderRepository.save(order);
         Order actualOrder = orderRepository.findById(id);
         Assert.assertEquals(orderName, actualOrder.getName());

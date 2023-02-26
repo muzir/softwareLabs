@@ -19,7 +19,6 @@ import java.util.UUID;
 @Repository
 public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements OrderRepository {
     private static final String TABLE = "orders";
-
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String ORDER_STATUS = "order_status";
@@ -53,13 +52,12 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     private class OrderRowMapper implements RowMapper<Order> {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Order order = new Order();
-            order.setId(UUID.fromString(rs.getString(ID)));
-            order.setName(rs.getString(NAME));
-            order.setStatus(OrderStatus.valueOf(rs.getString(ORDER_STATUS)));
-            order.setCreateTime(rs.getTimestamp(CREATE_TIME).toInstant());
-            order.setUpdateTime(rs.getTimestamp(UPDATE_TIME).toInstant());
-            return order;
+            return Order.builder()
+                    .id(UUID.fromString(rs.getString(ID)))
+                    .name(rs.getString(NAME))
+                    .status(OrderStatus.valueOf(rs.getString(ORDER_STATUS)))
+                    .createTime(rs.getTimestamp(CREATE_TIME).toInstant())
+                    .updateTime(rs.getTimestamp(UPDATE_TIME).toInstant()).build();
         }
     }
 
