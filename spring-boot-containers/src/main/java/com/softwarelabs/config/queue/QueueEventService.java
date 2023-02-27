@@ -9,18 +9,26 @@ import java.util.List;
 @Service
 public class QueueEventService {
 
-    private List<QueueEventHandler> handlers;
+    private final List<QueueEventHandler> handlers;
+
+    private final QueueEventRepository queueEventRepository;
 
     @Autowired
-    public QueueEventService(List<QueueEventHandler> handlers) {
+    public QueueEventService(List<QueueEventHandler> handlers,
+                             QueueEventRepository queueEventRepository) {
         this.handlers = handlers;
+        this.queueEventRepository = queueEventRepository;
     }
 
     public void process(Collection<QueueEvent> queueEvents) {
+
         queueEvents.forEach(queueEvent -> {
             handlers.stream()
                     .filter(h -> h.match(queueEvent))
-                    .forEach(queueEventHandler -> queueEventHandler.process(queueEvent));
+                    .forEach(queueEventHandler -> {
+                        queueEventHandler.process(queueEvent);
+                        queueEventRepository.delete(queueEvent.getId());
+                    });
         });
     }
 }

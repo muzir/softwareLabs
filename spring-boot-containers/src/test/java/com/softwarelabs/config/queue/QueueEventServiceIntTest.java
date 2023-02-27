@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 public class QueueEventServiceIntTest extends BaseIntegrationTest {
@@ -30,17 +31,35 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
     QueueEventService queueEventService;
 
     @Test
-    public void processEventHandlerSuccessfully() throws JsonProcessingException, ClassNotFoundException {
+    public void processEventHandlerSuccessfully() throws JsonProcessingException {
+        // given
         var orderName = "newOrderName";
         var orderStatus = OrderStatus.NEW;
-        var queueEventId = UUID.randomUUID();
         var orderId = UUID.randomUUID();
 
         givenOrder(orderName, orderStatus, orderId);
 
-
+        var queueEventId = UUID.randomUUID();
         var newOrderName = "newOrderName";
-        var updateOrderCommand = new UpdateOrderCommand(newOrderName, orderStatus, orderId);
+        var newOrderStatus = OrderStatus.IN_PROGRESS;
+        var updateOrderCommand = new UpdateOrderCommand(newOrderName, newOrderStatus, orderId);
+        QueueEvent queueEvent = givenQueueEvent(queueEventId, updateOrderCommand);
+
+        // when
+        queueEventService.process(List.of(queueEvent));
+
+        // then
+        var updatedOrder = orderRepository.findById(orderId);
+        assertEquals(newOrderStatus, updatedOrder.getStatus());
+        assertEquals(newOrderName, updatedOrder.getName());
+
+        var optionalQueueEventActual = queueEventRepository.findById(queueEventId);
+        assertTrue(optionalQueueEventActual.isEmpty());
+
+    }
+
+    private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderCommand updateOrderCommand)
+            throws JsonProcessingException {
         var objectMapper = new ObjectMapper();
         var queueEvent = QueueEvent.builder()
                 .id(queueEventId)
@@ -52,11 +71,10 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
                 .build();
         queueEventRepository.save(queueEvent);
 
-        queueEventService.process(List.of(queueEvent));
-
         var queueEventActual = queueEventRepository.findById(queueEventId).orElseThrow();
-        assertEquals(EventState.DONE, queueEventActual.getState());
-        assertEquals(1, queueEventActual.getRetryCount());
+        assertEquals(EventState.OPEN, queueEventActual.getState());
+        assertEquals(0, queueEventActual.getRetryCount());
+        return queueEvent;
     }
 
     private void givenOrder(String orderName, OrderStatus orderStatus, UUID orderId) {

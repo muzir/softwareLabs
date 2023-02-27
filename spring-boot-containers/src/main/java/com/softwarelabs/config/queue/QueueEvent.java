@@ -17,5 +17,4 @@ public class QueueEvent {
     private final EventState state;
     private final Instant createTime;
     private final Instant updateTime;
-
 }

@@ -2,11 +2,18 @@ package com.softwarelabs.config.queue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softwarelabs.order.OrderRepository;
 import com.softwarelabs.order.UpdateOrderCommand;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
+
+    private final OrderRepository orderRepository;
+
+    public UpdateOrderCommandQueueEventHandler(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @Override
     public boolean match(QueueEvent queueEvent) {
@@ -22,8 +29,9 @@ public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
         try {
             var objectMapper = new ObjectMapper();
             var updateOrderCommand =
-                    objectMapper.readValue(queueEvent.getData(), Class.forName(queueEvent.getClassType()));
-            System.out.println(updateOrderCommand);
+                    (UpdateOrderCommand) objectMapper.readValue(queueEvent.getData(),
+                            Class.forName(queueEvent.getClassType()));
+            orderRepository.update(updateOrderCommand);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

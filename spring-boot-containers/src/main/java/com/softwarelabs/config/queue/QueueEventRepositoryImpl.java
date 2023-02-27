@@ -1,5 +1,6 @@
 package com.softwarelabs.config.queue;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -14,6 +15,8 @@ import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,10 +46,21 @@ public class QueueEventRepositoryImpl extends NamedParameterJdbcDaoSupport imple
     }
 
     public Optional<QueueEvent> findById(UUID queueEventId) {
-        String selectSql = "SELECT * FROM " + TABLE + " WHERE id = :" + ID;
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, queueEventId.toString());
-        return Optional.ofNullable(getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource,
-                new QueueEventRowMapper()));
+        try {
+            String selectSql = "SELECT * FROM " + TABLE + " WHERE id = :" + ID;
+            SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, queueEventId.toString());
+            return Optional.ofNullable(getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource,
+                    new QueueEventRowMapper()));
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            return Optional.empty();
+        }
+
+    }
+
+    @Override
+    public List<QueueEvent> findAll() {
+        // TODO Implement find all
+        return null;
     }
 
     private class QueueEventRowMapper implements RowMapper<QueueEvent> {
@@ -72,6 +86,15 @@ public class QueueEventRepositoryImpl extends NamedParameterJdbcDaoSupport imple
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
     }
 
+    @Override
+    public void delete(UUID id) {
+        String deleteSql = "DELETE FROM " + TABLE +
+                " WHERE id=:" + ID;
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> getNamedParameterJdbcTemplate().update(deleteSql, Map.of(ID, id.toString())));
+
+    }
+
     private MapSqlParameterSource createSqlParameterSource(QueueEvent queueEvent) {
         MapSqlParameterSource mapParameterSource = new MapSqlParameterSource();
         mapParameterSource.addValue(ID, queueEvent.getId().toString());
@@ -86,5 +109,4 @@ public class QueueEventRepositoryImpl extends NamedParameterJdbcDaoSupport imple
                 new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
         return mapParameterSource;
     }
-
 }

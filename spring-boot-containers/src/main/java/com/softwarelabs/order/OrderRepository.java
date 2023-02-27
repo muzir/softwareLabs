@@ -7,4 +7,5 @@ public interface OrderRepository {
     Order findByIdForUpdate(UUID id);
     void save(Order order);
     void update(Order order);
+    void update(UpdateOrderCommand updateOrderCommand);
 }
