@@ -18,16 +18,15 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @Slf4j
-/*
-*
-- Spring transaction management use-case with order domain.
-- What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
-    - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
-    - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
-    - Spring Doc DEFAULT -> https://docs.spring.io/spring-framework/docs/4.1.5.RELEASE/spring-framework-reference/html/transaction.html#transaction-declarative-attransactional-settings
-- What is the default isolation level of the Postgres database? -> Default isolation level
-    - https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.
-* */
+/**
+ - Spring transaction management use-case with order domain.
+ - What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
+ - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
+ - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
+ - Spring Doc DEFAULT -> https://docs.spring.io/spring-framework/docs/4.1.5.RELEASE/spring-framework-reference/html/transaction.html#transaction-declarative-attransactional-settings
+ - What is the default isolation level of the Postgres database? -> Default isolation level
+ - https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.
+ * */
 public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest {
 
     @Autowired
@@ -35,6 +34,9 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
     @Autowired
     TransactionTemplate transactionTemplate;
+
+    @Autowired
+    OrderService orderService;
 
 
     @Test
@@ -60,10 +62,25 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         // Get order by id and lock the row for update and update the status to IN_PROGRESS
         var orderStatus = OrderStatus.IN_PROGRESS;
-        executorService.execute(updateStatusRequest(orderId, orderStatus));
+        executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, orderStatus));
         // Get order by id and lock the row for update and update the name to "New_Order_Name"
         var newOrderName = "New_Order_Name";
-        executorService.execute(updateNameRequest(orderId, newOrderName));
+        executorService.execute(updateNameRequestWithPessimisticLocking(orderId, newOrderName));
+        gracefullyShutdown(executorService);
+        // assert result
+        assertOrderStatusAndName(orderId, orderStatus, newOrderName);
+    }
+
+    @Test
+    public void testOptimisticLocking_withMultipleThreads() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        // Get order by id and lock the row for update and update the status to IN_PROGRESS
+        var orderStatus = OrderStatus.IN_PROGRESS;
+        executorService.execute(updateStatusRequestWithOptimisticLocking(orderId, orderStatus));
+        // Get order by id and lock the row for update and update the name to "New_Order_Name"
+        var newOrderName = "New_Order_Name";
+        executorService.execute(updateNameRequestWithOptimisticLocking(orderId, newOrderName));
         gracefullyShutdown(executorService);
         // assert result
         assertOrderStatusAndName(orderId, orderStatus, newOrderName);
@@ -90,10 +107,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private UUID saveOrder() {
         String orderName = "order001";
         UUID id = UUID.randomUUID();
-        Order order = Order.builder()
-                .name(orderName)
-                .status(OrderStatus.NEW)
-                .id(id).build();
+        Order order = Order.builder().name(orderName).status(OrderStatus.NEW).id(id).build();
         orderRepository.save(order);
         return id;
     }
@@ -134,44 +148,55 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     }
 
     @NotNull
-    private Runnable updateStatusRequest(UUID orderId, OrderStatus orderStatus) {
+    private Runnable updateStatusRequestWithPessimisticLocking(UUID orderId, OrderStatus orderStatus) {
 
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
-            log.info("thread3 is starting");
+            log.info("updateStatusRequest is starting");
 
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
             delay(150l);
-            log.info("thread3 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
-                    orderAfterInsert.getName());
+            log.info("updateStatusRequest - orderAfterInsert orderStatus= {}, orderName: {}",
+                    orderAfterInsert.getStatus(), orderAfterInsert.getName());
 
             orderAfterInsert.setStatus(orderStatus);
             orderRepository.update(orderAfterInsert);
-            log.info("thread3 is updated");
+            log.info("Status is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("thread3 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
-                    orderAfterUpdate.getName());
-            log.info("thread3 is committing");
+            log.info("updateStatusRequest - orderAfterUpdate orderStatus= {}, orderName: {}",
+                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName());
+            log.info("updateStatusRequest is committing");
         });
     }
 
     @NotNull
-    private Runnable updateNameRequest(UUID orderId, String orderName) {
+    private Runnable updateNameRequestWithPessimisticLocking(UUID orderId, String orderName) {
         delay(100l);
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
 
-            log.info("thread4 is starting");
+            log.info("updateNameRequest is starting");
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
-            log.info("thread4 - orderAfterInsert orderStatus= {}, orderName: {}", orderAfterInsert.getStatus(),
-                    orderAfterInsert.getName());
+            log.info("updateNameRequest - orderAfterInsert orderStatus= {}, orderName: {}",
+                    orderAfterInsert.getStatus(), orderAfterInsert.getName());
 
             orderAfterInsert.setName(orderName);
             orderRepository.update(orderAfterInsert);
-            log.info("thread4 is updated");
+            log.info("Name is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("thread4 - orderAfterUpdate orderStatus= {}, orderName: {}", orderAfterUpdate.getStatus(),
-                    orderAfterUpdate.getName());
-            log.info("thread4 is committing");
+            log.info("updateNameRequest - orderAfterUpdate orderStatus= {}, orderName: {}",
+                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName());
+            log.info("updateNameRequest is committing");
         });
+    }
+
+    @NotNull
+    private Runnable updateNameRequestWithOptimisticLocking(UUID orderId, String orderName) {
+        delay(100l);
+        return () -> orderService.updateNameRequestWithOptimisticLocking(orderId, orderName);
+    }
+
+    @NotNull
+    private Runnable updateStatusRequestWithOptimisticLocking(UUID orderId, OrderStatus orderStatus) {
+        return () -> orderService.updateStatusRequestWithOptimisticLocking(orderId, orderStatus);
     }
 
     private void delay(long delayInMilliseconds) {

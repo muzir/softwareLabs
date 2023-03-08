@@ -91,6 +91,18 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
                 transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
     }
 
+    public void updateWithOptimisticLocking(Order order) {
+        String updateSql = "UPDATE " + TABLE + " SET " +
+                "name=:name, order_status=:order_status, update_time=:update_time where id=:id and version=:version";
+        SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> {
+                    if (getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource) == 0) {
+                        // throw Exception
+                    }
+                });
+    }
+
     @Override
     public void update(UpdateOrderCommand updateOrderCommand) {
         String updateSql = "UPDATE " + TABLE + " SET " +

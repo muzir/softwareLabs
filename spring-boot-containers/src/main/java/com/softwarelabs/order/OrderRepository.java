@@ -8,4 +8,5 @@ public interface OrderRepository {
     void save(Order order);
     void update(Order order);
     void update(UpdateOrderCommand updateOrderCommand);
+    void updateWithOptimisticLocking(Order order);
 }
