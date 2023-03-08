@@ -16,7 +16,7 @@ public class BaseIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private String[] tablesToCleanUp = {"orders", "product"};
+    private String[] tablesToCleanUp = {"orders", "product", "queue_events"};
 
     @Before
     public void tearDown() {
