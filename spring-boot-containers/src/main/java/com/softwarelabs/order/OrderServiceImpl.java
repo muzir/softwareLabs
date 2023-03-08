@@ -26,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
                     orderAfterInsert.getStatus(), orderAfterInsert.getName());
 
             orderAfterInsert.setStatus(orderStatus);
-            orderRepository.update(orderAfterInsert);
+            orderRepository.updateWithOptimisticLocking(orderAfterInsert);
             log.info("Status is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
             log.info("updateStatusRequest - orderAfterUpdate orderStatus= {}, orderName: {}",
@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
                     orderAfterInsert.getStatus(), orderAfterInsert.getName());
 
             orderAfterInsert.setName(orderName);
-            orderRepository.update(orderAfterInsert);
+            orderRepository.updateWithOptimisticLocking(orderAfterInsert);
             log.info("Name is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
             log.info("updateNameRequest - orderAfterUpdate orderStatus= {}, orderName: {}",

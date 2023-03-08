@@ -1,5 +1,6 @@
 package com.softwarelabs.order;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -22,6 +23,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String ORDER_STATUS = "order_status";
+    private static final String VERSION = "version";
     private static final String CREATE_TIME = "create_time";
     private static final String UPDATE_TIME = "update_time";
 
@@ -56,6 +58,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
                     .id(UUID.fromString(rs.getString(ID)))
                     .name(rs.getString(NAME))
                     .status(OrderStatus.valueOf(rs.getString(ORDER_STATUS)))
+                    .version(rs.getInt(VERSION))
                     .createTime(rs.getTimestamp(CREATE_TIME).toInstant())
                     .updateTime(rs.getTimestamp(UPDATE_TIME).toInstant()).build();
         }
@@ -63,7 +66,8 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public void save(Order order) {
-        String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :order_status, :create_time, :update_time)";
+        String insertSql =
+                "INSERT INTO " + TABLE + " VALUES(:id, :name, :order_status, :version, :create_time, :update_time)";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
@@ -74,6 +78,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         mapParameterSource.addValue(ID, order.getId().toString());
         mapParameterSource.addValue(NAME, order.getName());
         mapParameterSource.addValue(ORDER_STATUS, order.getStatus().name());
+        mapParameterSource.addValue(VERSION, order.getVersion());
         mapParameterSource.addValue(CREATE_TIME,
                 new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
         mapParameterSource.addValue(UPDATE_TIME,
@@ -85,7 +90,8 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     @Override
     public void update(Order order) {
         String updateSql = "UPDATE " + TABLE + " SET " +
-                "name=:name, order_status=:order_status, update_time=:update_time where id=:id";
+                "name=:name, order_status=:order_status, update_time=:update_time, version = version + 1  " +
+                "where id=:id and version=:version";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
@@ -98,7 +104,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> {
                     if (getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource) == 0) {
-                        // throw Exception
+                        throw new OptimisticLockingFailureException("Row has a new snapshot");
                     }
                 });
     }
