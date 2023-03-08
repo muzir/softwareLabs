@@ -91,7 +91,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     public void update(Order order) {
         String updateSql = "UPDATE " + TABLE + " SET " +
                 "name=:name, order_status=:order_status, update_time=:update_time, version = version + 1  " +
-                "where id=:id and version=:version";
+                "where id=:id";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
@@ -99,7 +99,8 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
 
     public void updateWithOptimisticLocking(Order order) {
         String updateSql = "UPDATE " + TABLE + " SET " +
-                "name=:name, order_status=:order_status, update_time=:update_time where id=:id and version=:version";
+                "name=:name, order_status=:order_status, update_time=:update_time, version = version + 1" +
+                " where id=:id and version=:version";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> {

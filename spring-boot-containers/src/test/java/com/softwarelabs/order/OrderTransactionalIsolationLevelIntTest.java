@@ -155,15 +155,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
             delay(150l);
-            log.info("updateStatusRequest - orderAfterInsert orderStatus= {}, orderName: {}",
-                    orderAfterInsert.getStatus(), orderAfterInsert.getName());
+            log.info("updateStatusRequest - orderAfterInsert orderStatus= {}, orderName: {}, version: {}",
+                    orderAfterInsert.getStatus(), orderAfterInsert.getName(), orderAfterInsert.getVersion());
 
             orderAfterInsert.setStatus(orderStatus);
             orderRepository.update(orderAfterInsert);
             log.info("Status is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("updateStatusRequest - orderAfterUpdate orderStatus= {}, orderName: {}",
-                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName());
+            log.info("updateStatusRequest - orderAfterUpdate orderStatus= {}, orderName: {}, version: {}",
+                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName(), orderAfterUpdate.getVersion());
             log.info("updateStatusRequest is committing");
         });
     }
@@ -175,15 +175,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
             log.info("updateNameRequest is starting");
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
-            log.info("updateNameRequest - orderAfterInsert orderStatus= {}, orderName: {}",
-                    orderAfterInsert.getStatus(), orderAfterInsert.getName());
+            log.info("updateNameRequest - orderAfterInsert orderStatus= {}, orderName: {}, version: {}",
+                    orderAfterInsert.getStatus(), orderAfterInsert.getName(), orderAfterInsert.getVersion());
 
             orderAfterInsert.setName(orderName);
             orderRepository.update(orderAfterInsert);
             log.info("Name is updated");
             var orderAfterUpdate = orderRepository.findById(orderId);
-            log.info("updateNameRequest - orderAfterUpdate orderStatus= {}, orderName: {}",
-                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName());
+            log.info("updateNameRequest - orderAfterUpdate orderStatus= {}, orderName: {}, version: {}",
+                    orderAfterUpdate.getStatus(), orderAfterUpdate.getName(), orderAfterUpdate.getVersion());
             log.info("updateNameRequest is committing");
         });
     }
