@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
 
     private final OrderRepository orderRepository;
+    public static final String UPDATE_ORDER_OPERATION = "updateOrder";
 
     public UpdateOrderCommandQueueEventHandler(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -18,7 +19,7 @@ public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
     @Override
     public boolean match(QueueEvent queueEvent) {
         if (UpdateOrderCommand.class.getCanonicalName().equals(queueEvent.getClassType()) &&
-                "updateOrder".equals(queueEvent.getOperation())) {
+                UPDATE_ORDER_OPERATION.equals(queueEvent.getOperation())) {
             return true;
         }
         return false;

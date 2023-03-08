@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.UUID;
 
+import static com.softwarelabs.config.queue.UpdateOrderCommandQueueEventHandler.UPDATE_ORDER_OPERATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -65,7 +66,7 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
                 .id(queueEventId)
                 .classType(UpdateOrderCommand.class.getTypeName())
                 .data(objectMapper.writeValueAsString(updateOrderCommand))
-                .operation("updateOrder")
+                .operation(UPDATE_ORDER_OPERATION)
                 .retryCount(0)
                 .state(EventState.OPEN)
                 .build();
