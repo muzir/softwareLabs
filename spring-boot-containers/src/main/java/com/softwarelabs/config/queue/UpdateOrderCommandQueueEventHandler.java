@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
 
     private final OrderRepository orderRepository;
+    private final ObjectMapper objectMapper;
     public static final String UPDATE_ORDER_OPERATION = "updateOrder";
 
-    public UpdateOrderCommandQueueEventHandler(OrderRepository orderRepository) {
+    public UpdateOrderCommandQueueEventHandler(OrderRepository orderRepository,
+                                               ObjectMapper objectMapper) {
         this.orderRepository = orderRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -28,7 +31,6 @@ public class UpdateOrderCommandQueueEventHandler implements QueueEventHandler {
     @Override
     public void process(QueueEvent queueEvent) {
         try {
-            var objectMapper = new ObjectMapper();
             var updateOrderCommand =
                     (UpdateOrderCommand) objectMapper.readValue(queueEvent.getData(),
                             Class.forName(queueEvent.getClassType()));

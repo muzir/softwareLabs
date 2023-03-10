@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.softwarelabs.config.queue.UpdateOrderCommandQueueEventHandler.UPDATE_ORDER_OPERATION;
@@ -31,6 +30,9 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
     @Autowired
     QueueEventService queueEventService;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     public void processEventHandlerSuccessfully() throws JsonProcessingException {
         // given
@@ -43,11 +45,11 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
         var queueEventId = UUID.randomUUID();
         var newOrderName = "newOrderName";
         var newOrderStatus = OrderStatus.IN_PROGRESS;
-        var updateOrderCommand = new UpdateOrderCommand(newOrderName, newOrderStatus, orderId);
-        QueueEvent queueEvent = givenQueueEvent(queueEventId, updateOrderCommand);
+        var updateOrderCommand = new UpdateOrderCommand(newOrderName, newOrderStatus, orderId, 0);
+        givenQueueEvent(queueEventId, updateOrderCommand);
 
         // when
-        queueEventService.process(List.of(queueEvent));
+        queueEventService.process();
 
         // then
         var updatedOrder = orderRepository.findById(orderId);
@@ -61,7 +63,6 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
     private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderCommand updateOrderCommand)
             throws JsonProcessingException {
-        var objectMapper = new ObjectMapper();
         var queueEvent = QueueEvent.builder()
                 .id(queueEventId)
                 .classType(UpdateOrderCommand.class.getTypeName())

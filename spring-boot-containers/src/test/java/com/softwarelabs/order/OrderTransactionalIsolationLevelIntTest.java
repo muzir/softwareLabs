@@ -1,5 +1,6 @@
 package com.softwarelabs.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.config.BaseIntegrationTest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +82,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         // Get order by id and lock the row for update and update the name to "New_Order_Name"
         var newOrderName = "New_Order_Name";
         executorService.execute(updateNameRequestWithOptimisticLocking(orderId, newOrderName));
+        delay(1500l);
         gracefullyShutdown(executorService);
         // assert result
         assertOrderStatusAndName(orderId, orderStatus, newOrderName);
@@ -191,12 +193,24 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     @NotNull
     private Runnable updateNameRequestWithOptimisticLocking(UUID orderId, String orderName) {
         delay(100l);
-        return () -> orderService.updateNameRequestWithOptimisticLocking(orderId, orderName);
+        return () -> {
+            try {
+                orderService.updateNameRequestWithOptimisticLocking(orderId, orderName);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        };
     }
 
     @NotNull
     private Runnable updateStatusRequestWithOptimisticLocking(UUID orderId, OrderStatus orderStatus) {
-        return () -> orderService.updateStatusRequestWithOptimisticLocking(orderId, orderStatus);
+        return () -> {
+            try {
+                orderService.updateStatusRequestWithOptimisticLocking(orderId, orderStatus);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        };
     }
 
     private void delay(long delayInMilliseconds) {

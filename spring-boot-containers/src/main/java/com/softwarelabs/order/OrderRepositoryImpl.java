@@ -113,7 +113,7 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     @Override
     public void update(UpdateOrderCommand updateOrderCommand) {
         String updateSql = "UPDATE " + TABLE + " SET " +
-                "name=:name, order_status=:order_status, update_time=:update_time where id=:id";
+                "name=:name, order_status=:order_status, update_time=:update_time, version= version + 1 where id=:id";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(updateOrderCommand);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
