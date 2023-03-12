@@ -3,7 +3,6 @@ package com.softwarelabs.config.queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -20,8 +19,8 @@ public class QueueEventService {
         this.queueEventRepository = queueEventRepository;
     }
 
-    public void process(Collection<QueueEvent> queueEvents) {
-
+    public void process() {
+        var queueEvents = queueEventRepository.findAll();
         queueEvents.forEach(queueEvent -> {
             handlers.stream()
                     .filter(h -> h.match(queueEvent))

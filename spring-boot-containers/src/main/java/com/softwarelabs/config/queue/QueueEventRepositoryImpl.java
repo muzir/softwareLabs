@@ -59,8 +59,8 @@ public class QueueEventRepositoryImpl extends NamedParameterJdbcDaoSupport imple
 
     @Override
     public List<QueueEvent> findAll() {
-        // TODO Implement find all
-        return null;
+        String selectSql = "SELECT * FROM " + TABLE;
+        return getJdbcTemplate().query(selectSql, new QueueEventRowMapper());
     }
 
     private class QueueEventRowMapper implements RowMapper<QueueEvent> {

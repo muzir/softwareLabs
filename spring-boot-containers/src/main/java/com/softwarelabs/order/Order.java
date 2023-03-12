@@ -9,9 +9,10 @@ import java.util.UUID;
 @Data
 @Builder
 public class Order {
+    private UUID id;
     private String name;
     private OrderStatus status;
-    private UUID id;
+    private int version;
     private Instant createTime;
     private Instant updateTime;
 }
