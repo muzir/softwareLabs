@@ -10,21 +10,21 @@ import java.util.Optional;
 @Service
 public class CrudProductService implements ProductService {
 
-	private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-	@Autowired
-	public CrudProductService(ProductRepository productRepository) {
-		this.productRepository = productRepository;
-	}
+    @Autowired
+    public CrudProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-	@Override
-	public Optional<Product> getProduct(Product product) {
-		return productRepository.findByName(product.name());
-	}
+    @Override
+    public Optional<Product> getProductByName(String productName) {
+        return productRepository.findByName(productName);
+    }
 
-	@Override
-	public Product saveProduct(Product product) {
-		PersistantProduct persistantProduct = new PersistantProduct(product);
-		return productRepository.save(persistantProduct);
-	}
+    @Override
+    public Product saveProduct(Product product) {
+        PersistantProduct persistantProduct = new PersistantProduct(product.name(), product.id(), product.price());
+        return productRepository.save(persistantProduct);
+    }
 }

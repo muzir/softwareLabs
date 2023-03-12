@@ -1,8 +1,9 @@
-spring.profiles.active: dev
-
 server.port: ${ENV_APPLICATION_PORT}
 
 spring:
+  config:
+    activate:
+      on-profile: dev
   application:
     name: spring-boot-kafka-cluster-consumer
   datasource:
@@ -18,10 +19,6 @@ spring:
   kafka:
     clientId: ${ENV_APPLICATION_CLIENTID}
 
----
-
-spring.profiles: dev
-
 
 ENV_DATASOURCE_URL: jdbc:postgresql://postgres/store
 ENV_DATASOURCE_SERVICE_USERNAME: dbuser
@@ -32,6 +29,8 @@ kafka:
   bootstrap:
     servers: ${ENV_KAFKA_BOOTSTRAP_SERVERS}
 ---
-
-spring.profiles: integration
+spring:
+  config:
+    activate:
+      on-profile: integration
 ENV_APPLICATION_PORT: 12345

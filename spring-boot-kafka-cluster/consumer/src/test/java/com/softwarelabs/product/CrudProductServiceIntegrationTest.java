@@ -22,7 +22,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		Product product = new ProductPort.ProductRequest(productName, price);
 
 		crudProductService.saveProduct(product);
-		Product actualProduct = crudProductService.getProduct(product).get();
+		Product actualProduct = crudProductService.getProductByName(product.name()).get();
 		Assert.assertNotNull(actualProduct);
 		Assert.assertEquals(productName, actualProduct.name());
 	}
@@ -33,6 +33,6 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 		BigDecimal price = BigDecimal.TEN;
 		Product product = new ProductPort.ProductRequest(productName, price);
 
-		Assert.assertFalse(crudProductService.getProduct(product).isPresent());
+		Assert.assertFalse(crudProductService.getProductByName(product.name()).isPresent());
 	}
 }
