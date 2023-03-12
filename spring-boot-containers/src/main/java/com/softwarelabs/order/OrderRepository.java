@@ -4,9 +4,12 @@ import java.util.UUID;
 
 public interface OrderRepository {
     Order findById(UUID id);
+
     Order findByIdForUpdate(UUID id);
+
     void save(Order order);
+
     void update(Order order);
-    void update(UpdateOrderCommand updateOrderCommand);
+
     void updateWithOptimisticLocking(Order order);
 }

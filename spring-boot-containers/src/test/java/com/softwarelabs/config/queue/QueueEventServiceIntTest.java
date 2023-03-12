@@ -6,7 +6,7 @@ import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.order.Order;
 import com.softwarelabs.order.OrderRepository;
 import com.softwarelabs.order.OrderStatus;
-import com.softwarelabs.order.UpdateOrderCommand;
+import com.softwarelabs.order.command.UpdateOrderNameCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
 
-import static com.softwarelabs.config.queue.UpdateOrderCommandQueueEventHandler.UPDATE_ORDER_OPERATION;
+import static com.softwarelabs.config.queue.order.UpdateOrderNameCommandQueueEventHandler.UPDATE_ORDER_NAME_OPERATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -44,8 +44,7 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
         var queueEventId = UUID.randomUUID();
         var newOrderName = "newOrderName";
-        var newOrderStatus = OrderStatus.IN_PROGRESS;
-        var updateOrderCommand = new UpdateOrderCommand(newOrderName, newOrderStatus, orderId, 0);
+        var updateOrderCommand = new UpdateOrderNameCommand(orderId, newOrderName);
         givenQueueEvent(queueEventId, updateOrderCommand);
 
         // when
@@ -53,7 +52,7 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
         // then
         var updatedOrder = orderRepository.findById(orderId);
-        assertEquals(newOrderStatus, updatedOrder.getStatus());
+        assertEquals(orderStatus, updatedOrder.getStatus());
         assertEquals(newOrderName, updatedOrder.getName());
 
         var optionalQueueEventActual = queueEventRepository.findById(queueEventId);
@@ -61,13 +60,13 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
     }
 
-    private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderCommand updateOrderCommand)
+    private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderNameCommand updateOrderNameCommand)
             throws JsonProcessingException {
         var queueEvent = QueueEvent.builder()
                 .id(queueEventId)
-                .classType(UpdateOrderCommand.class.getTypeName())
-                .data(objectMapper.writeValueAsString(updateOrderCommand))
-                .operation(UPDATE_ORDER_OPERATION)
+                .classType(UpdateOrderNameCommand.class.getTypeName())
+                .data(objectMapper.writeValueAsString(updateOrderNameCommand))
+                .operation(UPDATE_ORDER_NAME_OPERATION)
                 .retryCount(0)
                 .state(EventState.OPEN)
                 .build();

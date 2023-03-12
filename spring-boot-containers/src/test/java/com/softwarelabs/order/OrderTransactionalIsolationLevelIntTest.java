@@ -2,6 +2,8 @@ package com.softwarelabs.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.config.BaseIntegrationTest;
+import com.softwarelabs.order.command.UpdateOrderNameCommand;
+import com.softwarelabs.order.command.UpdateOrderStatusCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -174,7 +176,6 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private Runnable updateNameRequestWithPessimisticLocking(UUID orderId, String orderName) {
         delay(100l);
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
-
             log.info("updateNameRequest is starting");
             var orderAfterInsert = orderRepository.findByIdForUpdate(orderId);
             log.info("updateNameRequest - orderAfterInsert orderStatus= {}, orderName: {}, version: {}",
@@ -195,7 +196,8 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         delay(100l);
         return () -> {
             try {
-                orderService.updateNameRequestWithOptimisticLocking(orderId, orderName);
+                var updateOrderNameCommand = new UpdateOrderNameCommand(orderId, orderName);
+                orderService.updateNameRequestWithOptimisticLocking(updateOrderNameCommand);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -206,7 +208,8 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private Runnable updateStatusRequestWithOptimisticLocking(UUID orderId, OrderStatus orderStatus) {
         return () -> {
             try {
-                orderService.updateStatusRequestWithOptimisticLocking(orderId, orderStatus);
+                var updateOrderStatusCommand = new UpdateOrderStatusCommand(orderId, orderStatus);
+                orderService.updateStatusRequestWithOptimisticLocking(updateOrderStatusCommand);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

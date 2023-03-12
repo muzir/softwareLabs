@@ -1,11 +1,13 @@
 package com.softwarelabs.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import java.util.UUID;
+import com.softwarelabs.order.command.UpdateOrderNameCommand;
+import com.softwarelabs.order.command.UpdateOrderStatusCommand;
 
 public interface OrderService {
-    void updateStatusRequestWithOptimisticLocking(UUID orderId, OrderStatus orderStatus) throws JsonProcessingException;
+    void updateStatusRequestWithOptimisticLocking(UpdateOrderStatusCommand updateOrderStatusCommand)
+            throws JsonProcessingException;
 
-    void updateNameRequestWithOptimisticLocking(UUID orderId, String orderName) throws JsonProcessingException;
+    void updateNameRequestWithOptimisticLocking(UpdateOrderNameCommand updateOrderNameCommand)
+            throws JsonProcessingException;
 }

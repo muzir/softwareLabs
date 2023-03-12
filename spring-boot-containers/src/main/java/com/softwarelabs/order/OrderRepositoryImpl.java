@@ -1,5 +1,6 @@
 package com.softwarelabs.order;
 
+import com.softwarelabs.order.command.UpdateOrderCommand;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -108,24 +109,5 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
                         throw new OptimisticLockingFailureException("Row has a new snapshot");
                     }
                 });
-    }
-
-    @Override
-    public void update(UpdateOrderCommand updateOrderCommand) {
-        String updateSql = "UPDATE " + TABLE + " SET " +
-                "name=:name, order_status=:order_status, update_time=:update_time, version= version + 1 where id=:id";
-        SqlParameterSource sqlParameterSource = createSqlParameterSource(updateOrderCommand);
-        transactionTemplate.executeWithoutResult(
-                transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
-    }
-
-    private MapSqlParameterSource createSqlParameterSource(UpdateOrderCommand updateOrderCommand) {
-        MapSqlParameterSource mapParameterSource = new MapSqlParameterSource();
-        mapParameterSource.addValue(ID, updateOrderCommand.getId().toString());
-        mapParameterSource.addValue(NAME, updateOrderCommand.getName());
-        mapParameterSource.addValue(ORDER_STATUS, updateOrderCommand.getStatus().name());
-        mapParameterSource.addValue(UPDATE_TIME,
-                new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
-        return mapParameterSource;
     }
 }
