@@ -1,5 +1,6 @@
 package com.softwarelabs.product;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -30,10 +31,15 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
 
     @Override
     public Optional<Product> findByName(String name) {
-        String selectSql = "SELECT * FROM " + TABLE + " WHERE name = :" + NAME;
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(NAME, name);
-        return Optional.ofNullable(
-                getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new ProductRowMapper()));
+        try {
+            String selectSql = "SELECT * FROM " + TABLE + " WHERE name = :" + NAME;
+            SqlParameterSource sqlParameterSource = new MapSqlParameterSource(NAME, name);
+            return Optional.ofNullable(
+                    getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource,
+                            new ProductRowMapper()));
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -42,6 +48,15 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
         SqlParameterSource sqlParameterSource = createSqlParameterSource(product);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
+        return product;
+    }
+
+    @Override
+    public Product update(Product product) {
+        String updateSql = "UPDATE  " + TABLE + " SET price = :price, name = :name where id = :id";
+        SqlParameterSource sqlParameterSource = createSqlParameterSource(product);
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
         return product;
     }
 

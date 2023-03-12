@@ -4,7 +4,9 @@ import java.util.Optional;
 
 public interface ProductService {
 
-	Optional<Product> getProductByName(String productName);
+    Optional<Product> getProductByName(String productName);
 
-	Product saveProduct(Product product);
+    Product saveProduct(Product product);
+
+    Product updateProduct(Product product);
 }

@@ -44,7 +44,7 @@ public class ProductConsumer implements EventConsumer<ProductChange> {
     @Override
     public void consume(ProductChange productChange) {
         productService.getProductByName(productChange.name())
-                .map(p -> productService.saveProduct(
+                .map(p -> productService.updateProduct(
                         new PersistantProduct(productChange.name(), p.id(), productChange.price())))
                 .orElseGet(() -> productService.saveProduct(productChange));
     }
