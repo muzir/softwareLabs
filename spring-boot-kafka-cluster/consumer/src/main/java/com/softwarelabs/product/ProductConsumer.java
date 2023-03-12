@@ -16,65 +16,59 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProductConsumer implements EventConsumer<ProductChange> {
 
-	private final ProductService productService;
+    private final ProductService productService;
 
-	private KafkaConsumerThread<ProductChange, String, String> productConsumerThread;
+    private KafkaConsumerThread<ProductChange, String, String> productConsumerThread;
 
-	@Autowired
-	public ProductConsumer(ProductService productService) {
-		this.productService = productService;
+    @Autowired
+    public ProductConsumer(ProductService productService) {
+        this.productService = productService;
 
-	}
+    }
 
-	@Override
-	public void start(KafkaConsumerFactory kafkaConsumerFactory) {
-		productConsumerThread =
-				new KafkaConsumerThread(this, kafkaConsumerFactory.createConsumer(consumerGroupId()), newMapper());
-		productConsumerThread.start();
-	}
+    @Override
+    public void start(KafkaConsumerFactory kafkaConsumerFactory) {
+        productConsumerThread =
+                new KafkaConsumerThread(this, kafkaConsumerFactory.createConsumer(consumerGroupId()), newMapper());
+        productConsumerThread.start();
+    }
 
-	@Override
-	public void stop() {
-		if (productConsumerThread != null) {
-			log.info("Product consumer is stopping");
-			productConsumerThread.stop();
-		}
-	}
+    @Override
+    public void stop() {
+        if (productConsumerThread != null) {
+            log.info("Product consumer is stopping");
+            productConsumerThread.stop();
+        }
+    }
 
-	@Override
-	public void consume(ProductChange productChange) {
-		Product product = new PersistantProduct(productChange);
-		productService.getProduct(product)
-				.map(p -> {
-							return productService.saveProduct(new PersistantProduct(p.id(), productChange.name(), productChange.price()));
-						}
-				)
-				.orElseGet(() -> {
-							return productService.saveProduct(productChange);
-						}
-				);
-	}
+    @Override
+    public void consume(ProductChange productChange) {
+        productService.getProductByName(productChange.name())
+                .map(p -> productService.updateProduct(
+                        new PersistantProduct(productChange.name(), p.id(), productChange.price())))
+                .orElseGet(() -> productService.saveProduct(productChange));
+    }
 
-	@Override
-	public Class eventType() {
-		return ProductChange.class;
-	}
+    @Override
+    public Class eventType() {
+        return ProductChange.class;
+    }
 
-	@Override
-	public String topicName() {
-		return KafkaTopicNames.PRODUCT_CHANGE_TOPIC;
-	}
+    @Override
+    public String topicName() {
+        return KafkaTopicNames.PRODUCT_CHANGE_TOPIC;
+    }
 
-	@Override
-	public String consumerGroupId() {
-		return "productConsumerGroup";
-	}
+    @Override
+    public String consumerGroupId() {
+        return "productConsumerGroup";
+    }
 
-	private ObjectMapper newMapper() {
-		final ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapper.registerModule(new JavaTimeModule());
-		mapper.registerModule(new Jdk8Module());
-		return mapper;
-	}
+    private ObjectMapper newMapper() {
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module());
+        return mapper;
+    }
 }
