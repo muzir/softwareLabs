@@ -15,8 +15,8 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
+    testContainerVersion = '1.18.3'
     lombokVersion = '1.18.28'
-    testContainerVersion = '1.17.6'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
