@@ -1,6 +1,5 @@
 package com.softwarelabs.product;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softwarelabs.kafka.BaseIntegrationTest;
 import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
@@ -29,11 +29,10 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException,
-            org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException {
-		/*
-		 save new product to product table which name is product1
-		 */
+    public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException, InterruptedException {
+        /*
+         save new product to product table which name is product1
+         */
         String productName = "product1";
         BigDecimal price = new BigDecimal("22.25");
         long id = new Random().nextLong();
