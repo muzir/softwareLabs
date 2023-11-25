@@ -15,5 +15,4 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$POSTGRES_DB" <<-EOSQL
           create_time timestamp,
           update_time timestamp
         );
-    CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
 EOSQL

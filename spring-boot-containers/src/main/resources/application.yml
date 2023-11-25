@@ -11,11 +11,6 @@ spring:
     url: ${ENV_DATASOURCE_URL}
     username: ${ENV_DATASOURCE_SERVICE_USERNAME}
     password: ${ENV_DATASOURCE_SERVICE_PASSWORD}
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc.lob.non_contextual_creation: true
 
 ---
 
