@@ -24,7 +24,7 @@ public class IntegrationTestConfiguration {
 	// An alias that can be used to resolve the Toxiproxy container by name in the network it is connected to.
 	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
 	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
-	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("shopify/toxiproxy:2.1.0");
+	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.7.0");
 	private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka");
 	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
 	private static final String DB_NAME = "store";
