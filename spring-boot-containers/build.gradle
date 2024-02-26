@@ -44,7 +44,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'org.testcontainers:postgresql:1.19.4'
+    testImplementation 'org.testcontainers:postgresql:1.19.6'
 }
 
 wrapper{
