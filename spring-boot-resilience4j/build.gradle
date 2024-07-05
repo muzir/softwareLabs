@@ -6,7 +6,6 @@ plugins {
 
 group = 'com.softwarelabs'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -49,4 +48,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+wrapper{
+    gradleVersion = '8.5'
 }
