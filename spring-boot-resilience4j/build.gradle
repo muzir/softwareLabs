@@ -39,7 +39,6 @@ dependencies {
 
     implementation("io.vavr:vavr-jackson:0.10.3")
 
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.wiremock:wiremock-standalone:3.8.0'
 
