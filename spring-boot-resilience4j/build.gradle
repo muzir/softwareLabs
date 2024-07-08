@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
+    id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -35,9 +35,8 @@ dependencies {
     implementation 'net.java.dev.jna:jna:5.10.0'
 
 
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.32.0'
+    testImplementation 'org.wiremock:wiremock-standalone:3.8.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
