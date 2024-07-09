@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:33.0.0-jre'
+    implementation 'com.google.guava:guava:33.2.1-jre'
 
     // Use JUnit Jupiter API for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
