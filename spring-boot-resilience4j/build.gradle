@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.1'
+    id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -11,28 +11,33 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('springCloudVersion', "2021.0.0")
-}
-
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-        mavenBom 'io.github.openfeign:feign-bom:10.6.0'
+        mavenBom 'io.github.openfeign:feign-bom:13.3'
     }
 }
 dependencies {
     implementation 'io.github.openfeign:feign-core'
     implementation 'io.github.openfeign:feign-jackson'
-    implementation 'io.github.resilience4j:resilience4j-feign:0.14.0'
+    implementation 'io.github.resilience4j:resilience4j-feign:2.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "io.github.resilience4j:resilience4j-spring-boot2:1.7.0"
-    implementation('org.springframework.boot:spring-boot-starter-actuator')
-    implementation('org.springframework.boot:spring-boot-starter-aop')
-    implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation('com.google.guava:guava:31.0.1-jre')
     implementation('com.github.vladimir-bukhtoyarov:bucket4j-core:7.2.0')
     implementation 'net.java.dev.jna:jna:5.10.0'
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+
+
+    // https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-circuitbreaker
+    implementation 'io.github.resilience4j:resilience4j-circuitbreaker:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-timelimiter:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-bulkhead:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-ratelimiter:2.2.0'
+
+    implementation("io.vavr:vavr-jackson:0.10.3")
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
