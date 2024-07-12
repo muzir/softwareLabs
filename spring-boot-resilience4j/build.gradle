@@ -40,15 +40,6 @@ dependencies {
     implementation("io.vavr:vavr-jackson:0.10.3")
 
 
-    // https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-circuitbreaker
-    implementation 'io.github.resilience4j:resilience4j-circuitbreaker:2.2.0'
-    implementation 'io.github.resilience4j:resilience4j-timelimiter:2.2.0'
-    implementation 'io.github.resilience4j:resilience4j-bulkhead:2.2.0'
-    implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
-    implementation 'io.github.resilience4j:resilience4j-ratelimiter:2.2.0'
-
-    implementation("io.vavr:vavr-jackson:0.10.3")
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.wiremock:wiremock-standalone:3.8.0'
 
