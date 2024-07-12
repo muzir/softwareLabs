@@ -10,6 +10,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.function.Function;
 
 import static com.softwarelabs.spring.kafka.apithrottling.kafka.KafkaTopicNames.PRODUCT_ORDER_REQUEST_TOPIC;
@@ -49,7 +50,7 @@ public class ProductOrderRequestListener {
 
             if (result.isShouldRetry()) {
                 //log.warn("topic:{} - message processing result, will retry: {}", topic, result);
-                acknowledgment.nack(0);
+                acknowledgment.nack(Duration.ZERO);
                 return;
             }
 
