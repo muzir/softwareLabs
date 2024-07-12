@@ -38,6 +38,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
+    //implementation ('org.apache.kafka:kafka-clients:3.7.1')
+    // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
+    implementation 'org.springframework.kafka:spring-kafka:3.1.2'
+
+    runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
+
 
     // https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-circuitbreaker
     implementation 'io.github.resilience4j:resilience4j-circuitbreaker:2.2.0'

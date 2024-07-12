@@ -53,7 +53,7 @@ services:
       ENV_PRODUCT_ORDER_SERVICE_URL: http://product-order-service:12346
 
   kowl:
-    image: quay.io/cloudhut/kowl:v1.4.0
+    image: quay.io/cloudhut/kowl:latest
     container_name: kowl
     environment:
       KAFKA_BROKERS: kafka:9092
