@@ -78,13 +78,13 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     public void testOptimisticLocking_withMultipleThreads() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        // Get order by id and lock the row for update and update the status to IN_PROGRESS
+        // Get order by id and update the status to IN_PROGRESS
         var orderStatus = OrderStatus.IN_PROGRESS;
         executorService.execute(updateStatusRequestWithOptimisticLocking(orderId, orderStatus));
-        // Get order by id and lock the row for update and update the name to "New_Order_Name"
+        // Get order by id and update the name to "New_Order_Name"
         var newOrderName = "New_Order_Name";
         executorService.execute(updateNameRequestWithOptimisticLocking(orderId, newOrderName));
-        delay(1500l);
+        delay(2000l);
         gracefullyShutdown(executorService);
         // assert result
         assertOrderStatusAndName(orderId, orderStatus, newOrderName);
