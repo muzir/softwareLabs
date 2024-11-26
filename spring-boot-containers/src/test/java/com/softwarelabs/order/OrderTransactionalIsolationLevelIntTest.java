@@ -24,11 +24,11 @@ import static org.junit.Assert.assertEquals;
 /**
  - Spring transaction management use-case with order domain.
  - What is the default isolation level of the Spring Transaction Manager(transactionHelper -> transactionTemplate -> PlatformTransactionManager(TransactionManager))
- - Default isolation level -> https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/transaction.html#transaction-strategies
- - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
- - Spring Doc DEFAULT -> https://docs.spring.io/spring-framework/docs/4.1.5.RELEASE/spring-framework-reference/html/transaction.html#transaction-declarative-attransactional-settings
+ - Default isolation level -> https://docs.spring.io/spring-framework/reference/data-access/transaction/programmatic.html#tx-prog-template-settings
+ - Spring Doc default isolation level -> https://docs.spring.io/spring-framework/docs/6.0.x/javadoc-api/org/springframework/transaction/annotation/Isolation.html#DEFAULT
+ - Spring Doc DEFAULT -> https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html#transaction-declarative-attransactional-settings
  - What is the default isolation level of the Postgres database? -> Default isolation level
- - https://www.postgresql.org/docs/current/transaction-iso.html#:~:text=Read%20Committed%20is%20the%20default,query%20execution%20by%20concurrent%20transactions.
+ - https://www.postgresql.org/docs/current/transaction-iso.html#XACT-READ-COMMITTED:~:text=Read%20Committed%20is%20the%20default%20isolation%20level%20in%20PostgreSQL.
  * */
 public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest {
 
