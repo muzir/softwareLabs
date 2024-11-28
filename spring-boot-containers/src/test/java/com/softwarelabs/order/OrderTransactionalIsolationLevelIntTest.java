@@ -121,13 +121,12 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
             delay(100l);
             log.info("thread1 is starting");
-            var orderAfterInsert = orderRepository.findById(orderId);
+            final var orderAfterInsert = orderRepository.findById(orderId);
             log.info("thread1 - orderAfterInsert orderStatus= {}", orderAfterInsert.getStatus());
-
             orderAfterInsert.setStatus(OrderStatus.IN_PROGRESS);
             orderRepository.update(orderAfterInsert);
             log.info("thread1 is updated");
-            var orderAfterUpdate = orderRepository.findById(orderId);
+            final var orderAfterUpdate = orderRepository.findById(orderId);
             log.info("thread1 - orderAfterUpdate orderStatus= {}", orderAfterUpdate.getStatus());
             log.info("thread1 is committing");
         });
