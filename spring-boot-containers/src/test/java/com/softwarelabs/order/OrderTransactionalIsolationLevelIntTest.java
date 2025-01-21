@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,6 +91,26 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         assertOrderStatusAndName(orderId, orderStatus, newOrderName);
     }
 
+    @Test
+    public void testDeadlockExceptionInBulkSave() {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        var orderName = "order1";
+        UUID orderId1 = UUID.randomUUID();
+        var order1 = createOrder(orderId1, orderName, OrderStatus.NEW);
+        UUID orderId2 = UUID.randomUUID();
+        var order2 = createOrder(orderId2, orderName, OrderStatus.NEW);
+        var orderList1 = List.of(order1, order2);
+        var orderList2 = List.of(order2, order1);
+        executorService.execute(() -> orderRepository.saveBulk(orderList1));
+        executorService.execute(() -> orderRepository.saveBulk(orderList2));
+        gracefullyShutdown(executorService);
+        delay(1000);
+
+        assertOrderStatusAndName(orderId1, OrderStatus.NEW, orderName);
+        assertOrderStatusAndName(orderId2, OrderStatus.NEW, orderName);
+    }
+
     private void assertOrderStatusAndName(UUID orderId, OrderStatus orderStatus, String newOrderName) {
         var order = orderRepository.findById(orderId);
         assertEquals(newOrderName, order.getName());
@@ -111,9 +132,13 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private UUID saveOrder() {
         String orderName = "order001";
         UUID id = UUID.randomUUID();
-        Order order = Order.builder().name(orderName).status(OrderStatus.NEW).id(id).build();
+        Order order = createOrder(id, orderName, OrderStatus.NEW);
         orderRepository.save(order);
         return id;
+    }
+
+    private static Order createOrder(UUID id, String orderName, OrderStatus orderStatus) {
+        return Order.builder().name(orderName).status(orderStatus).id(id).build();
     }
 
     @NotNull

@@ -1,6 +1,6 @@
 package com.softwarelabs.order;
 
-import com.softwarelabs.order.command.UpdateOrderCommand;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,8 +16,10 @@ import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Repository
 public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements OrderRepository {
     private static final String TABLE = "orders";
@@ -72,6 +74,13 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         SqlParameterSource sqlParameterSource = createSqlParameterSource(order);
         transactionTemplate.executeWithoutResult(
                 transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
+    }
+
+    @Override
+    public void saveBulk(List<Order> orders) {
+        log.info("Save orders");
+        transactionTemplate.executeWithoutResult(transactionStatus -> orders.forEach(this::save));
+        log.info("Orders saved");
     }
 
     private MapSqlParameterSource createSqlParameterSource(Order order) {

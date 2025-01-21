@@ -19,6 +19,7 @@ create table if not exists orders
 );
 
 
+
 create table if not exists queue_events
 (
     id          varchar(255) not null
