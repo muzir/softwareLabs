@@ -42,7 +42,6 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     @Autowired
     OrderService orderService;
 
-
     @Test
     public void testReadCommittedIsolationLevel_withSingleTransaction() {
         UUID orderId = saveOrder();
