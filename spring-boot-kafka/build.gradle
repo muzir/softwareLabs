@@ -15,8 +15,8 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
-    testContainerVersion = '1.20.4'
-    lombokVersion = '1.18.36'
+    testContainerVersion = '1.20.6'
+    lombokVersion = '1.18.38'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation(group: 'org.postgresql', name: 'postgresql', version: '42.7.5')
-    implementation ('org.apache.kafka:kafka-clients:3.9.0')
+    implementation ('org.apache.kafka:kafka-clients:4.0.0')
     
     implementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
     
