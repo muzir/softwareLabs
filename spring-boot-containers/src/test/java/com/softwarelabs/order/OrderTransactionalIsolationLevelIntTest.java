@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -88,6 +90,34 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         gracefullyShutdown(executorService);
         // assert result
         assertOrderStatusAndName(orderId, orderStatus, newOrderName);
+    }
+
+    @Test
+    public void testReadWithSkipLocked() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(readWithSkipLocked());
+        executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, OrderStatus.IN_PROGRESS));
+        gracefullyShutdown(executorService);
+    }
+
+    @Test
+    public void testReadWithSkipLocked_1() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, OrderStatus.IN_PROGRESS));
+        executorService.execute(readWithSkipLocked());
+        gracefullyShutdown(executorService);
+    }
+
+
+    private Runnable readWithSkipLocked() {
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+            orderRepository.findTopCase(Timestamp.from(Instant.parse("2025-05-01T00:00:00Z")));
+            log.info("readWithSkipLocked - orderStatus= {}", OrderStatus.NEW);
+            delay(500l);
+            log.info("readWithSkipLocked is committing");
+        });
     }
 
     @Test

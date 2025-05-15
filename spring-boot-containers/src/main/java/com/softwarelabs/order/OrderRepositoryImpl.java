@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,9 +89,9 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
         mapParameterSource.addValue(ORDER_STATUS, order.getStatus().name());
         mapParameterSource.addValue(VERSION, order.getVersion());
         mapParameterSource.addValue(CREATE_TIME,
-                new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
+                Timestamp.from(Instant.now(clock)));
         mapParameterSource.addValue(UPDATE_TIME,
-                new Timestamp(Instant.now(clock).getLong(ChronoField.MILLI_OF_SECOND)));
+                Timestamp.from(Instant.now(clock)));
         return mapParameterSource;
     }
 
@@ -118,5 +117,14 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
                         throw new OptimisticLockingFailureException("Row has a new snapshot");
                     }
                 });
+    }
+
+    @Override
+    public Order findTopCase(Timestamp createdAt) {
+        String selectSql = "SELECT * FROM " + TABLE + " WHERE create_time > :" + CREATE_TIME + " ORDER BY create_time ASC " +
+                " LIMIT 1 " +
+                " FOR UPDATE SKIP LOCKED";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(CREATE_TIME, createdAt);
+        return getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource, new OrderRowMapper());
     }
 }
