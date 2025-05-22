@@ -7,7 +7,7 @@
  */
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.5'
+    id 'org.springframework.boot' version '3.4.6'
 }
 
 apply plugin: 'io.spring.dependency-management'
