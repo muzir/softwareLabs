@@ -93,7 +93,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testReadWithSkipLocked() {
+    public void testReadWithSkipLockedFirstThenUpdateWithExclusiveLock() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.execute(readWithSkipLocked());
@@ -102,7 +102,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testReadWithSkipLocked_1() {
+    public void testUpdateWithExclusiveLockThenReadWithSkipLocked() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, OrderStatus.IN_PROGRESS));
@@ -113,8 +113,8 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
 
     private Runnable readWithSkipLocked() {
         return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
-            orderRepository.findTopCase(Timestamp.from(Instant.parse("2025-05-01T00:00:00Z")));
-            log.info("readWithSkipLocked - orderStatus= {}", OrderStatus.NEW);
+            var order = orderRepository.findTopCase(Timestamp.from(Instant.parse("2025-05-01T00:00:00Z")));
+            log.info("readWithSkipLocked - orderStatus= {}", order.getStatus());
             delay(500l);
             log.info("readWithSkipLocked is committing");
         });
