@@ -7,11 +7,14 @@ import com.softwarelabs.order.command.UpdateOrderStatusCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -91,6 +94,34 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     }
 
     @Test
+    public void testReadWithSkipLockedFirstThenUpdateWithExclusiveLock() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(readWithSkipLocked());
+        executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, OrderStatus.IN_PROGRESS));
+        gracefullyShutdown(executorService);
+    }
+
+    @Test
+    public void testUpdateWithExclusiveLockThenReadWithSkipLocked() {
+        UUID orderId = saveOrder();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(updateStatusRequestWithPessimisticLocking(orderId, OrderStatus.IN_PROGRESS));
+        executorService.execute(readWithSkipLocked());
+        gracefullyShutdown(executorService);
+    }
+
+
+    private Runnable readWithSkipLocked() {
+        return () -> transactionTemplate.executeWithoutResult(transactionStatus -> {
+            var order = orderRepository.findTopCase(Timestamp.from(Instant.parse("2025-05-01T00:00:00Z")));
+            log.info("readWithSkipLocked - orderStatus= {}", order.getStatus());
+            delay(500l);
+            log.info("readWithSkipLocked is committing");
+        });
+    }
+
+    @Test
     public void testDeadlockExceptionInBulkSave() {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -105,9 +136,55 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         executorService.execute(() -> orderRepository.saveBulk(orderList2));
         gracefullyShutdown(executorService);
         delay(1000);
+    }
 
-        /*assertOrderStatusAndName(orderId1, OrderStatus.NEW, orderName);
-        assertOrderStatusAndName(orderId2, OrderStatus.NEW, orderName);*/
+    @Test
+    public void testPropagationRequiresNewRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(1, orderRepository.findAll().size());
+    }
+
+    @Test
+    public void testPropagationRequiredRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(0, orderRepository.findAll().size());
+    }
+
+    @Test
+    public void testPropagationOuterTransactionRequiresNewInnerTransactionRequiredRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(1, orderRepository.findAll().size());
     }
 
     private void assertOrderStatusAndName(UUID orderId, OrderStatus orderStatus, String newOrderName) {
@@ -132,6 +209,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         String orderName = "order001";
         UUID id = UUID.randomUUID();
         Order order = createOrder(id, orderName, OrderStatus.NEW);
+        orderRepository.save(order);
+        return id;
+    }
+
+    @NotNull
+    private UUID doNotSaveOrderMissingId() {
+        String orderName = "order001";
+        UUID id = UUID.randomUUID();
+        Order order = createOrder(null, orderName, OrderStatus.NEW);
         orderRepository.save(order);
         return id;
     }

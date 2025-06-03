@@ -1,9 +1,13 @@
 package com.softwarelabs.order;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepository {
+    List<Order> findAll();
+
     Order findById(UUID id);
 
     Order findByIdForUpdate(UUID id);
@@ -15,4 +19,6 @@ public interface OrderRepository {
     void update(Order order);
 
     void updateWithOptimisticLocking(Order order);
+
+    Order findTopCase(Timestamp createdAt);
 }
