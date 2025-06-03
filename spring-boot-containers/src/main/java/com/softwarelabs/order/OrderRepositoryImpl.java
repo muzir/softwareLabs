@@ -40,6 +40,12 @@ public class OrderRepositoryImpl extends NamedParameterJdbcDaoSupport implements
     }
 
     @Override
+    public List<Order> findAll() {
+        String selectSql = "SELECT * FROM " + TABLE;
+        return getNamedParameterJdbcTemplate().query(selectSql, new OrderRowMapper());
+    }
+
+    @Override
     public Order findById(UUID id) {
         String selectSql = "SELECT * FROM " + TABLE + " WHERE id = :" + ID;
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID, id.toString());

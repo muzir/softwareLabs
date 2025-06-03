@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepository {
+    List<Order> findAll();
+
     Order findById(UUID id);
 
     Order findByIdForUpdate(UUID id);

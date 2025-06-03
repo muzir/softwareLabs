@@ -7,6 +7,7 @@ import com.softwarelabs.order.command.UpdateOrderStatusCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -135,9 +136,55 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         executorService.execute(() -> orderRepository.saveBulk(orderList2));
         gracefullyShutdown(executorService);
         delay(1000);
+    }
 
-        /*assertOrderStatusAndName(orderId1, OrderStatus.NEW, orderName);
-        assertOrderStatusAndName(orderId2, OrderStatus.NEW, orderName);*/
+    @Test
+    public void testPropagationRequiresNewRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(1, orderRepository.findAll().size());
+    }
+
+    @Test
+    public void testPropagationRequiredRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(0, orderRepository.findAll().size());
+    }
+
+    @Test
+    public void testPropagationOuterTransactionRequiresNewInnerTransactionRequiredRollback() {
+        try {
+            transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+            transactionTemplate.executeWithoutResult(transactionStatus -> {
+                saveOrder();
+                transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
+                transactionTemplate.executeWithoutResult(transactionStatus1 -> {
+                    doNotSaveOrderMissingId();
+                });
+            });
+        } catch (Exception e) {
+            log.error("error", e);
+        }
+        Assertions.assertEquals(1, orderRepository.findAll().size());
     }
 
     private void assertOrderStatusAndName(UUID orderId, OrderStatus orderStatus, String newOrderName) {
@@ -162,6 +209,15 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         String orderName = "order001";
         UUID id = UUID.randomUUID();
         Order order = createOrder(id, orderName, OrderStatus.NEW);
+        orderRepository.save(order);
+        return id;
+    }
+
+    @NotNull
+    private UUID doNotSaveOrderMissingId() {
+        String orderName = "order001";
+        UUID id = UUID.randomUUID();
+        Order order = createOrder(null, orderName, OrderStatus.NEW);
         orderRepository.save(order);
         return id;
     }
