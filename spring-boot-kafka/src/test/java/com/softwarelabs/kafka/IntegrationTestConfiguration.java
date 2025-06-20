@@ -9,7 +9,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.testcontainers.containers.*;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.ToxiproxyContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
@@ -25,7 +29,7 @@ public class IntegrationTestConfiguration {
 	// It can be used as a hostname of the Toxiproxy container by other containers in the same network.
 	private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
 	private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.7.0");
-	private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka");
+	private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("apache/kafka");
 	private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres");
 	private static final String DB_NAME = "store";
 	private static final String USERNAME = "dbuser";
