@@ -1,4 +1,8 @@
-# Alpine Linux with OpenJDK JRE
-FROM java:8
-COPY build/libs/spring-boot-kafka-0.1.0.jar ./service.jar
-ENTRYPOINT exec java $JAVA_OPTS -jar /service.jar
+# Use OpenJDK 21 with Debian
+FROM openjdk:21-jdk-slim
+
+# Copy the application JAR file into the container
+COPY build/libs/spring-boot-kafka.jar ./service.jar
+
+# Set the entry point to run the application
+ENTRYPOINT ["java", "-jar", "/service.jar"]

@@ -1,21 +1,18 @@
 version: "3.7"
 services:
-  zookeeper:
-    image: "zookeeper:3.4.13"
-    hostname: zookeeper
-    ports:
-      - "2181:2181"
   kafka:
-    image: "confluent/kafka:latest"
+    image: "apache/kafka:latest"
     ports:
       - "9092:9092"
     hostname: kafka
-    links:
-      - zookeeper
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_NODE_ID: "1"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
   postgres:
     build: postgres
     environment:
