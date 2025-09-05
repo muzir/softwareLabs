@@ -14,7 +14,7 @@ apply plugin: 'io.spring.dependency-management'
 
 
 ext {
-    lombokVersion = '1.18.38'
+    lombokVersion = '1.18.40'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
