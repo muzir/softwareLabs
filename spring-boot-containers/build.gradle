@@ -32,21 +32,34 @@ springBoot {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation(group: 'org.postgresql', name: 'postgresql', version: '42.7.10')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Let Spring Boot manage the Postgres version unless you specifically need 42.7.x
+    runtimeOnly 'org.postgresql:postgresql'
+
     implementation 'com.github.kagkarlsson:db-scheduler:16.7.1'
 
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'org.testcontainers:postgresql:1.21.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+
+    testImplementation 'org.testcontainers:testcontainers:1.20.4'
+    testImplementation 'org.testcontainers:postgresql:1.20.4'
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.4'
+    testImplementation "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
 
-wrapper{
+wrapper {
     gradleVersion = '8.5'
+}
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }

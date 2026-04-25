@@ -1,16 +1,15 @@
 package com.softwarelabs.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.order.command.UpdateOrderNameCommand;
 import com.softwarelabs.order.command.UpdateOrderStatusCommand;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
@@ -21,9 +20,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
+
+@SpringBootTest
 @Slf4j
 /**
  - Spring transaction management use-case with order domain.
@@ -151,7 +151,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         } catch (Exception e) {
             log.error("error", e);
         }
-        Assertions.assertEquals(1, orderRepository.findAll().size());
+        assertEquals(1, orderRepository.findAll().size());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         } catch (Exception e) {
             log.error("error", e);
         }
-        Assertions.assertEquals(0, orderRepository.findAll().size());
+        assertEquals(0, orderRepository.findAll().size());
     }
 
     @Test
@@ -184,7 +184,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
         } catch (Exception e) {
             log.error("error", e);
         }
-        Assertions.assertEquals(1, orderRepository.findAll().size());
+        assertEquals(1, orderRepository.findAll().size());
     }
 
     private void assertOrderStatusAndName(UUID orderId, OrderStatus orderStatus, String newOrderName) {
@@ -304,24 +304,16 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     private Runnable updateNameRequestWithOptimisticLocking(UUID orderId, String orderName) {
         delay(100l);
         return () -> {
-            try {
-                var updateOrderNameCommand = new UpdateOrderNameCommand(orderId, orderName);
-                orderService.updateNameRequestWithOptimisticLocking(updateOrderNameCommand);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            var updateOrderNameCommand = new UpdateOrderNameCommand(orderId, orderName);
+            orderService.updateNameRequestWithOptimisticLocking(updateOrderNameCommand);
         };
     }
 
     @NotNull
     private Runnable updateStatusRequestWithOptimisticLocking(UUID orderId, OrderStatus orderStatus) {
         return () -> {
-            try {
-                var updateOrderStatusCommand = new UpdateOrderStatusCommand(orderId, orderStatus);
-                orderService.updateStatusRequestWithOptimisticLocking(updateOrderStatusCommand);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            var updateOrderStatusCommand = new UpdateOrderStatusCommand(orderId, orderStatus);
+            orderService.updateStatusRequestWithOptimisticLocking(updateOrderStatusCommand);
         };
     }
 

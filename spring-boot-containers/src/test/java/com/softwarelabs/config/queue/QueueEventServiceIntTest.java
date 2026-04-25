@@ -1,24 +1,23 @@
 package com.softwarelabs.config.queue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.softwarelabs.config.BaseIntegrationTest;
 import com.softwarelabs.order.Order;
 import com.softwarelabs.order.OrderRepository;
 import com.softwarelabs.order.OrderStatus;
 import com.softwarelabs.order.command.UpdateOrderNameCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
 import static com.softwarelabs.config.queue.order.UpdateOrderNameCommandQueueEventHandler.UPDATE_ORDER_NAME_OPERATION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
+
 public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
     @Autowired
@@ -34,7 +33,7 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
-    public void processEventHandlerSuccessfully() throws JsonProcessingException {
+    public void processEventHandlerSuccessfully() {
         // given
         var orderName = "newOrderName";
         var orderStatus = OrderStatus.NEW;
@@ -60,8 +59,7 @@ public class QueueEventServiceIntTest extends BaseIntegrationTest {
 
     }
 
-    private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderNameCommand updateOrderNameCommand)
-            throws JsonProcessingException {
+    private QueueEvent givenQueueEvent(UUID queueEventId, UpdateOrderNameCommand updateOrderNameCommand) {
         var queueEvent = QueueEvent.builder()
                 .id(queueEventId)
                 .classType(UpdateOrderNameCommand.class.getTypeName())

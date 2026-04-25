@@ -1,12 +1,12 @@
 package com.softwarelabs.config.queue.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.softwarelabs.config.queue.QueueEvent;
 import com.softwarelabs.config.queue.QueueEventHandler;
 import com.softwarelabs.order.OrderService;
 import com.softwarelabs.order.command.UpdateOrderNameCommand;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class UpdateOrderNameCommandQueueEventHandler implements QueueEventHandler {
@@ -38,8 +38,6 @@ public class UpdateOrderNameCommandQueueEventHandler implements QueueEventHandle
                     (UpdateOrderNameCommand) objectMapper.readValue(queueEvent.getData(),
                             Class.forName(queueEvent.getClassType()));
             orderService.updateNameRequestWithOptimisticLocking(updateOrderNameCommand);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
