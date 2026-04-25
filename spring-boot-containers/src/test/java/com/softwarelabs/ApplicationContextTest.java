@@ -3,23 +3,24 @@
  */
 package com.softwarelabs;
 
+import com.softwarelabs.config.IntegrationTestConfiguration;
 import com.softwarelabs.product.ProductController;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@Import(IntegrationTestConfiguration.class)
 public class ApplicationContextTest {
 
-	@Autowired private ProductController productController;
+    @Autowired
+    private ProductController productController;
 
-	@Test
-	public void contextLoads() {
-		assertNotNull(productController);
-	}
+    @Test
+    public void contextLoads() {
+        assertNotNull(productController);
+    }
 }

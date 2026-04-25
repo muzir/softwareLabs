@@ -1,16 +1,16 @@
 package com.softwarelabs.product;
 
 import com.softwarelabs.config.BaseIntegrationTest;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 import java.util.Random;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -24,7 +24,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
         product.setName(productName);
         productRepository.save(product);
         Optional<Product> actualProduct = productRepository.findByName(productName);
-        Assert.assertTrue(actualProduct.isPresent());
-        Assert.assertEquals(productName, actualProduct.get().name());
+        assertTrue(actualProduct.isPresent());
+        assertEquals(productName, actualProduct.get().name());
     }
 }

@@ -1,7 +1,6 @@
 package com.softwarelabs.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.softwarelabs.config.queue.EventState;
 import com.softwarelabs.config.queue.QueueEvent;
 import com.softwarelabs.config.queue.QueueEventRepository;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
@@ -27,8 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final QueueEventRepository queueEventRepository;
 
     @Override
-    public void updateStatusRequestWithOptimisticLocking(UpdateOrderStatusCommand updateOrderStatusCommand)
-            throws JsonProcessingException {
+    public void updateStatusRequestWithOptimisticLocking(UpdateOrderStatusCommand updateOrderStatusCommand) {
         try {
             UUID orderId = updateOrderStatusCommand.getId();
             var orderAfterInsert = orderRepository.findById(orderId);
@@ -49,8 +48,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void insertQueueEvent(UpdateOrderStatusCommand updateOrderStatusCommand)
-            throws JsonProcessingException {
+    private void insertQueueEvent(UpdateOrderStatusCommand updateOrderStatusCommand) {
         var queueEvent =
                 QueueEvent.builder().id(UUID.randomUUID()).classType(UpdateOrderStatusCommand.class.getTypeName())
                         .data(objectMapper.writeValueAsString(updateOrderStatusCommand))
@@ -59,8 +57,7 @@ public class OrderServiceImpl implements OrderService {
         queueEventRepository.save(queueEvent);
     }
 
-    private void insertQueueEvent(UpdateOrderNameCommand updateOrderNameCommand)
-            throws JsonProcessingException {
+    private void insertQueueEvent(UpdateOrderNameCommand updateOrderNameCommand) {
         var queueEvent =
                 QueueEvent.builder().id(UUID.randomUUID()).classType(UpdateOrderStatusCommand.class.getTypeName())
                         .data(objectMapper.writeValueAsString(updateOrderNameCommand))
@@ -70,8 +67,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateNameRequestWithOptimisticLocking(UpdateOrderNameCommand updateOrderNameCommand)
-            throws JsonProcessingException {
+    public void updateNameRequestWithOptimisticLocking(UpdateOrderNameCommand updateOrderNameCommand) {
         try {
             UUID orderId = updateOrderNameCommand.getId();
             var orderAfterInsert = orderRepository.findById(orderId);

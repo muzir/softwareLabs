@@ -1,6 +1,6 @@
 package com.softwarelabs.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.github.kagkarlsson.scheduler.Scheduler;
 import com.github.kagkarlsson.scheduler.task.helper.RecurringTask;
 import com.github.kagkarlsson.scheduler.task.helper.Tasks;
@@ -8,6 +8,7 @@ import com.github.kagkarlsson.scheduler.task.schedule.Schedule;
 import com.softwarelabs.config.queue.QueueEventService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.sql.DataSource;
 import java.time.Clock;
