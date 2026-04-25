@@ -36,6 +36,7 @@ springBoot {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation('org.springframework.boot:spring-boot-restclient')
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
@@ -43,6 +44,8 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-resttestclient')
+    testImplementation('org.springframework.boot:spring-boot-starter-webmvc-test')
     testImplementation("org.junit.vintage:junit-vintage-engine") {
         exclude group: "org.hamcrest", module: "hamcrest-core"
     }
