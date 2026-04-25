@@ -1,7 +1,6 @@
 package com.softwarelabs.product;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.softwarelabs.kafka.EventProducer;
 import com.softwarelabs.kafka.KafkaProducerFactory;
 import com.softwarelabs.kafka.KafkaTopicNames;
@@ -13,6 +12,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 
 @Slf4j
@@ -31,7 +31,7 @@ public class ProductProducer implements EventProducer<String> {
         this.mapper = mapper;
     }
 
-    public void publishProductChange(Product product) throws JsonProcessingException {
+    public void publishProductChange(Product product) {
         ProductChange productChange = new ProductChange(product.name(), product.price());
         String productChangeMessage = mapper.writeValueAsString(productChange);
         publish(productChangeMessage);
