@@ -4,6 +4,7 @@ import com.softwarelabs.App;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 
 @SpringBootTest(classes = App.class)
 @ActiveProfiles("integration")
+@Import(IntegrationTestConfiguration.class)
 public abstract class BaseIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;

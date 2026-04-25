@@ -5,18 +5,16 @@ import com.softwarelabs.kafka.KafkaTopicNames;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.Random;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Slf4j
 public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
@@ -51,8 +49,8 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
         //Product should be updated with new price
         Product updatedProduct = productService.getProductByName(productName).get();
-        Assert.assertEquals(productName, updatedProduct.name());
-        Assert.assertEquals(newPrice, updatedProduct.price());
+        assertEquals(productName, updatedProduct.name());
+        assertEquals(newPrice, updatedProduct.price());
     }
 
     @Test
@@ -73,7 +71,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
         //Check product is saved
         Product savedProduct = productService.getProductByName(productName).get();
-        Assert.assertEquals(productName, savedProduct.name());
-        Assert.assertEquals(price, savedProduct.price());
+        assertEquals(productName, savedProduct.name());
+        assertEquals(price, savedProduct.price());
     }
 }
