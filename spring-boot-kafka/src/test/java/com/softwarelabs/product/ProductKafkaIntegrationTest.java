@@ -1,14 +1,11 @@
 package com.softwarelabs.product;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.softwarelabs.kafka.BaseIntegrationTest;
 import com.softwarelabs.util.TestUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -18,7 +15,8 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Slf4j
 public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
 
@@ -28,7 +26,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
     ProductService productService;
 
     @Test
-    public void updateProduct_ifProductChangeEventSent() throws JsonProcessingException {
+    public void updateProduct_ifProductChangeEventSent() {
 		/*
 		 save new product to product table which name is product1
 		 */
@@ -47,11 +45,11 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
         Optional<Product> updatedProduct = retryUntil(
                 () -> productService.getProduct(updatedProductParam),
                 l -> l.get().price().equals(newPrice));
-        Assert.assertEquals(productName, updatedProduct.get().name());
+        assertEquals(productName, updatedProduct.get().name());
     }
 
     @Test
-    public void saveProduct_ifProductChangeEventSent_andProductNotExist() throws JsonProcessingException {
+    public void saveProduct_ifProductChangeEventSent_andProductNotExist() {
         String productName = "product2";
         BigDecimal price = new BigDecimal("20.00");
         //Sent price change event
@@ -63,8 +61,8 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
         Optional<Product> savedProduct = retryUntil(
                 () -> productService.getProduct(paramSavedProduct),
                 Optional::isPresent);
-        Assert.assertEquals(productName, savedProduct.get().name());
-        Assert.assertEquals(price, savedProduct.get().price());
+        assertEquals(productName, savedProduct.get().name());
+        assertEquals(price, savedProduct.get().price());
     }
 
     private <T> T retryUntil(Callable<T> callable, Predicate<T> predicate) {

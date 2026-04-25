@@ -47,9 +47,12 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation ("org.testcontainers:testcontainers:${testContainerVersion}")
     testImplementation("org.testcontainers:postgresql:${testContainerVersion}")
     testImplementation("org.testcontainers:kafka:${testContainerVersion}")
-    testImplementation "org.testcontainers:toxiproxy:${testContainerVersion}"
+    testImplementation("org.testcontainers:toxiproxy:${testContainerVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${testContainerVersion}")
 }
 
 wrapper {

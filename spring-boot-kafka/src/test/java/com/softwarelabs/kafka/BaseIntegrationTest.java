@@ -1,7 +1,7 @@
 package com.softwarelabs.kafka;
 
 import com.softwarelabs.App;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +17,7 @@ public class BaseIntegrationTest {
 
     private String[] tablesToCleanUp = {"product"};
 
-    @Before
+    @BeforeEach
     public void tearDown() {
         Arrays.stream(tablesToCleanUp).forEach(table -> {
             jdbcTemplate.execute("TRUNCATE TABLE " + table);
