@@ -16,13 +16,13 @@ public interface ProductPort {
 
     @PostMapping(
             value = "/v1/product",
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     ProductResponse createProduct(@RequestBody @Valid ProductRequest request);
 
     @GetMapping(
             value = "/v1/product/{productName}",
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     ProductResponse getProductByName(@PathVariable("productName") String productName);
 
