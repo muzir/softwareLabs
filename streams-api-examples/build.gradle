@@ -31,7 +31,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'streams.api.examples.App'
+    mainClass = 'streams.api.examples.App'
 }
 
 test {
@@ -40,5 +40,5 @@ test {
 }
 
 wrapper {
-    gradleVersion = '8.5'
+    gradleVersion = '9.4.1'
 }
