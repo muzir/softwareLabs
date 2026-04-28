@@ -16,6 +16,7 @@ apply plugin: 'project-report'
 
 ext {
     lombokVersion = '1.18.46'
+    testContainersVersion = '1.21.4'
 }
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -47,9 +48,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 
-    testImplementation 'org.testcontainers:testcontainers:1.21.4'
-    testImplementation 'org.testcontainers:postgresql:1.21.4'
-    testImplementation 'org.testcontainers:junit-jupiter:1.21.4'
+    testImplementation("org.testcontainers:testcontainers:${testContainersVersion}")
+    testImplementation("org.testcontainers:postgresql:${testContainersVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${testContainersVersion}")
     testImplementation "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
