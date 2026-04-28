@@ -26,7 +26,7 @@ public class IntegrationTestConfiguration {
     // An alias that can be used to resolve the Toxiproxy container by name in the network it is connected to.
     // It can be used as a hostname of the Toxiproxy container by other containers in the same network.
     private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
-    private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.7.0");
+    private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.12.0");
     //private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka:7.7.0").asCompatibleSubstituteFor("apache/kafka");
     private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("apache/kafka:3.8.0");
     private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:16-alpine");
@@ -45,12 +45,13 @@ public class IntegrationTestConfiguration {
                 .withInitScript(INIT_SCRIPT_PATH)
                 .withUsername(USERNAME)
                 .withPassword(PASSWORD)
-                .withDatabaseName(DB_NAME);
+                .withDatabaseName(DB_NAME)
+                .withNetwork(network);
     }
 
     @Bean
     @ServiceConnection
-    ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy(JdbcDatabaseContainer container) {
+    ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy(PostgreSQLContainer container) {
         ToxiproxyContainer toxiproxyContainer = new ToxiproxyContainer(TOXIPROXY_IMAGE)
                 .withNetwork(network)
                 .withNetworkAliases(TOXIPROXY_NETWORK_ALIAS);

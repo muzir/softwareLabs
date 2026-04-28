@@ -41,7 +41,7 @@ spring:
 
   datasource:
     hikari:
-      connection-timeout: 2000 # Max wait for a connection
+      connection-timeout: 1000 # Max wait for a connection
       validation-timeout: 1000
   jpa:
     properties:

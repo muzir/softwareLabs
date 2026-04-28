@@ -47,15 +47,16 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
         assertFalse(crudProductService.getProduct(product).isPresent());
     }
 
-    /*@Test
+    @Test
     public void throwTransactionSystemException_whenProxySetTimeout() throws IOException {
-        jdbcDatabaseContainerProxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 1000);
+        //jdbcDatabaseContainerProxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 0);
+        jdbcDatabaseContainerProxy.toxics().latency("postgresql-latency", ToxicDirection.DOWNSTREAM, 1600).setJitter(100);
         String productName = "product003";
         BigDecimal price = BigDecimal.TEN;
         Product product = new ProductPort.ProductRequest(productName, price);
         Assertions.assertThrows(JpaSystemException.class, () -> crudProductService.saveProduct(product));
-        jdbcDatabaseContainerProxy.toxics().get("bla").remove();
+        jdbcDatabaseContainerProxy.toxics().get("postgresql-latency").remove();
         crudProductService.saveProduct(product);
         assertTrue(crudProductService.getProduct(product).isPresent());
-    }*/
+    }
 }
