@@ -3,19 +3,18 @@ package com.softwarelabs.product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
 @Repository
-public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implements ProductRepository {
+public class ProductRepositoryImpl implements ProductRepository {
     private static final String TABLE = "product";
 
     private static final String ID = "id";
@@ -23,11 +22,13 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
     private static final String PRICE = "price";
 
     private final TransactionTemplate transactionTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public ProductRepositoryImpl(DataSource dataSource,
-                                 TransactionTemplate transactionTemplate) {
+    public ProductRepositoryImpl(TransactionTemplate transactionTemplate,
+                                 NamedParameterJdbcTemplate namedParameterJdbcTemplate
+    ) {
         this.transactionTemplate = transactionTemplate;
-        setDataSource(dataSource);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(NAME, name);
         try {
             return Optional.ofNullable(
-                    getNamedParameterJdbcTemplate().queryForObject(selectSql, sqlParameterSource,
+                    namedParameterJdbcTemplate.queryForObject(selectSql, sqlParameterSource,
                             new ProductRowMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -59,7 +60,7 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
         String insertSql = "INSERT INTO " + TABLE + " VALUES(:id, :name, :price)";
         SqlParameterSource sqlParameterSource = createSqlParameterSource(product);
         transactionTemplate.executeWithoutResult(
-                transactionStatus -> getNamedParameterJdbcTemplate().update(insertSql, sqlParameterSource));
+                transactionStatus -> namedParameterJdbcTemplate.update(insertSql, sqlParameterSource));
         return product;
     }
 
@@ -71,7 +72,7 @@ public class ProductRepositoryImpl extends NamedParameterJdbcDaoSupport implemen
         sqlParameterSource.addValue(NAME, productName);
         sqlParameterSource.addValue(PRICE, price);
         transactionTemplate.executeWithoutResult(
-                transactionStatus -> getNamedParameterJdbcTemplate().update(updateSql, sqlParameterSource));
+                transactionStatus -> namedParameterJdbcTemplate.update(updateSql, sqlParameterSource));
     }
 
     private MapSqlParameterSource createSqlParameterSource(Product product) {

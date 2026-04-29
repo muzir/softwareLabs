@@ -2,11 +2,8 @@ package com.softwarelabs.product;
 
 import com.softwarelabs.kafka.BaseIntegrationTest;
 import eu.rekawek.toxiproxy.model.ToxicDirection;
-import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.testcontainers.containers.ToxiproxyContainer;
 
 import java.io.IOException;
@@ -22,9 +19,6 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy;
-
-    @Autowired
-    private EntityManager entityManager; // Add this to your test class
 
     @Test
     public void returnProductName_ifProductSavedBefore() {
@@ -47,15 +41,37 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
         assertFalse(crudProductService.getProduct(product).isPresent());
     }
 
-    /*@Test
+    @Test
     public void throwTransactionSystemException_whenProxySetTimeout() throws IOException {
-        jdbcDatabaseContainerProxy.toxics().timeout("bla", ToxicDirection.DOWNSTREAM, 1000);
+        // Cut the connection after 1 seconds
+        jdbcDatabaseContainerProxy.toxics().timeout("hard-cut", ToxicDirection.DOWNSTREAM, 1000);
+
         String productName = "product003";
-        BigDecimal price = BigDecimal.TEN;
-        Product product = new ProductPort.ProductRequest(productName, price);
-        Assertions.assertThrows(JpaSystemException.class, () -> crudProductService.saveProduct(product));
-        jdbcDatabaseContainerProxy.toxics().get("bla").remove();
-        crudProductService.saveProduct(product);
-        assertTrue(crudProductService.getProduct(product).isPresent());
-    }*/
+        Product product = new ProductPort.ProductRequest(productName, BigDecimal.TEN);
+
+        // Use Exception.class first to see exactly what is thrown
+        assertThrows(Exception.class, () -> {
+            crudProductService.saveProduct(product);
+        });
+
+        jdbcDatabaseContainerProxy.toxics().get("hard-cut").remove();
+    }
+
+    @Test
+    public void throwTransactionSystemException_whenProxySetLatency() throws IOException, InterruptedException {
+        // Add 5 seconds latency
+        jdbcDatabaseContainerProxy.toxics().latency("latency", ToxicDirection.DOWNSTREAM, 5000);
+        // Prevent the test from finishing before the latency is applied
+        //TODO  How can I remove Thread.sleep?
+        Thread.sleep(1000);
+        String productName = "product003";
+        Product product = new ProductPort.ProductRequest(productName, BigDecimal.TEN);
+
+        // Use Exception.class first to see exactly what is thrown
+        assertThrows(Exception.class, () -> {
+            crudProductService.saveProduct(product);
+        });
+
+        jdbcDatabaseContainerProxy.toxics().get("latency").remove();
+    }
 }
