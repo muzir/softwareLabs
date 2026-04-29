@@ -5,10 +5,10 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.ToxiproxyContainer;
@@ -27,7 +27,6 @@ public class IntegrationTestConfiguration {
     // It can be used as a hostname of the Toxiproxy container by other containers in the same network.
     private static final String TOXIPROXY_NETWORK_ALIAS = "toxiproxy";
     private static final DockerImageName TOXIPROXY_IMAGE = DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.12.0");
-    //private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("confluentinc/cp-kafka:7.7.0").asCompatibleSubstituteFor("apache/kafka");
     private static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("apache/kafka:3.8.0");
     private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:16-alpine");
     private static final String DB_NAME = "store";
@@ -39,7 +38,37 @@ public class IntegrationTestConfiguration {
     private Network network = Network.newNetwork();
 
     @Bean
-    @ServiceConnection // This MAGIC annotation replaces the manual DataSource bean
+    public JdbcConnectionDetails jdbcConnectionDetails(
+            ToxiproxyContainer.ContainerProxy jdbcDatabaseContainerProxy) {
+
+        return new JdbcConnectionDetails() {
+            @Override
+            public String getUsername() {
+                return USERNAME;
+            }
+
+            @Override
+            public String getPassword() {
+                return PASSWORD;
+            }
+
+            @Override
+            public String getJdbcUrl() {
+                // This pulls the dynamic proxy address
+                return "jdbc:postgresql://" +
+                        jdbcDatabaseContainerProxy.getContainerIpAddress() + ":" +
+                        jdbcDatabaseContainerProxy.getProxyPort() + "/" +
+                        DB_NAME;
+            }
+
+            @Override
+            public String getDriverClassName() {
+                return "org.postgresql.Driver";
+            }
+        };
+    }
+
+    @Bean
     public PostgreSQLContainer<?> postgresContainer() {
         return new PostgreSQLContainer<>(POSTGRES_IMAGE)
                 .withInitScript(INIT_SCRIPT_PATH)

@@ -38,11 +38,3 @@ spring:
   config:
     activate:
       on-profile: integration
-
-  datasource:
-    hikari:
-      connection-timeout: 1000 # Max wait for a connection
-      validation-timeout: 1000
-  jpa:
-    properties:
-      jakarta.persistence.query.timeout: 1000 # Standard JPA timeout
