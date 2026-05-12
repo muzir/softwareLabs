@@ -40,7 +40,7 @@ dependencies {
     // Let Spring Boot manage the Postgres version unless you specifically need 42.7.x
     runtimeOnly 'org.postgresql:postgresql'
 
-    implementation 'com.github.kagkarlsson:db-scheduler:16.8.1'
+    implementation 'com.github.kagkarlsson:db-scheduler:16.9.0'
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
