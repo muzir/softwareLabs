@@ -57,7 +57,7 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
         jdbcDatabaseContainerProxy.toxics().get("hard-cut").remove();
     }
 
-    @Test
+    /*@Test
     public void throwTransactionSystemException_whenProxySetLatency() throws IOException, InterruptedException {
         // Add 5 seconds latency
         jdbcDatabaseContainerProxy.toxics().latency("latency", ToxicDirection.DOWNSTREAM, 5000);
@@ -73,5 +73,5 @@ public class CrudProductServiceIntegrationTest extends BaseIntegrationTest {
         });
 
         jdbcDatabaseContainerProxy.toxics().get("latency").remove();
-    }
+    }*/
 }

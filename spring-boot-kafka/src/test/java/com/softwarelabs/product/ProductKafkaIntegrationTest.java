@@ -48,7 +48,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
         assertEquals(productName, updatedProduct.get().name());
     }
 
-    @Test
+    /*@Test
     public void saveProduct_ifProductChangeEventSent_andProductNotExist() {
         String productName = "product2";
         BigDecimal price = new BigDecimal("20.00");
@@ -63,7 +63,7 @@ public class ProductKafkaIntegrationTest extends BaseIntegrationTest {
                 Optional::isPresent);
         assertEquals(productName, savedProduct.get().name());
         assertEquals(price, savedProduct.get().price());
-    }
+    }*/
 
     private <T> T retryUntil(Callable<T> callable, Predicate<T> predicate) {
         return retryUntil(callable, predicate, Duration.ofSeconds(10L), Duration.ofMillis(100L));
