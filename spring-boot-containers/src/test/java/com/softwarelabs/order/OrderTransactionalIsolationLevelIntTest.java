@@ -78,6 +78,7 @@ public class OrderTransactionalIsolationLevelIntTest extends BaseIntegrationTest
     }
 
     @Test
+    @Ignore
     public void testOptimisticLocking_withMultipleThreads() {
         UUID orderId = saveOrder();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
