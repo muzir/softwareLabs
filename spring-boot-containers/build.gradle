@@ -6,7 +6,7 @@
  * user guide available at https://docs.gradle.org/4.6/userguide/tutorial_java_projects.html
  */
 plugins {
-    id 'org.springframework.boot' version '4.0.6'
+    id 'org.springframework.boot' version '4.1.1'
 }
 
 apply plugin: 'idea'
@@ -15,7 +15,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report'
 
 ext {
-    lombokVersion = '1.18.46'
+    lombokVersion = '1.18.48'
     testContainersVersion = '1.21.4'
 }
 // In this section you declare where to find the dependencies of your project
